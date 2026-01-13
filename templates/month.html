@@ -28,9 +28,9 @@
             <th class="hide-mobile">株数</th>
             <th class="hide-mobile">資金</th>
             <th class="hide-mobile">優待</th>
-            <th>利回</th>
+            <th class="hide-mobile">利回</th>
             <th class="hide-mobile">最大逆</th>
-            <th class="hide-mobile">収益</th>
+            <th>収益</th>
             <th class="hide-mobile">累計</th>
         </tr>
     </thead>
@@ -53,9 +53,9 @@
             <td class="number hide-mobile">{{ stock.required_shares_display }}</td>
             <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
             <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
-            <td class="number">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
+            <td class="number hide-mobile">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
             <td class="number hide-mobile">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
-            <td class="number hide-mobile {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
+            <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
             {% if is_taishaku_active %}
