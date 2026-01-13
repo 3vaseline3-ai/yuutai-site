@@ -1,0 +1,58 @@
+name: Update Data and Deploy
+
+on:
+  schedule:
+    # 毎日日本時間9時に実行（UTC 0時）
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 手動実行も可能
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Fetch stock prices
+        run: python scripts/fetch_stock_price.py --all
+
+      - name: Fetch zaiko (inventory)
+        run: python scripts/fetch_zaiko.py --all
+
+      - name: Generate HTML
+        run: python scripts/generate_html.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git diff --staged --quiet || git commit -m "Auto update: $(date +'%Y-%m-%d %H:%M') UTC"
+          git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './html'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

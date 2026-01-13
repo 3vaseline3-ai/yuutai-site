@@ -29,9 +29,11 @@
             <th>優待価値</th>
             <th>利回り</th>
             <th>リターン</th>
+            <th>資金</th>
         </tr>
     </thead>
     <tbody>
+        {% set ns = namespace(cumulative=0) %}
         {% for stock in stocks %}
         <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"{% if not stock.is_taishaku %} class="non-taishaku" style="display:none;"{% endif %}>
             <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
@@ -45,17 +47,19 @@
             <td><a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>{% if stock.is_taishaku %}<span class="badge">貸借</span>{% endif %}</td>
             <td class="restriction">{% if stock.restriction == '停止' %}<span class="restriction-stop">停止</span>{% elif stock.restriction == '注意' %}<span class="restriction-caution">注意</span>{% endif %}</td>
             <td class="number">{{ "{:,.0f}".format(stock.price) }}</td>
-            <td class="number">{{ "{:,}".format(stock.required_shares) }}</td>
+            <td class="number">{{ stock.required_shares_display }}</td>
             <td class="number">{{ "{:,.0f}".format(stock.required_amount) }}</td>
             <td class="number">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
             <td class="number">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
             <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
+            {% set ns.cumulative = ns.cumulative + stock.required_amount %}
+            <td class="number">{{ "{:,.0f}".format(ns.cumulative) }}</td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="10">データがありません</td>
+            <td colspan="11">データがありません</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -35,6 +35,7 @@ class StockPerformance:
     dividend: float
     performance: float
     is_taishaku: bool = False
+    is_differential: bool = False  # 差分エントリかどうか
 
     @property
     def required_amount(self) -> float:
@@ -65,6 +66,14 @@ class StockPerformance:
             return 0.0
         return (self.yuutai_per_share / self.price) * 100
 
+    @property
+    def required_shares_display(self) -> str:
+        """表示用の必要株数（差分の場合は+付き）"""
+        formatted = f"{self.required_shares:,}"
+        if self.is_differential:
+            return f"+{formatted}"
+        return formatted
+
     def to_dict(self) -> dict:
         return {
             "code": self.code,
@@ -72,6 +81,7 @@ class StockPerformance:
             "settlement_month": self.settlement_month,
             "price": self.price,
             "required_shares": self.required_shares,
+            "required_shares_display": self.required_shares_display,
             "required_amount": self.required_amount,
             "yuutai_value": self.yuutai_value,
             "yuutai_content": self.yuutai_content,
@@ -82,6 +92,7 @@ class StockPerformance:
             "simple_yield": round(self.simple_yield, 4),
             "performance": round(self.performance, 4),
             "is_taishaku": self.is_taishaku,
+            "is_differential": self.is_differential,
         }
 
 
@@ -234,7 +245,9 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
 
         # 各値を取得
         yuutai_value = float(kachi_data.get("yuutai_value", 0))
-        required_shares = int(kachi_data.get("required_shares", 0))
+        required_shares_raw = str(kachi_data.get("required_shares", "0")).strip()
+        is_differential = required_shares_raw.startswith("+")
+        required_shares = int(required_shares_raw)
         gyaku_hiboku = get_latest_gyaku_hiboku(stock, settlement_month)
         dividend = get_latest_dividend(stock)
         price = get_latest_price(stock, code)
@@ -260,6 +273,7 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
             dividend=dividend,
             performance=perf,
             is_taishaku=stock.get("is_taishaku", False),
+            is_differential=is_differential,
         )
         results.append(result)
 
