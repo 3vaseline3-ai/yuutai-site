@@ -199,6 +199,11 @@ def generate_month_pages(env: Environment) -> None:
                 stock["zaiko"] = {}
             # 制限データをマージ
             stock["restriction"] = restriction_data.get(code, "")
+            # 最大逆日歩をマージ（在庫データから取得）
+            if code in zaiko_data:
+                stock["max_gyaku"] = zaiko_data[code].get("max_gyaku")
+            else:
+                stock["max_gyaku"] = None
 
         # 金利情報を計算
         interest_info = calculate_month_interest(month)

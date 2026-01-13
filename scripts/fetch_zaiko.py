@@ -80,10 +80,15 @@ def parse_zaiko(data: list[dict]) -> dict[str, dict]:
             "monex": parse_int(item.get("xvol")),
         }
 
+        # 理論逆日歩（最大逆日歩）
+        riron_gyaku = parse_int(item.get("riron_gyaku"))
+
         result[code] = {
             "name": item.get("name"),
             "zaiko": zaiko,
             "taisyaku": item.get("taisyaku"),
+            "max_gyaku": riron_gyaku,  # 最大逆日歩
+            "gyaku_days": parse_int(item.get("gyaku_days")),  # 逆日歩日数
             "updated": datetime.now().isoformat(),
         }
 
