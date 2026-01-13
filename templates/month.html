@@ -16,21 +16,22 @@
     </span>
 </div>
 
+<div class="table-wrapper">
 <table>
     <thead>
         <tr>
             <th>コード</th>
             <th>日興</th>
             <th>銘柄名</th>
-            <th>制限</th>
-            <th>株価</th>
-            <th>必要株数</th>
-            <th>必要資金</th>
-            <th>優待価値</th>
-            <th>利回り</th>
-            <th>最大逆</th>
-            <th>リターン</th>
-            <th>資金</th>
+            <th class="hide-mobile">制限</th>
+            <th class="hide-mobile">株価</th>
+            <th class="hide-mobile">株数</th>
+            <th class="hide-mobile">資金</th>
+            <th class="hide-mobile">優待</th>
+            <th>利回</th>
+            <th class="hide-mobile">最大逆</th>
+            <th class="hide-mobile">収益</th>
+            <th class="hide-mobile">累計</th>
         </tr>
     </thead>
     <tbody>
@@ -46,21 +47,21 @@
                 <span class="zaiko-none">-</span>
                 {% endif %}
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>{% if stock.is_taishaku %}<span class="badge">貸借</span>{% endif %}</td>
-            <td class="restriction">{% if stock.restriction == '停止' %}<span class="restriction-stop">停止</span>{% elif stock.restriction == '注意' %}<span class="restriction-caution">注意</span>{% endif %}</td>
-            <td class="number">{{ "{:,.0f}".format(stock.price) }}</td>
-            <td class="number">{{ stock.required_shares_display }}</td>
-            <td class="number">{{ "{:,.0f}".format(stock.required_amount) }}</td>
-            <td class="number">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>{% if stock.is_taishaku %}<span class="badge hide-mobile">貸借</span>{% endif %}</td>
+            <td class="restriction hide-mobile">{% if stock.restriction == '停止' %}<span class="restriction-stop">停止</span>{% elif stock.restriction == '注意' %}<span class="restriction-caution">注意</span>{% endif %}</td>
+            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.price) }}</td>
+            <td class="number hide-mobile">{{ stock.required_shares_display }}</td>
+            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
+            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
             <td class="number">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
-            <td class="number">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
-            <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
+            <td class="number hide-mobile">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
+            <td class="number hide-mobile {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
             {% if is_taishaku_active %}
             {% set ns.cumulative = ns.cumulative + stock.required_amount %}
             {% endif %}
-            <td class="number">{% if is_taishaku_active %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
+            <td class="number hide-mobile">{% if is_taishaku_active %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
         </tr>
         {% else %}
         <tr>
@@ -69,6 +70,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}
 
 {% block extra_css %}

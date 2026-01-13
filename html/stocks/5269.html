@@ -71,6 +71,19 @@
             color: white;
             border-radius: 3px;
         }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 10px; }
+            th, td { padding: 6px 4px; font-size: 0.85em; }
+            nav { overflow-x: auto; white-space: nowrap; }
+            nav a { margin-right: 10px; }
+            .hide-mobile { display: none; }
+        }
     </style>
     
 </head>

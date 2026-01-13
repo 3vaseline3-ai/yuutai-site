@@ -71,6 +71,19 @@
             color: white;
             border-radius: 3px;
         }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 10px; }
+            th, td { padding: 6px 4px; font-size: 0.85em; }
+            nav { overflow-x: auto; white-space: nowrap; }
+            nav a { margin-right: 10px; }
+            .hide-mobile { display: none; }
+        }
     </style>
     
 <style>
@@ -180,21 +193,22 @@
     </span>
 </div>
 
+<div class="table-wrapper">
 <table>
     <thead>
         <tr>
             <th>コード</th>
             <th>日興</th>
             <th>銘柄名</th>
-            <th>制限</th>
-            <th>株価</th>
-            <th>必要株数</th>
-            <th>必要資金</th>
-            <th>優待価値</th>
-            <th>利回り</th>
-            <th>最大逆</th>
-            <th>リターン</th>
-            <th>資金</th>
+            <th class="hide-mobile">制限</th>
+            <th class="hide-mobile">株価</th>
+            <th class="hide-mobile">株数</th>
+            <th class="hide-mobile">資金</th>
+            <th class="hide-mobile">優待</th>
+            <th>利回</th>
+            <th class="hide-mobile">最大逆</th>
+            <th class="hide-mobile">収益</th>
+            <th class="hide-mobile">累計</th>
         </tr>
     </thead>
     <tbody>
@@ -208,21 +222,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3415" target="_blank">ＴＯＫＹＯ　ＢＡＳＥ</a><span class="badge">貸借</span></td>
-            <td class="restriction"></td>
-            <td class="number">460</td>
-            <td class="number">1,000</td>
-            <td class="number">460,000</td>
-            <td class="number">8,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3415" target="_blank">ＴＯＫＹＯ　ＢＡＳＥ</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"></td>
+            <td class="number hide-mobile">460</td>
+            <td class="number hide-mobile">1,000</td>
+            <td class="number hide-mobile">460,000</td>
+            <td class="number hide-mobile">8,000</td>
             <td class="number">1.74%</td>
-            <td class="number">0.26%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">0.26%</td>
+            <td class="number hide-mobile positive">
                 1.87%
             </td>
             
             
             
-            <td class="number">460,000</td>
+            <td class="number hide-mobile">460,000</td>
         </tr>
         
         
@@ -233,21 +247,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3662" target="_blank">エイチームホールディングス</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">1,273</td>
-            <td class="number">500</td>
-            <td class="number">636,500</td>
-            <td class="number">10,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3662" target="_blank">エイチームホールディングス</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">1,273</td>
+            <td class="number hide-mobile">500</td>
+            <td class="number hide-mobile">636,500</td>
+            <td class="number hide-mobile">10,000</td>
             <td class="number">1.57%</td>
-            <td class="number">2.45%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.45%</td>
+            <td class="number hide-mobile positive">
                 1.24%
             </td>
             
             
             
-            <td class="number">1,096,500</td>
+            <td class="number hide-mobile">1,096,500</td>
         </tr>
         
         
@@ -258,21 +272,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/9262" target="_blank">シルバーライフ</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">810</td>
-            <td class="number">200</td>
-            <td class="number">162,000</td>
-            <td class="number">2,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9262" target="_blank">シルバーライフ</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">810</td>
+            <td class="number hide-mobile">200</td>
+            <td class="number hide-mobile">162,000</td>
+            <td class="number hide-mobile">2,000</td>
             <td class="number">1.23%</td>
-            <td class="number">2.67%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.67%</td>
+            <td class="number hide-mobile positive">
                 1.23%
             </td>
             
             
             
-            <td class="number">1,258,500</td>
+            <td class="number hide-mobile">1,258,500</td>
         </tr>
         
         
@@ -283,19 +297,19 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/8013" target="_blank">ナイガイ</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-stop">停止</span></td>
-            <td class="number">312</td>
-            <td class="number">100</td>
-            <td class="number">31,200</td>
-            <td class="number">300</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8013" target="_blank">ナイガイ</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-stop">停止</span></td>
+            <td class="number hide-mobile">312</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">31,200</td>
+            <td class="number hide-mobile">300</td>
             <td class="number">0.96%</td>
-            <td class="number">3.85%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">3.85%</td>
+            <td class="number hide-mobile positive">
                 0.68%
             </td>
             
-            <td class="number">-</td>
+            <td class="number hide-mobile">-</td>
         </tr>
         
         
@@ -306,21 +320,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/8142" target="_blank">トーホー</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">3,935</td>
-            <td class="number">100</td>
-            <td class="number">393,500</td>
-            <td class="number">2,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8142" target="_blank">トーホー</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">3,935</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">393,500</td>
+            <td class="number hide-mobile">2,000</td>
             <td class="number">0.51%</td>
-            <td class="number">2.44%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.44%</td>
+            <td class="number hide-mobile positive">
                 0.68%
             </td>
             
             
             
-            <td class="number">1,652,000</td>
+            <td class="number hide-mobile">1,652,000</td>
         </tr>
         
         
@@ -331,21 +345,21 @@
                 6,000
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/2353" target="_blank">日本駐車場開発</a><span class="badge">貸借</span></td>
-            <td class="restriction"></td>
-            <td class="number">269</td>
-            <td class="number">500</td>
-            <td class="number">134,500</td>
-            <td class="number">1,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/2353" target="_blank">日本駐車場開発</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"></td>
+            <td class="number hide-mobile">269</td>
+            <td class="number hide-mobile">500</td>
+            <td class="number hide-mobile">134,500</td>
+            <td class="number hide-mobile">1,000</td>
             <td class="number">0.74%</td>
-            <td class="number">4.46%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">4.46%</td>
+            <td class="number hide-mobile positive">
                 0.60%
             </td>
             
             
             
-            <td class="number">1,786,500</td>
+            <td class="number hide-mobile">1,786,500</td>
         </tr>
         
         
@@ -356,21 +370,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3399" target="_blank">丸千代山岡家</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">3,075</td>
-            <td class="number">100</td>
-            <td class="number">307,500</td>
-            <td class="number">1,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3399" target="_blank">丸千代山岡家</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">3,075</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">307,500</td>
+            <td class="number hide-mobile">1,000</td>
             <td class="number">0.33%</td>
-            <td class="number">2.58%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.58%</td>
+            <td class="number hide-mobile positive">
                 0.43%
             </td>
             
             
             
-            <td class="number">2,094,000</td>
+            <td class="number hide-mobile">2,094,000</td>
         </tr>
         
         
@@ -381,21 +395,21 @@
                 6,100
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/1928" target="_blank">積水ハウス</a><span class="badge">貸借</span></td>
-            <td class="restriction"></td>
-            <td class="number">3,580</td>
-            <td class="number">1,000</td>
-            <td class="number">3,580,000</td>
-            <td class="number">5,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/1928" target="_blank">積水ハウス</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"></td>
+            <td class="number hide-mobile">3,580</td>
+            <td class="number hide-mobile">1,000</td>
+            <td class="number hide-mobile">3,580,000</td>
+            <td class="number hide-mobile">5,000</td>
             <td class="number">0.14%</td>
-            <td class="number">2.41%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.41%</td>
+            <td class="number hide-mobile positive">
                 0.31%
             </td>
             
             
             
-            <td class="number">5,674,000</td>
+            <td class="number hide-mobile">5,674,000</td>
         </tr>
         
         
@@ -407,18 +421,18 @@
                 
             </td>
             <td><a href="https://www.invest-jp.net/yuutai/detail/3421" target="_blank">稲葉製作所</a></td>
-            <td class="restriction"></td>
-            <td class="number">1,614</td>
-            <td class="number">1,000</td>
-            <td class="number">1,614,000</td>
-            <td class="number">1,000</td>
+            <td class="restriction hide-mobile"></td>
+            <td class="number hide-mobile">1,614</td>
+            <td class="number hide-mobile">1,000</td>
+            <td class="number hide-mobile">1,614,000</td>
+            <td class="number hide-mobile">1,000</td>
             <td class="number">0.06%</td>
-            <td class="number">2.53%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.53%</td>
+            <td class="number hide-mobile positive">
                 0.27%
             </td>
             
-            <td class="number">-</td>
+            <td class="number hide-mobile">-</td>
         </tr>
         
         
@@ -429,21 +443,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3320" target="_blank">クロスプラス</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">1,430</td>
-            <td class="number">100</td>
-            <td class="number">143,000</td>
-            <td class="number">1,500</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3320" target="_blank">クロスプラス</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">1,430</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">143,000</td>
+            <td class="number hide-mobile">1,500</td>
             <td class="number">1.05%</td>
-            <td class="number">2.52%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.52%</td>
+            <td class="number hide-mobile positive">
                 0.17%
             </td>
             
             
             
-            <td class="number">5,817,000</td>
+            <td class="number hide-mobile">5,817,000</td>
         </tr>
         
         
@@ -454,19 +468,19 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/1433" target="_blank">ベステラ</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-stop">停止</span></td>
-            <td class="number">1,285</td>
-            <td class="number">1,000</td>
-            <td class="number">1,285,000</td>
-            <td class="number">15,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/1433" target="_blank">ベステラ</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-stop">停止</span></td>
+            <td class="number hide-mobile">1,285</td>
+            <td class="number hide-mobile">1,000</td>
+            <td class="number hide-mobile">1,285,000</td>
+            <td class="number hide-mobile">15,000</td>
             <td class="number">1.17%</td>
-            <td class="number">2.43%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.43%</td>
+            <td class="number hide-mobile positive">
                 0.05%
             </td>
             
-            <td class="number">-</td>
+            <td class="number hide-mobile">-</td>
         </tr>
         
         
@@ -477,21 +491,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/7678" target="_blank">あさくま</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">4,815</td>
-            <td class="number">100</td>
-            <td class="number">481,500</td>
-            <td class="number">4,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7678" target="_blank">あさくま</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">4,815</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">481,500</td>
+            <td class="number hide-mobile">4,000</td>
             <td class="number">0.83%</td>
-            <td class="number">2.39%</td>
-            <td class="number positive">
+            <td class="number hide-mobile">2.39%</td>
+            <td class="number hide-mobile positive">
                 0.03%
             </td>
             
             
             
-            <td class="number">6,298,500</td>
+            <td class="number hide-mobile">6,298,500</td>
         </tr>
         
         
@@ -502,21 +516,21 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3193" target="_blank">エターナルホスピタリティグループ</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">3,400</td>
-            <td class="number">100</td>
-            <td class="number">340,000</td>
-            <td class="number">1,000</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3193" target="_blank">エターナルホスピタリティグループ</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">3,400</td>
+            <td class="number hide-mobile">100</td>
+            <td class="number hide-mobile">340,000</td>
+            <td class="number hide-mobile">1,000</td>
             <td class="number">0.29%</td>
-            <td class="number">2.40%</td>
-            <td class="number negative">
+            <td class="number hide-mobile">2.40%</td>
+            <td class="number hide-mobile negative">
                 -0.08%
             </td>
             
             
             
-            <td class="number">6,638,500</td>
+            <td class="number hide-mobile">6,638,500</td>
         </tr>
         
         
@@ -527,25 +541,26 @@
                 <span class="zaiko-none">-</span>
                 
             </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/6654" target="_blank">不二電機工業</a><span class="badge">貸借</span></td>
-            <td class="restriction"><span class="restriction-caution">注意</span></td>
-            <td class="number">1,133</td>
-            <td class="number">300</td>
-            <td class="number">339,900</td>
-            <td class="number">500</td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/6654" target="_blank">不二電機工業</a><span class="badge hide-mobile">貸借</span></td>
+            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
+            <td class="number hide-mobile">1,133</td>
+            <td class="number hide-mobile">300</td>
+            <td class="number hide-mobile">339,900</td>
+            <td class="number hide-mobile">500</td>
             <td class="number">0.15%</td>
-            <td class="number">2.54%</td>
-            <td class="number negative">
+            <td class="number hide-mobile">2.54%</td>
+            <td class="number hide-mobile negative">
                 -1.35%
             </td>
             
             
             
-            <td class="number">6,978,400</td>
+            <td class="number hide-mobile">6,978,400</td>
         </tr>
         
     </tbody>
 </table>
+</div>
 
     </div>
     
