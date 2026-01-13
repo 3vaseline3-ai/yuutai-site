@@ -2,8 +2,8 @@ name: Update Data and Deploy
 
 on:
   schedule:
-    # 毎日日本時間9時に実行（UTC 0時）
-    - cron: '0 0 * * *'
+    # 毎日日本時間18時に実行（UTC 9時）
+    - cron: '0 9 * * *'
   workflow_dispatch:  # 手動実行も可能
 
 permissions:
