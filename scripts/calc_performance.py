@@ -259,7 +259,7 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
 
         result = StockPerformance(
             code=code,
-            name=kachi_data.get("name", stock.get("name", "")),
+            name=kachi_data.get("name") or stock.get("name", ""),
             settlement_month=settlement_month,
             price=price,
             required_shares=required_shares,
