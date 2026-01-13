@@ -43,6 +43,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add -A
           git diff --staged --quiet || git commit -m "Auto update: $(date +'%Y-%m-%d %H:%M') UTC"
+          git pull --rebase origin main || true
           git push
 
       - name: Setup Pages
