@@ -12,7 +12,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 3205,
+    "kabuka": 3210,
     "kabusu": 100,
     "max_gyaku": 2640,
     "gyaku_days": 1,
@@ -23,7 +23,7 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012455"
+    "updated": "2026-01-13T13:56:10.478598"
   },
   "1436": {
     "name": "グリーンエナジー＆カンパニー",
@@ -38,7 +38,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 2412,
+    "kabuka": 2390,
     "kabusu": 300,
     "max_gyaku": 6000,
     "gyaku_days": 1,
@@ -49,7 +49,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012465"
+    "updated": "2026-01-13T13:56:10.478610"
   },
   "147A": {
     "name": "ソラコム",
@@ -64,7 +64,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1241,
+    "kabuka": 1240,
     "kabusu": 600,
     "max_gyaku": 6240,
     "gyaku_days": 1,
@@ -75,7 +75,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012470"
+    "updated": "2026-01-13T13:56:10.478616"
   },
   "1766": {
     "name": "東建コーポレーション",
@@ -90,7 +90,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 14890,
+    "kabuka": 14860,
     "kabusu": 100,
     "max_gyaku": 11920,
     "gyaku_days": 1,
@@ -101,7 +101,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012475"
+    "updated": "2026-01-13T13:56:10.478640"
   },
   "1873": {
     "name": "日本ハウスホールディングス",
@@ -116,7 +116,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 322,
+    "kabuka": 321,
     "kabusu": 1000,
     "max_gyaku": 4000,
     "gyaku_days": 1,
@@ -127,7 +127,7 @@
     "yutai_syubetsu": "自社商品",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012480"
+    "updated": "2026-01-13T13:56:10.478646"
   },
   "2198": {
     "name": "アイ・ケイ・ケイホールディングス",
@@ -142,7 +142,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 799,
+    "kabuka": 800,
     "kabusu": 100,
     "max_gyaku": 640,
     "gyaku_days": 1,
@@ -153,7 +153,7 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012484"
+    "updated": "2026-01-13T13:56:10.478650"
   },
   "2294": {
     "name": "柿安本店",
@@ -168,7 +168,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 2683,
+    "kabuka": 2689,
     "kabusu": 100,
     "max_gyaku": 2160,
     "gyaku_days": 1,
@@ -179,7 +179,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012489"
+    "updated": "2026-01-13T13:56:10.478655"
   },
   "2438": {
     "name": "アスカネット",
@@ -194,7 +194,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 367,
+    "kabuka": 368,
     "kabusu": 100,
     "max_gyaku": 400,
     "gyaku_days": 1,
@@ -205,13 +205,13 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012492"
+    "updated": "2026-01-13T13:56:10.478659"
   },
   "2593": {
     "name": "伊藤園",
     "zaiko": {
       "nikko": 1000,
-      "kabucom": 245800,
+      "kabucom": 245900,
       "rakuten": 55200,
       "sbi": null,
       "gmo": null,
@@ -220,7 +220,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 3028,
+    "kabuka": 3045,
     "kabusu": 100,
     "max_gyaku": 2480,
     "gyaku_days": 1,
@@ -231,13 +231,13 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012497"
+    "updated": "2026-01-13T13:56:10.478664"
   },
   "2695": {
     "name": "くら寿司",
     "zaiko": {
       "nikko": 0,
-      "kabucom": 3400,
+      "kabucom": null,
       "rakuten": null,
       "sbi": null,
       "gmo": null,
@@ -246,7 +246,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 3355,
+    "kabuka": 3360,
     "kabusu": 100,
     "max_gyaku": 2720,
     "gyaku_days": 1,
@@ -257,7 +257,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012501"
+    "updated": "2026-01-13T13:56:10.478668"
   },
   "2751": {
     "name": "テンポスホールディングス",
@@ -272,7 +272,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 3650,
+    "kabuka": 3670,
     "kabusu": 100,
     "max_gyaku": 2960,
     "gyaku_days": 1,
@@ -283,13 +283,13 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012505"
+    "updated": "2026-01-13T13:56:10.478671"
   },
   "2910": {
     "name": "ロック・フィールド",
     "zaiko": {
-      "nikko": 1500,
-      "kabucom": 3000,
+      "nikko": 1400,
+      "kabucom": null,
       "rakuten": null,
       "sbi": null,
       "gmo": null,
@@ -298,7 +298,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1354,
+    "kabuka": 1350,
     "kabusu": 100,
     "max_gyaku": 1120,
     "gyaku_days": 1,
@@ -309,7 +309,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012509"
+    "updated": "2026-01-13T13:56:10.478676"
   },
   "3121": {
     "name": "マーチャント・バンカーズ",
@@ -324,7 +324,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 211,
+    "kabuka": 210,
     "kabusu": 6000,
     "max_gyaku": 24000,
     "gyaku_days": 1,
@@ -335,7 +335,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "注意",
     "d_kenri": "10月31日",
-    "updated": "2026-01-13T11:40:17.012513"
+    "updated": "2026-01-13T13:56:10.478680"
   },
   "3134": {
     "name": "Ｈａｍｅｅ",
@@ -350,7 +350,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 481,
+    "kabuka": 475,
     "kabusu": 100,
     "max_gyaku": 400,
     "gyaku_days": 1,
@@ -361,7 +361,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012521"
+    "updated": "2026-01-13T13:56:10.478689"
   },
   "3180": {
     "name": "ビューティガレージ",
@@ -376,7 +376,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1620,
+    "kabuka": 1538,
     "kabusu": 100,
     "max_gyaku": 1360,
     "gyaku_days": 1,
@@ -387,7 +387,7 @@
     "yutai_syubetsu": "カタログギフト",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012526"
+    "updated": "2026-01-13T13:56:10.478694"
   },
   "324A": {
     "name": "ブッキングリゾート",
@@ -402,7 +402,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 1040,
+    "kabuka": 1018,
     "kabusu": 100,
     "max_gyaku": 880,
     "gyaku_days": 1,
@@ -413,7 +413,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012530"
+    "updated": "2026-01-13T13:56:10.478698"
   },
   "3329": {
     "name": "東和フードサービス",
@@ -428,7 +428,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 2118,
+    "kabuka": 2119,
     "kabusu": 100,
     "max_gyaku": 1760,
     "gyaku_days": 1,
@@ -439,7 +439,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012534"
+    "updated": "2026-01-13T13:56:10.478702"
   },
   "3361": {
     "name": "トーエル",
@@ -454,7 +454,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 860,
+    "kabuka": 862,
     "kabusu": 500,
     "max_gyaku": 3600,
     "gyaku_days": 1,
@@ -465,7 +465,7 @@
     "yutai_syubetsu": "自社商品",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012538"
+    "updated": "2026-01-13T13:56:10.478707"
   },
   "3475": {
     "name": "グッドコムアセット",
@@ -480,7 +480,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1324,
+    "kabuka": 1308,
     "kabusu": 1000,
     "max_gyaku": 11200,
     "gyaku_days": 1,
@@ -491,7 +491,7 @@
     "yutai_syubetsu": "ギフトカード",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012542"
+    "updated": "2026-01-13T13:56:10.478711"
   },
   "3476": {
     "name": "投資法人みらい",
@@ -506,7 +506,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 51000,
+    "kabuka": 51200,
     "kabusu": 1,
     "max_gyaku": 408,
     "gyaku_days": 1,
@@ -517,7 +517,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012546"
+    "updated": "2026-01-13T13:56:10.478715"
   },
   "3843": {
     "name": "フリービット",
@@ -532,7 +532,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1706,
+    "kabuka": 1696,
     "kabusu": 500,
     "max_gyaku": 7200,
     "gyaku_days": 1,
@@ -543,7 +543,7 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012551"
+    "updated": "2026-01-13T13:56:10.478720"
   },
   "3903": {
     "name": "ｇｕｍｉ",
@@ -558,7 +558,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 371,
+    "kabuka": 378,
     "kabusu": 500,
     "max_gyaku": 2000,
     "gyaku_days": 1,
@@ -569,7 +569,7 @@
     "yutai_syubetsu": "金券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012555"
+    "updated": "2026-01-13T13:56:10.478724"
   },
   "4382": {
     "name": "ＨＥＲＯＺ",
@@ -584,7 +584,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 857,
+    "kabuka": 862,
     "kabusu": 1000,
     "max_gyaku": 7200,
     "gyaku_days": 1,
@@ -595,7 +595,7 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012559"
+    "updated": "2026-01-13T13:56:10.478728"
   },
   "4450": {
     "name": "パワーソリューションズ",
@@ -610,7 +610,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 2186,
+    "kabuka": 2200,
     "kabusu": 100,
     "max_gyaku": 1760,
     "gyaku_days": 1,
@@ -621,7 +621,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012562"
+    "updated": "2026-01-13T13:56:10.478732"
   },
   "5971": {
     "name": "共和工業所",
@@ -647,7 +647,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012566"
+    "updated": "2026-01-13T13:56:10.478736"
   },
   "7604": {
     "name": "梅の花グループ",
@@ -673,7 +673,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012570"
+    "updated": "2026-01-13T13:56:10.478740"
   },
   "7804": {
     "name": "ビーアンドピー",
@@ -688,7 +688,7 @@
     },
     "taisyaku": "制度信用銘柄",
     "is_taishaku": false,
-    "kabuka": 2542,
+    "kabuka": 2584,
     "kabusu": 100,
     "max_gyaku": 2080,
     "gyaku_days": 1,
@@ -699,7 +699,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012574"
+    "updated": "2026-01-13T13:56:10.478743"
   },
   "8079": {
     "name": "正栄食品工業",
@@ -714,7 +714,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 4075,
+    "kabuka": 4085,
     "kabusu": 100,
     "max_gyaku": 3280,
     "gyaku_days": 1,
@@ -725,7 +725,7 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012578"
+    "updated": "2026-01-13T13:56:10.478748"
   },
   "8186": {
     "name": "null",
@@ -751,7 +751,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012582"
+    "updated": "2026-01-13T13:56:10.478751"
   },
   "8917": {
     "name": "ファースト住建",
@@ -766,7 +766,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1179,
+    "kabuka": 1189,
     "kabusu": 100,
     "max_gyaku": 960,
     "gyaku_days": 1,
@@ -777,7 +777,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012586"
+    "updated": "2026-01-13T13:56:10.478755"
   },
   "8927": {
     "name": "明豊エンタープライズ",
@@ -792,7 +792,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 448,
+    "kabuka": 449,
     "kabusu": 1000,
     "max_gyaku": 4000,
     "gyaku_days": 1,
@@ -803,7 +803,7 @@
     "yutai_syubetsu": "ギフトカード",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012589"
+    "updated": "2026-01-13T13:56:10.478759"
   },
   "8975": {
     "name": "いちごオフィスリート投資法人",
@@ -818,7 +818,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 98100,
+    "kabuka": 97400,
     "kabusu": 1,
     "max_gyaku": 785,
     "gyaku_days": 1,
@@ -829,7 +829,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012593"
+    "updated": "2026-01-13T13:56:10.478763"
   },
   "9279": {
     "name": "ギフトホールディングス",
@@ -844,7 +844,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 3805,
+    "kabuka": 3720,
     "kabusu": 100,
     "max_gyaku": 3120,
     "gyaku_days": 1,
@@ -855,7 +855,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012597"
+    "updated": "2026-01-13T13:56:10.478768"
   },
   "9444": {
     "name": "トーシンホールディングス",
@@ -881,7 +881,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012600"
+    "updated": "2026-01-13T13:56:10.478774"
   },
   "9603": {
     "name": "エイチ・アイ・エス",
@@ -896,7 +896,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 1330,
+    "kabuka": 1324,
     "kabusu": 100,
     "max_gyaku": 1120,
     "gyaku_days": 1,
@@ -907,7 +907,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日<br>10月31日",
-    "updated": "2026-01-13T11:40:17.012605"
+    "updated": "2026-01-13T13:56:10.478779"
   },
   "9627": {
     "name": "アインホールディングス",
@@ -922,7 +922,7 @@
     },
     "taisyaku": "貸借銘柄",
     "is_taishaku": true,
-    "kabuka": 6509,
+    "kabuka": 6506,
     "kabusu": 100,
     "max_gyaku": 5280,
     "gyaku_days": 1,
@@ -933,6 +933,6 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "4月30日",
-    "updated": "2026-01-13T11:40:17.012609"
+    "updated": "2026-01-13T13:56:10.478784"
   }
 }
