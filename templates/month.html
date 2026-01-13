@@ -27,8 +27,8 @@
             <th>必要株数</th>
             <th>必要資金</th>
             <th>優待価値</th>
-            <th>最大逆</th>
             <th>利回り</th>
+            <th>最大逆</th>
             <th>リターン</th>
             <th>資金</th>
         </tr>
@@ -52,8 +52,8 @@
             <td class="number">{{ stock.required_shares_display }}</td>
             <td class="number">{{ "{:,.0f}".format(stock.required_amount) }}</td>
             <td class="number">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
-            <td class="number">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
             <td class="number">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
+            <td class="number">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
             <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
