@@ -6,7 +6,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import csv
-import json
 from datetime import datetime, date, timedelta
 import jpholiday
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +16,6 @@ from config import (
     STOCKS_DIR,
     KACHI_CSV,
     GYAKU_HIBOKU_DIR,
-    DATA_DIR,
 )
 from scripts.calc_performance import calculate_all_performance, StockPerformance
 from scripts.fetch_zaiko import load_latest_zaiko
@@ -139,20 +137,6 @@ def load_gyaku_hiboku(code: str) -> list[dict]:
         return list(reader)
 
 
-def load_restriction_data() -> dict[str, str]:
-    """制限データ（停止/注意）を読み込み"""
-    parsed_file = DATA_DIR / "parsed_stocks.json"
-
-    if not parsed_file.exists():
-        return {}
-
-    with open(parsed_file, encoding="utf-8") as f:
-        stocks = json.load(f)
-
-    # code -> current_restriction のマッピング
-    return {s["code"]: s.get("current_restriction", "") for s in stocks}
-
-
 def setup_jinja_env() -> Environment:
     """Jinja2環境をセットアップ"""
     env = Environment(
@@ -181,9 +165,6 @@ def generate_month_pages(env: Environment) -> None:
     """月別ページを生成（パフォーマンス降順）"""
     template = env.get_template("month.html")
 
-    # 制限データを読み込み
-    restriction_data = load_restriction_data()
-
     # 各月のページを生成
     for month in range(1, 13):
         # パフォーマンス計算済みデータを取得（既に降順ソート済み）
@@ -195,14 +176,13 @@ def generate_month_pages(env: Environment) -> None:
             code = stock.get("code", "")
             if code in zaiko_data:
                 stock["zaiko"] = zaiko_data[code].get("zaiko", {})
-            else:
-                stock["zaiko"] = {}
-            # 制限データをマージ
-            stock["restriction"] = restriction_data.get(code, "")
-            # 最大逆日歩をマージ（在庫データから取得）
-            if code in zaiko_data:
+                # 制限データをマージ（APIデータから取得）
+                stock["restriction"] = zaiko_data[code].get("restriction", "")
+                # 最大逆日歩をマージ
                 stock["max_gyaku"] = zaiko_data[code].get("max_gyaku")
             else:
+                stock["zaiko"] = {}
+                stock["restriction"] = ""
                 stock["max_gyaku"] = None
 
         # 金利情報を計算

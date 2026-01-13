@@ -3,13 +3,15 @@
 ## プロジェクト概要
 優待クロス取引のパフォーマンス管理サイト（静的HTML）
 
+**データソース**: gokigen-life.tokyo API（invest-jpのHTMLパースは廃止済み）
+
 ## データ取得状況
 | 月 | 状態 |
 |----|------|
 | 1月 | ✅ 完了（14銘柄表示） |
-| 2月 | ✅ 完了（35銘柄表示） |
-| 3月 | ✅ 完了（104銘柄表示） |
-| 4〜12月 | ❌ 未取得 |
+| 2月 | ✅ 完了（46銘柄表示） |
+| 3月 | ✅ 完了（122銘柄表示） |
+| 4〜12月 | ⏳ kachi.csv登録待ち |
 
 ## ディレクトリ構成
 
@@ -17,22 +19,23 @@
 yuutai-site/
 ├── config.py                    # 設定ファイル（パス定義）
 ├── scripts/
-│   ├── download_invest_jp.py    # invest-jpからHTMLダウンロード
-│   ├── parse_invest_jp.py       # HTMLパース → parsed_stocks.json
+│   ├── fetch_zaiko.py           # 一般信用在庫取得（gokigen-life API）★メイン
 │   ├── fetch_stock_price.py     # yfinanceで株価取得
-│   ├── generate_html.py         # Jinja2でHTML生成
 │   ├── calc_performance.py      # パフォーマンス計算
-│   ├── fetch_zaiko.py           # 一般信用在庫取得（gokigen-life API）
-│   ├── scrape_nikko_zaiko.py    # 日興在庫スクレイピング（未使用）
+│   ├── generate_html.py         # Jinja2でHTML生成
+│   ├── fetch_max_gyaku.py       # 最大逆日歩取得
+│   ├── download_invest_jp.py    # [旧] invest-jpからHTMLダウンロード（未使用）
+│   ├── parse_invest_jp.py       # [旧] HTMLパース（未使用）
+│   ├── scrape_nikko_zaiko.py    # [旧] 日興在庫スクレイピング（未使用）
 │   └── convert_yuutai_record.py # 優待記録変換
 ├── data/
-│   ├── kachi.csv                # 銘柄マスタ（優待価値入力）
-│   ├── parsed_stocks.json       # パース済み銘柄データ
-│   ├── html_cache/{月}/         # ダウンロードしたHTML
-│   ├── gyaku_hiboku/            # 逆日歩履歴CSV
-│   ├── dividend/                # 配当履歴CSV
+│   ├── kachi.csv                # 銘柄マスタ（優待価値入力）★重要
+│   ├── ippan_zaiko/             # 一般信用在庫データ（JSON）
 │   ├── stock_price/             # 株価データ
-│   └── ippan_zaiko/             # 一般信用在庫データ（JSON）
+│   ├── gyaku_hiboku/            # [旧] 逆日歩履歴CSV（参照用）
+│   ├── dividend/                # [旧] 配当履歴CSV（参照用）
+│   ├── html_cache/              # [旧] ダウンロードしたHTML
+│   └── parsed_stocks.json       # [旧] パース済み銘柄データ
 ├── templates/                   # Jinja2テンプレート
 │   ├── base.html
 │   ├── index.html
@@ -50,29 +53,39 @@ yuutai-site/
 # 仮想環境有効化
 source .venv/bin/activate
 
-# N月のデータダウンロード
-python scripts/download_invest_jp.py --month N
-python scripts/parse_invest_jp.py --all --save-gyaku --save-dividend
+# 在庫更新（gokigen-life API）
+python scripts/fetch_zaiko.py --month N   # 指定月
+python scripts/fetch_zaiko.py --all       # 全月
 
 # 株価更新
 python scripts/fetch_stock_price.py --all
-
-# 一般信用在庫取得
-python scripts/fetch_zaiko.py --month N   # 指定月
-python scripts/fetch_zaiko.py --all       # 全月
 
 # HTML再生成
 python scripts/generate_html.py
 ```
 
+## データフロー
+
+```
+gokigen-life API → fetch_zaiko.py → ippan_zaiko/*.json
+                                          ↓
+kachi.csv → calc_performance.py ← ←←←←←←←←
+                     ↓
+            generate_html.py → html/
+```
+
+**重要**: kachi.csvに登録されていない銘柄はHTML出力されません。
+
 ## 設計決定事項
 
 | 項目 | 方針 | 理由 |
 |------|------|------|
-| 株価 | yfinance優先、フォールバックで権利日終値 | APIで最新取得可能 |
-| 逆日歩 | 過去3年平均 | 単年だと異常値に引っ張られる |
+| 株価 | yfinance優先、フォールバックでAPIデータ | 最新値取得可能 |
+| 逆日歩 | APIの5年平均（avg5_gyaku） | 過去実績ベース |
+| 配当 | APIのhaito | 最新予想値 |
+| 制限（停止/注意） | APIのrecent_gyaku_kisei | リアルタイム |
 | リンク | 相対パス | ローカルで動作するように |
-| 同一銘柄・異なる株数 | 別々にランキング表示 | 株数によって利回りが異なるため個別評価 |
+| 同一銘柄・異なる株数 | 別々にランキング表示 | 株数によって利回りが異なるため |
 
 ### パフォーマンス計算式
 ```
@@ -99,8 +112,12 @@ python scripts/generate_html.py
 | `gvol` | GMO | ✅ 在庫株数 |
 | `mvol` | 松井 | ✅ 在庫株数 |
 | `xvol` | マネックス | ✅ 在庫株数 |
-| `nkc`, `nkct` | 日興 | ❌ 在庫株数ではない（用途不明、株価に近い値） |
-| `kbc`, `kbct`, `kbcv` 等 | 各社 | ❌ 在庫株数ではない |
+| `avg5_gyaku` | - | 5年平均逆日歩 |
+| `haito` | - | 配当（1株あたり） |
+| `kabuka` | - | 株価 |
+| `recent_gyaku_kisei` | - | 規制状態（停止/注意） |
+| `riron_gyaku` | - | 最大逆日歩 |
+| `gyaku_days` | - | 逆日歩日数 |
 
 ### 注意事項
 - 最初のレコード（code=0000）はダミー。`*vol`フィールドがタイムスタンプ（更新時刻）になっている
@@ -110,10 +127,8 @@ python scripts/generate_html.py
 ## 残りタスク
 
 1. kachi.csv の優待価値入力（手動作業）
+2. 4〜12月の銘柄をkachi.csvに追加
 
-## 注意点
+## 変更履歴
 
-- kachi.csv にない銘柄は表示されない
-- invest-jp.net はCloudflare対策で `curl_cffi` 使用
-- 貸借銘柄 = `data-taishaku="true"` / バッジ表示
-- ダウンロード間隔: 3秒（ACCESS_INTERVAL）
+- 2026/01/13: invest-jp HTMLパースからgokigen-life API完全移行

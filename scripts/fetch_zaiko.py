@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import json
-import requests
+from curl_cffi import requests
 from datetime import datetime
 from config import IPPAN_ZAIKO_DIR
 
@@ -15,18 +15,6 @@ API_URL = "https://gokigen-life.tokyo/api/00ForWeb/ForZaiko2.php"
 HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",
     "Referer": "https://gokigen-life.tokyo/",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-}
-
-# 証券会社の在庫フィールドマッピング
-BROKER_FIELDS = {
-    "nikko": "nkc",      # 日興
-    "kabucom": "kbc",    # カブコム
-    "rakuten": "rtc",    # 楽天
-    "sbi": "sbc",        # SBI
-    "gmo": "gmc",        # GMO
-    "matsui": "mtc",     # 松井
-    "monex": "mxc",      # マネックス
 }
 
 
@@ -37,7 +25,8 @@ def fetch_zaiko(month: int) -> list[dict]:
             API_URL,
             headers=HEADERS,
             data={"month": month},
-            timeout=30
+            timeout=30,
+            impersonate="chrome"
         )
         response.raise_for_status()
         data = response.json()
@@ -45,14 +34,32 @@ def fetch_zaiko(month: int) -> list[dict]:
         # 最初のダミーレコード(code=0000)を除外
         return [item for item in data if item.get("code") != "0000"]
 
-    except requests.RequestException as e:
+    except Exception as e:
         print(f"Error fetching zaiko: {e}")
         return []
 
 
 def parse_zaiko(data: list[dict]) -> dict[str, dict]:
-    """在庫データをコードをキーにした辞書に変換"""
+    """在庫データをコードをキーにした辞書に変換（API全データ保存）"""
     result = {}
+
+    def parse_int(val):
+        if val is None:
+            return None
+        try:
+            v = int(val)
+            # タイムスタンプっぽい巨大な値は除外
+            return v if v < 100000000 else None
+        except (ValueError, TypeError):
+            return None
+
+    def parse_float(val):
+        if val is None:
+            return None
+        try:
+            return float(val)
+        except (ValueError, TypeError):
+            return None
 
     for item in data:
         code = item.get("code")
@@ -60,16 +67,6 @@ def parse_zaiko(data: list[dict]) -> dict[str, dict]:
             continue
 
         # 各証券会社の在庫株数（*volフィールド）
-        def parse_int(val):
-            if val is None:
-                return None
-            try:
-                v = int(val)
-                # タイムスタンプっぽい巨大な値は除外
-                return v if v < 100000000 else None
-            except (ValueError, TypeError):
-                return None
-
         zaiko = {
             "nikko": parse_int(item.get("nvol")),
             "kabucom": parse_int(item.get("kvol")),
@@ -80,15 +77,35 @@ def parse_zaiko(data: list[dict]) -> dict[str, dict]:
             "monex": parse_int(item.get("xvol")),
         }
 
-        # 理論逆日歩（最大逆日歩）
-        riron_gyaku = parse_int(item.get("riron_gyaku"))
+        # 貸借銘柄判定
+        taisyaku_val = item.get("taisyaku", "")
+        is_taishaku = "貸借" in taisyaku_val
+
+        # 逆日歩規制（停止/注意）
+        restriction_raw = item.get("recent_gyaku_kisei") or ""
+        if "停止" in restriction_raw:
+            restriction = "停止"
+        elif "注意" in restriction_raw:
+            restriction = "注意"
+        else:
+            restriction = ""
 
         result[code] = {
             "name": item.get("name"),
             "zaiko": zaiko,
-            "taisyaku": item.get("taisyaku"),
-            "max_gyaku": riron_gyaku,  # 最大逆日歩
+            "taisyaku": taisyaku_val,
+            "is_taishaku": is_taishaku,
+            "kabuka": parse_int(item.get("kabuka")),  # 株価
+            "kabusu": parse_int(item.get("kabusu")),  # 必要株数
+            "max_gyaku": parse_int(item.get("riron_gyaku")),  # 最大逆日歩
             "gyaku_days": parse_int(item.get("gyaku_days")),  # 逆日歩日数
+            "avg5_gyaku": parse_float(item.get("avg5_gyaku")),  # 5年平均逆日歩
+            "haito": parse_int(item.get("haito")),  # 配当
+            "gl_value": parse_int(item.get("gl_value")),  # 優待価値（gokigen-life評価）
+            "yutai": item.get("yutai"),  # 優待内容
+            "yutai_syubetsu": item.get("yutai_syubetsu"),  # 優待種別
+            "restriction": restriction,  # 停止/注意
+            "d_kenri": item.get("d_kenri"),  # 権利確定日
             "updated": datetime.now().isoformat(),
         }
 

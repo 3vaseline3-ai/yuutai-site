@@ -14,7 +14,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import csv
 import json
 from dataclasses import dataclass
-from config import DATA_DIR, KACHI_CSV, GYAKU_HIBOKU_DIR, STOCK_PRICE_DIR
+from config import DATA_DIR, KACHI_CSV, GYAKU_HIBOKU_DIR, STOCK_PRICE_DIR, IPPAN_ZAIKO_DIR
+from fetch_zaiko import load_latest_zaiko
 
 
 # 配当調整金の還付率
@@ -36,6 +37,7 @@ class StockPerformance:
     performance: float
     is_taishaku: bool = False
     is_differential: bool = False  # 差分エントリかどうか
+    restriction: str = ""  # 停止/注意
 
     @property
     def required_amount(self) -> float:
@@ -93,6 +95,7 @@ class StockPerformance:
             "performance": round(self.performance, 4),
             "is_taishaku": self.is_taishaku,
             "is_differential": self.is_differential,
+            "restriction": self.restriction,
         }
 
 
@@ -140,47 +143,43 @@ def load_kachi() -> list[dict]:
     return kachi
 
 
-def load_parsed_stocks() -> list[dict]:
-    """パース済み銘柄データを読み込み"""
-    json_file = DATA_DIR / "parsed_stocks.json"
-    if not json_file.exists():
-        return []
+# 月別の在庫データキャッシュ
+_zaiko_cache: dict[int, dict] = {}
 
-    with open(json_file, encoding="utf-8") as f:
-        return json.load(f)
+
+def load_zaiko_for_month(month: int) -> dict:
+    """指定月の在庫データを読み込み（キャッシュ付き）"""
+    global _zaiko_cache
+    if month not in _zaiko_cache:
+        _zaiko_cache[month] = load_latest_zaiko(month)
+    return _zaiko_cache[month]
+
+
+def get_stock_from_zaiko(code: str, month: int) -> dict | None:
+    """在庫データから銘柄情報を取得"""
+    zaiko = load_zaiko_for_month(month)
+    return zaiko.get(code)
 
 
 def get_latest_gyaku_hiboku(stock: dict, settlement_month: int = 0) -> float:
-    """過去3年分の逆日歩平均を取得（1株あたり）
+    """5年平均逆日歩を取得（1株あたり）
 
-    全ての権利月のデータを使用（2月銘柄でも8月のデータを含む）
+    APIデータのavg5_gyakuを使用
     """
-    records = stock.get("gyaku_hiboku", [])
-    if not records:
-        return 0.0
-
-    # 過去3年分（最大6レコード程度）を取得
-    recent_records = records[:6]
-
-    if not recent_records:
-        return 0.0
-
-    # 平均を計算
-    total = sum(r.get("gyaku_hiboku", 0.0) for r in recent_records)
-    return total / len(recent_records)
+    avg5 = stock.get("avg5_gyaku")
+    if avg5 is not None:
+        return float(avg5)
+    return 0.0
 
 
 def get_latest_dividend(stock: dict) -> float:
-    """最新の配当を取得（1株あたり）"""
-    records = stock.get("dividend", [])
-    # 実績の最新を取得（予想を除く）
-    for r in records:
-        if not r.get("is_forecast", False):
-            continue
-    # 予想がなければ実績の最新
-    for r in reversed(records):
-        if not r.get("is_forecast", False):
-            return r.get("amount", 0.0)
+    """配当を取得（1株あたり）
+
+    APIデータのhaitoを使用
+    """
+    haito = stock.get("haito")
+    if haito is not None:
+        return float(haito)
     return 0.0
 
 
@@ -200,7 +199,7 @@ _latest_prices: dict[str, float] | None = None
 
 
 def get_latest_price(stock: dict, code: str = "") -> float:
-    """最新の株価を取得（yfinance優先、なければ逆日歩履歴から）"""
+    """最新の株価を取得（yfinance優先、なければAPIデータから）"""
     global _latest_prices
 
     # 最新株価をロード（初回のみ）
@@ -211,20 +210,17 @@ def get_latest_price(stock: dict, code: str = "") -> float:
     if code and code in _latest_prices:
         return _latest_prices[code]
 
-    # フォールバック: 逆日歩履歴の終値
-    records = stock.get("gyaku_hiboku", [])
-    if not records:
-        return 0.0
-    return records[0].get("close_price", 0.0)
+    # フォールバック: APIデータのkabuka
+    kabuka = stock.get("kabuka")
+    if kabuka is not None:
+        return float(kabuka)
+
+    return 0.0
 
 
 def calculate_all_performance(month: int | None = None) -> list[StockPerformance]:
     """全銘柄のパフォーマンスを計算（同一銘柄・異なる株数も別々に表示）"""
     kachi_list = load_kachi()
-    parsed_stocks = load_parsed_stocks()
-
-    # parsed_stocksを辞書化（高速検索用）
-    stocks_dict = {s.get("code", ""): s for s in parsed_stocks}
 
     results = []
 
@@ -237,10 +233,10 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
         if month and settlement_month != month:
             continue
 
-        # parsed_stocksから該当銘柄を取得
-        stock = stocks_dict.get(code)
+        # 在庫データから該当銘柄を取得
+        stock = get_stock_from_zaiko(code, settlement_month)
         if not stock:
-            # parsed_stocks.jsonにない銘柄はスキップ
+            # 在庫データにない銘柄はスキップ
             continue
 
         # 各値を取得
@@ -274,6 +270,7 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
             performance=perf,
             is_taishaku=stock.get("is_taishaku", False),
             is_differential=is_differential,
+            restriction=stock.get("restriction", ""),
         )
         results.append(result)
 
