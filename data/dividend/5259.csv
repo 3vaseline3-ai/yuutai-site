@@ -1,0 +1,5 @@
+period,amount,is_forecast
+2023/9 実,0.0,False
+2024/9 実,7.0,False
+2025/9 実,0.0,False
+2026/9 予,0.0,True

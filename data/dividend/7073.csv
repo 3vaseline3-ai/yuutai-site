@@ -1,0 +1,11 @@
+period,amount,is_forecast
+2017/1 実,0.0,False
+2018/1 実,0.0,False
+2019/1 実,0.0,False
+2020/1 実,72.0,False
+2021/1 実,0.0,False
+2022/1 実,30.0,False
+2023/1 実,47.0,False
+2024/1 実,5.0,False
+2025/1 実,45.0,False
+2026/1 予,55.0,True

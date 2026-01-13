@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ stock.code }} {{ stock.name }} - 優待クロス管理{% endblock %}
+
+{% block content %}
+<h1>{{ stock.code }} {{ stock.name }}</h1>
+
+<h2>基本情報</h2>
+<table>
+    <tr>
+        <th>銘柄コード</th>
+        <td>{{ stock.code }}</td>
+    </tr>
+    <tr>
+        <th>銘柄名</th>
+        <td>{{ stock.name }}</td>
+    </tr>
+    <tr>
+        <th>権利確定月</th>
+        <td>{{ stock.settlement_month }}月</td>
+    </tr>
+    <tr>
+        <th>必要株数</th>
+        <td>{{ stock.required_shares }}株</td>
+    </tr>
+    <tr>
+        <th>現在株価</th>
+        <td>{{ stock.price }}円</td>
+    </tr>
+    <tr>
+        <th>必要資金</th>
+        <td>{{ stock.required_amount }}円</td>
+    </tr>
+</table>
+
+<h2>優待内容</h2>
+<table>
+    <tr>
+        <th>優待内容</th>
+        <td>{{ stock.yuutai_content | default('-') }}</td>
+    </tr>
+    <tr>
+        <th>優待価値</th>
+        <td>{{ stock.yuutai_value | default('-') }}円</td>
+    </tr>
+    <tr>
+        <th>利回り</th>
+        <td>{{ stock.yield | default('-') }}%</td>
+    </tr>
+</table>
+
+<h2>逆日歩履歴</h2>
+<table>
+    <thead>
+        <tr>
+            <th>権利日</th>
+            <th>逆日歩</th>
+            <th>日数</th>
+            <th>合計</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in gyaku_hiboku_history %}
+        <tr>
+            <td>{{ record.date }}</td>
+            <td>{{ record.rate }}円</td>
+            <td>{{ record.days }}日</td>
+            <td>{{ record.total }}円</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">履歴データがありません</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>株価チャート</h2>
+<div id="price-chart">
+    <!-- 株価チャートはここに表示 -->
+    <p>チャートデータがありません</p>
+</div>
+{% endblock %}

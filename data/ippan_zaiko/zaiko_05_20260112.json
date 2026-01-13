@@ -1,0 +1,548 @@
+{
+  "1377": {
+    "name": "サカタのタネ",
+    "zaiko": {
+      "nikko": 1900,
+      "kabucom": 4500,
+      "rakuten": 15700,
+      "sbi": null,
+      "gmo": null,
+      "matsui": 2,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519171"
+  },
+  "138A": {
+    "name": "光フードサービス",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519182"
+  },
+  "2437": {
+    "name": "Ｓｈｉｎｗａ　Ｗｉｓｅ　Ｈｏｌｄｉｎｇｓ",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519184"
+  },
+  "2459": {
+    "name": "アウンコンサルティング",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519186"
+  },
+  "2462": {
+    "name": "ライク",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519188"
+  },
+  "2493": {
+    "name": "イーサポートリンク",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519190"
+  },
+  "2722": {
+    "name": "ＩＫホールディングス",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519192"
+  },
+  "2791": {
+    "name": "大黒天物産",
+    "zaiko": {
+      "nikko": 1900,
+      "kabucom": null,
+      "rakuten": 4400,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519194"
+  },
+  "2792": {
+    "name": "ハニーズホールディングス",
+    "zaiko": {
+      "nikko": 1500,
+      "kabucom": 2400,
+      "rakuten": 18000,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519196"
+  },
+  "3148": {
+    "name": "クリエイトＳＤホールディングス",
+    "zaiko": {
+      "nikko": 800,
+      "kabucom": 109100,
+      "rakuten": 11100,
+      "sbi": null,
+      "gmo": null,
+      "matsui": 2,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519199"
+  },
+  "3160": {
+    "name": "大光",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519201"
+  },
+  "3201": {
+    "name": "日本毛織",
+    "zaiko": {
+      "nikko": 1600,
+      "kabucom": 232500,
+      "rakuten": 11500,
+      "sbi": null,
+      "gmo": null,
+      "matsui": 2,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519203"
+  },
+  "3297": {
+    "name": "東武住販",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519205"
+  },
+  "3472": {
+    "name": "日本ホテル＆レジデンシャル投資法人",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519207"
+  },
+  "3501": {
+    "name": "ＳＵＭＩＮＯＥ",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519209"
+  },
+  "3645": {
+    "name": "メディカルネット",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519210"
+  },
+  "3760": {
+    "name": "ケイブ",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 1
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519212"
+  },
+  "3892": {
+    "name": "岡山製紙",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519214"
+  },
+  "4465": {
+    "name": "ニイタカ",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519216"
+  },
+  "4825": {
+    "name": "ウェザーニューズ",
+    "zaiko": {
+      "nikko": 1800,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": 2,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519218"
+  },
+  "5869": {
+    "name": "早稲田学習研究会",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519220"
+  },
+  "5967": {
+    "name": "ＴＯＮＥ",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 1
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519222"
+  },
+  "6044": {
+    "name": "三機サービス",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 0
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519224"
+  },
+  "6150": {
+    "name": "タケダ機械",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519226"
+  },
+  "6634": {
+    "name": "ネクスグループ",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519228"
+  },
+  "7091": {
+    "name": "リビングプラットフォーム",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519230"
+  },
+  "7388": {
+    "name": "ＦＰパートナー",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519231"
+  },
+  "7434": {
+    "name": "オータケ",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519233"
+  },
+  "7487": {
+    "name": "小津産業",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519235"
+  },
+  "8908": {
+    "name": "毎日コムネット",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519237"
+  },
+  "9216": {
+    "name": "ビーウィズ",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519239"
+  },
+  "9265": {
+    "name": "ヤマシタヘルスケアホールディングス",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 0
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519241"
+  },
+  "9278": {
+    "name": "ブックオフグループホールディングス",
+    "zaiko": {
+      "nikko": 1900,
+      "kabucom": 0,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519243"
+  },
+  "9765": {
+    "name": "オオバ",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519244"
+  },
+  "9812": {
+    "name": "テーオーホールディングス",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519246"
+  },
+  "3075": {
+    "name": "銚子丸",
+    "zaiko": {
+      "nikko": null,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "制度信用銘柄",
+    "updated": "2026-01-12T21:40:11.519248"
+  },
+  "3544": {
+    "name": "サツドラホールディングス",
+    "zaiko": {
+      "nikko": 0,
+      "kabucom": null,
+      "rakuten": null,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519250"
+  },
+  "2678": {
+    "name": "アスクル",
+    "zaiko": {
+      "nikko": 1800,
+      "kabucom": 5000,
+      "rakuten": 4600,
+      "sbi": null,
+      "gmo": null,
+      "matsui": null,
+      "monex": null
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519252"
+  },
+  "3549": {
+    "name": "クスリのアオキホールディングス",
+    "zaiko": {
+      "nikko": 1500,
+      "kabucom": 67900,
+      "rakuten": 2000,
+      "sbi": null,
+      "gmo": null,
+      "matsui": 2,
+      "monex": 1
+    },
+    "taisyaku": "貸借銘柄",
+    "updated": "2026-01-12T21:40:11.519254"
+  }
+}

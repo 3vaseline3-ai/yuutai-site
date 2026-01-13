@@ -1,0 +1,11 @@
+period,amount,is_forecast
+2017/7 実,0.0,False
+2018/7 実,0.0,False
+2019/7 実,0.0,False
+2020/7 実,0.0,False
+2021/7 実,0.0,False
+2022/7 実,0.0,False
+2023/7 実,0.0,False
+2024/7 実,0.0,False
+2025/7 実,20.0,False
+2026/7 予,25.0,True

@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2月権利確定銘柄 - 優待クロス管理</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        nav {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        nav a {
+            margin-right: 15px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
+        .number {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            margin-left: 5px;
+            font-size: 0.75em;
+            background-color: #17a2b8;
+            color: white;
+            border-radius: 3px;
+        }
+    </style>
+    
+<style>
+.interest-badge {
+    font-size: 0.6em;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.interest-detail {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+.filter-controls {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.filter-btn.active {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+.stock-count {
+    margin-left: 20px;
+    color: #666;
+}
+.zaiko-none {
+    color: #ccc;
+}
+.restriction {
+    text-align: center;
+}
+.restriction-stop {
+    background: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.restriction-caution {
+    background: #ffc107;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="../index.html">トップ</a>
+            
+            <a href="../months/01.html">1月</a>
+            
+            <a href="../months/02.html">2月</a>
+            
+            <a href="../months/03.html">3月</a>
+            
+            <a href="../months/04.html">4月</a>
+            
+            <a href="../months/05.html">5月</a>
+            
+            <a href="../months/06.html">6月</a>
+            
+            <a href="../months/07.html">7月</a>
+            
+            <a href="../months/08.html">8月</a>
+            
+            <a href="../months/09.html">9月</a>
+            
+            <a href="../months/10.html">10月</a>
+            
+            <a href="../months/11.html">11月</a>
+            
+            <a href="../months/12.html">12月</a>
+            
+        </nav>
+        
+<h1>2月権利確定銘柄 <span class="interest-badge">金利 0.200%</span></h1>
+<p class="interest-detail">権利付日: 2026/02/25 (43日間)</p>
+
+<div class="filter-controls">
+    <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
+    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn" data-filter="all">全て表示</button>
+    <span class="stock-count">
+        貸借: <strong>46</strong>銘柄 /
+        全体: 46銘柄
+    </span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>コード</th>
+            <th>日興</th>
+            <th>銘柄名</th>
+            <th>制限</th>
+            <th>株価</th>
+            <th>必要株数</th>
+            <th>必要資金</th>
+            <th>優待価値</th>
+            <th>利回り</th>
+            <th>リターン</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/2930yutai/" target="_blank">2930</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/2930" target="_blank">北の達人コーポレーション</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">145</td>
+            <td class="number">100</td>
+            <td class="number">14,500</td>
+            <td class="number">3,000</td>
+            <td class="number">20.69%</td>
+            <td class="number positive">
+                20.50%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8125yutai/" target="_blank">8125</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8125" target="_blank">ワキタ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,981</td>
+            <td class="number">300</td>
+            <td class="number">594,300</td>
+            <td class="number">10,000</td>
+            <td class="number">1.68%</td>
+            <td class="number positive">
+                2.28%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8125yutai/" target="_blank">8125</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8125" target="_blank">ワキタ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,981</td>
+            <td class="number">100</td>
+            <td class="number">198,100</td>
+            <td class="number">3,000</td>
+            <td class="number">1.51%</td>
+            <td class="number positive">
+                2.11%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9979yutai/" target="_blank">9979</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9979" target="_blank">大庄</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,193</td>
+            <td class="number">100</td>
+            <td class="number">119,300</td>
+            <td class="number">3,000</td>
+            <td class="number">2.51%</td>
+            <td class="number positive">
+                1.91%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7513yutai/" target="_blank">7513</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7513" target="_blank">コジマ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,179</td>
+            <td class="number">100</td>
+            <td class="number">117,900</td>
+            <td class="number">2,000</td>
+            <td class="number">1.70%</td>
+            <td class="number positive">
+                1.81%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3222yutai/" target="_blank">3222</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3222" target="_blank">ユナイテッド・スーパーマーケット・ホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">889</td>
+            <td class="number">100</td>
+            <td class="number">88,900</td>
+            <td class="number">1,500</td>
+            <td class="number">1.69%</td>
+            <td class="number positive">
+                1.69%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9835yutai/" target="_blank">9835</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9835" target="_blank">ジュンテンドー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">511</td>
+            <td class="number">100</td>
+            <td class="number">51,100</td>
+            <td class="number">1,000</td>
+            <td class="number">1.96%</td>
+            <td class="number positive">
+                1.55%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7512yutai/" target="_blank">7512</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7512" target="_blank">イオン北海道</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">917</td>
+            <td class="number">500</td>
+            <td class="number">458,500</td>
+            <td class="number">8,000</td>
+            <td class="number">1.74%</td>
+            <td class="number positive">
+                1.53%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7049yutai/" target="_blank">7049</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7049" target="_blank">識学</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">993</td>
+            <td class="number">200</td>
+            <td class="number">198,600</td>
+            <td class="number">5,000</td>
+            <td class="number">2.52%</td>
+            <td class="number positive">
+                1.36%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8278yutai/" target="_blank">8278</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8278" target="_blank">フジ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,061</td>
+            <td class="number">100</td>
+            <td class="number">206,100</td>
+            <td class="number">3,000</td>
+            <td class="number">1.46%</td>
+            <td class="number positive">
+                1.36%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3048yutai/" target="_blank">3048</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3048" target="_blank">ビックカメラ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,704</td>
+            <td class="number">100</td>
+            <td class="number">170,450</td>
+            <td class="number">2,000</td>
+            <td class="number">1.17%</td>
+            <td class="number positive">
+                1.26%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3479yutai/" target="_blank">3479</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3479" target="_blank">ティーケーピー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,925</td>
+            <td class="number">1,000</td>
+            <td class="number">1,925,000</td>
+            <td class="number">25,000</td>
+            <td class="number">1.30%</td>
+            <td class="number positive">
+                1.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3479yutai/" target="_blank">3479</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3479" target="_blank">ティーケーピー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,925</td>
+            <td class="number">2,000</td>
+            <td class="number">3,850,000</td>
+            <td class="number">50,000</td>
+            <td class="number">1.30%</td>
+            <td class="number positive">
+                1.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3479yutai/" target="_blank">3479</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3479" target="_blank">ティーケーピー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,925</td>
+            <td class="number">4,000</td>
+            <td class="number">7,700,000</td>
+            <td class="number">100,000</td>
+            <td class="number">1.30%</td>
+            <td class="number positive">
+                1.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9418yutai/" target="_blank">9418</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9418" target="_blank">Ｕ－ＮＥＸＴ　ＨＯＬＤＩＮＧＳ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,026</td>
+            <td class="number">100</td>
+            <td class="number">202,600</td>
+            <td class="number">2,500</td>
+            <td class="number">1.23%</td>
+            <td class="number positive">
+                1.22%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7512yutai/" target="_blank">7512</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7512" target="_blank">イオン北海道</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">917</td>
+            <td class="number">100</td>
+            <td class="number">91,700</td>
+            <td class="number">1,200</td>
+            <td class="number">1.31%</td>
+            <td class="number positive">
+                1.10%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3387yutai/" target="_blank">3387</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3387" target="_blank">クリエイト・レストランツ・ホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">791</td>
+            <td class="number">600</td>
+            <td class="number">474,600</td>
+            <td class="number">10,000</td>
+            <td class="number">2.11%</td>
+            <td class="number positive">
+                1.02%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="true">
+            <td><a href="https://gokigen-life.tokyo/2685yutai/" target="_blank">2685</a></td>
+            <td class="number">
+                
+                100
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/2685" target="_blank">アンドエスティＨＤ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,854</td>
+            <td class="number">100</td>
+            <td class="number">285,400</td>
+            <td class="number">2,500</td>
+            <td class="number">0.88%</td>
+            <td class="number positive">
+                0.97%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3382yutai/" target="_blank">3382</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3382" target="_blank">セブン＆アイ・ホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,270</td>
+            <td class="number">100</td>
+            <td class="number">227,000</td>
+            <td class="number">2,000</td>
+            <td class="number">0.88%</td>
+            <td class="number positive">
+                0.96%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7610yutai/" target="_blank">7610</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7610" target="_blank">テイツー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">150</td>
+            <td class="number">10,000</td>
+            <td class="number">1,500,000</td>
+            <td class="number">20,000</td>
+            <td class="number">1.33%</td>
+            <td class="number positive">
+                0.85%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="true">
+            <td><a href="https://gokigen-life.tokyo/8167yutai/" target="_blank">8167</a></td>
+            <td class="number">
+                
+                100
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8167" target="_blank">リテールパートナーズ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,359</td>
+            <td class="number">100</td>
+            <td class="number">135,900</td>
+            <td class="number">1,000</td>
+            <td class="number">0.74%</td>
+            <td class="number positive">
+                0.78%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8273yutai/" target="_blank">8273</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8273" target="_blank">イズミ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,020</td>
+            <td class="number">100</td>
+            <td class="number">302,000</td>
+            <td class="number">2,000</td>
+            <td class="number">0.66%</td>
+            <td class="number positive">
+                0.77%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9861yutai/" target="_blank">9861</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9861" target="_blank">吉野家ホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,033</td>
+            <td class="number">200</td>
+            <td class="number">606,600</td>
+            <td class="number">5,000</td>
+            <td class="number">0.82%</td>
+            <td class="number positive">
+                0.71%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9948yutai/" target="_blank">9948</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9948" target="_blank">アークス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,430</td>
+            <td class="number">100</td>
+            <td class="number">343,000</td>
+            <td class="number">2,000</td>
+            <td class="number">0.58%</td>
+            <td class="number positive">
+                0.61%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7610yutai/" target="_blank">7610</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7610" target="_blank">テイツー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">150</td>
+            <td class="number">5,000</td>
+            <td class="number">750,000</td>
+            <td class="number">8,000</td>
+            <td class="number">1.07%</td>
+            <td class="number positive">
+                0.59%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/4343yutai/" target="_blank">4343</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/4343" target="_blank">イオンファンタジー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,981</td>
+            <td class="number">100</td>
+            <td class="number">298,100</td>
+            <td class="number">2,000</td>
+            <td class="number">0.67%</td>
+            <td class="number positive">
+                0.55%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/4343yutai/" target="_blank">4343</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/4343" target="_blank">イオンファンタジー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,981</td>
+            <td class="number">200</td>
+            <td class="number">596,200</td>
+            <td class="number">4,000</td>
+            <td class="number">0.67%</td>
+            <td class="number positive">
+                0.55%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/4343yutai/" target="_blank">4343</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/4343" target="_blank">イオンファンタジー</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,981</td>
+            <td class="number">300</td>
+            <td class="number">894,300</td>
+            <td class="number">6,000</td>
+            <td class="number">0.67%</td>
+            <td class="number positive">
+                0.55%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7630yutai/" target="_blank">7630</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7630" target="_blank">壱番屋</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">919</td>
+            <td class="number">100</td>
+            <td class="number">91,900</td>
+            <td class="number">1,000</td>
+            <td class="number">1.09%</td>
+            <td class="number positive">
+                0.54%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="true">
+            <td><a href="https://gokigen-life.tokyo/2379yutai/" target="_blank">2379</a></td>
+            <td class="number">
+                
+                500
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/2379" target="_blank">ディップ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,251</td>
+            <td class="number">100</td>
+            <td class="number">225,100</td>
+            <td class="number">500</td>
+            <td class="number">0.22%</td>
+            <td class="number positive">
+                0.44%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8200yutai/" target="_blank">8200</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8200" target="_blank">リンガーハット</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,311</td>
+            <td class="number">100</td>
+            <td class="number">231,100</td>
+            <td class="number">1,650</td>
+            <td class="number">0.71%</td>
+            <td class="number positive">
+                0.40%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3543yutai/" target="_blank">3543</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3543" target="_blank">コメダホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,025</td>
+            <td class="number">100</td>
+            <td class="number">302,500</td>
+            <td class="number">1,000</td>
+            <td class="number">0.33%</td>
+            <td class="number positive">
+                0.40%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/5018yutai/" target="_blank">5018</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/5018" target="_blank">ＭＯＲＥＳＣＯ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,540</td>
+            <td class="number">300</td>
+            <td class="number">462,000</td>
+            <td class="number">3,000</td>
+            <td class="number">0.65%</td>
+            <td class="number positive">
+                0.39%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3087yutai/" target="_blank">3087</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3087" target="_blank">ドトール・日レスホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,632</td>
+            <td class="number">100</td>
+            <td class="number">263,200</td>
+            <td class="number">1,000</td>
+            <td class="number">0.38%</td>
+            <td class="number positive">
+                0.38%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/8008yutai/" target="_blank">8008</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/8008" target="_blank">４℃ホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,819</td>
+            <td class="number">100</td>
+            <td class="number">181,900</td>
+            <td class="number">1,000</td>
+            <td class="number">0.55%</td>
+            <td class="number positive">
+                0.35%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3612yutai/" target="_blank">3612</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3612" target="_blank">ワールド</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,130</td>
+            <td class="number">2,000</td>
+            <td class="number">6,260,000</td>
+            <td class="number">12,000</td>
+            <td class="number">0.19%</td>
+            <td class="number positive">
+                0.33%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="true">
+            <td><a href="https://gokigen-life.tokyo/7611yutai/" target="_blank">7611</a></td>
+            <td class="number">
+                
+                3,100
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7611" target="_blank">ハイデイ日高</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,340</td>
+            <td class="number">100</td>
+            <td class="number">334,000</td>
+            <td class="number">1,000</td>
+            <td class="number">0.30%</td>
+            <td class="number positive">
+                0.31%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="true">
+            <td><a href="https://gokigen-life.tokyo/7611yutai/" target="_blank">7611</a></td>
+            <td class="number">
+                
+                3,100
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7611" target="_blank">ハイデイ日高</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,340</td>
+            <td class="number">500</td>
+            <td class="number">1,670,000</td>
+            <td class="number">5,000</td>
+            <td class="number">0.30%</td>
+            <td class="number positive">
+                0.31%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3612yutai/" target="_blank">3612</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3612" target="_blank">ワールド</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">3,130</td>
+            <td class="number">1,000</td>
+            <td class="number">3,130,000</td>
+            <td class="number">5,000</td>
+            <td class="number">0.16%</td>
+            <td class="number positive">
+                0.30%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3546yutai/" target="_blank">3546</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3546" target="_blank">アレンザホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,272</td>
+            <td class="number">100</td>
+            <td class="number">127,200</td>
+            <td class="number">1,000</td>
+            <td class="number">0.79%</td>
+            <td class="number positive">
+                0.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9842yutai/" target="_blank">9842</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9842" target="_blank">アークランズ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,847</td>
+            <td class="number">100</td>
+            <td class="number">184,700</td>
+            <td class="number">500</td>
+            <td class="number">0.27%</td>
+            <td class="number positive">
+                0.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9842yutai/" target="_blank">9842</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9842" target="_blank">アークランズ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,847</td>
+            <td class="number">200</td>
+            <td class="number">369,400</td>
+            <td class="number">1,000</td>
+            <td class="number">0.27%</td>
+            <td class="number positive">
+                0.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9842yutai/" target="_blank">9842</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9842" target="_blank">アークランズ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">1,847</td>
+            <td class="number">1,000</td>
+            <td class="number">1,847,000</td>
+            <td class="number">5,000</td>
+            <td class="number">0.27%</td>
+            <td class="number positive">
+                0.23%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/9946yutai/" target="_blank">9946</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/9946" target="_blank">ミニストップ</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">2,144</td>
+            <td class="number">100</td>
+            <td class="number">214,400</td>
+            <td class="number">1,000</td>
+            <td class="number">0.47%</td>
+            <td class="number negative">
+                -0.00%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/3063yutai/" target="_blank">3063</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/3063" target="_blank">ジェイグループホールディングス</a><span class="badge">貸借</span></td>
+            <td class="restriction"></td>
+            <td class="number">820</td>
+            <td class="number">200</td>
+            <td class="number">164,000</td>
+            <td class="number">4,000</td>
+            <td class="number">2.44%</td>
+            <td class="number negative">
+                -0.51%
+            </td>
+        </tr>
+        
+        <tr data-taishaku="true" data-nikko="false">
+            <td><a href="https://gokigen-life.tokyo/7603yutai/" target="_blank">7603</a></td>
+            <td class="number">
+                
+                <span class="zaiko-none">-</span>
+                
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/7603" target="_blank">ジーイエット</a><span class="badge">貸借</span></td>
+            <td class="restriction"><span class="restriction-stop">停止</span></td>
+            <td class="number">165</td>
+            <td class="number">100</td>
+            <td class="number">16,500</td>
+            <td class="number">500</td>
+            <td class="number">3.03%</td>
+            <td class="number negative">
+                -4.24%
+            </td>
+        </tr>
+        
+    </tbody>
+</table>
+
+    </div>
+    
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (filter === 'nikko') {
+                row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
+            } else if (filter === 'taishaku') {
+                row.style.display = row.dataset.taishaku === 'true' ? '' : 'none';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

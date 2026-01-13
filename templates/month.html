@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}{{ month }}月権利確定銘柄 - 優待クロス管理{% endblock %}
+
+{% block content %}
+<h1>{{ month }}月権利確定銘柄 <span class="interest-badge">金利 {{ "{:.3f}".format(interest_info.interest) }}%</span></h1>
+<p class="interest-detail">権利付日: {{ interest_info.kenri_date.strftime('%Y/%m/%d') }} ({{ interest_info.days }}日間)</p>
+
+<div class="filter-controls">
+    <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
+    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn" data-filter="all">全て表示</button>
+    <span class="stock-count">
+        貸借: <strong>{{ stocks | selectattr('is_taishaku') | list | length }}</strong>銘柄 /
+        全体: {{ stocks | length }}銘柄
+    </span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>コード</th>
+            <th>日興</th>
+            <th>銘柄名</th>
+            <th>制限</th>
+            <th>株価</th>
+            <th>必要株数</th>
+            <th>必要資金</th>
+            <th>優待価値</th>
+            <th>利回り</th>
+            <th>リターン</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in stocks %}
+        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"{% if not stock.is_taishaku %} class="non-taishaku" style="display:none;"{% endif %}>
+            <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
+            <td class="number">
+                {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
+                {{ "{:,}".format(stock.zaiko.nikko) }}
+                {% else %}
+                <span class="zaiko-none">-</span>
+                {% endif %}
+            </td>
+            <td><a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>{% if stock.is_taishaku %}<span class="badge">貸借</span>{% endif %}</td>
+            <td class="restriction">{% if stock.restriction == '停止' %}<span class="restriction-stop">停止</span>{% elif stock.restriction == '注意' %}<span class="restriction-caution">注意</span>{% endif %}</td>
+            <td class="number">{{ "{:,.0f}".format(stock.price) }}</td>
+            <td class="number">{{ "{:,}".format(stock.required_shares) }}</td>
+            <td class="number">{{ "{:,.0f}".format(stock.required_amount) }}</td>
+            <td class="number">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
+            <td class="number">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
+            <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
+                {{ "{:.2f}".format(stock.performance) }}%
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="10">データがありません</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.interest-badge {
+    font-size: 0.6em;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.interest-detail {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+.filter-controls {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.filter-btn.active {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+.stock-count {
+    margin-left: 20px;
+    color: #666;
+}
+.zaiko-none {
+    color: #ccc;
+}
+.restriction {
+    text-align: center;
+}
+.restriction-stop {
+    background: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.restriction-caution {
+    background: #ffc107;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (filter === 'nikko') {
+                row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
+            } else if (filter === 'taishaku') {
+                row.style.display = row.dataset.taishaku === 'true' ? '' : 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

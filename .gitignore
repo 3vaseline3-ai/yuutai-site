@@ -1,0 +1,16 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# キャッシュデータ（サイズ大きい）
+data/html_cache/
+
+# Claude
+.claude/
+
+# 環境設定
+.env

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4月権利確定銘柄 - 優待クロス管理</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        nav {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        nav a {
+            margin-right: 15px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
+        .number {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            margin-left: 5px;
+            font-size: 0.75em;
+            background-color: #17a2b8;
+            color: white;
+            border-radius: 3px;
+        }
+    </style>
+    
+<style>
+.interest-badge {
+    font-size: 0.6em;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.interest-detail {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+.filter-controls {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.filter-btn.active {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+.stock-count {
+    margin-left: 20px;
+    color: #666;
+}
+.zaiko-none {
+    color: #ccc;
+}
+.restriction {
+    text-align: center;
+}
+.restriction-stop {
+    background: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.restriction-caution {
+    background: #ffc107;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="../index.html">トップ</a>
+            
+            <a href="../months/01.html">1月</a>
+            
+            <a href="../months/02.html">2月</a>
+            
+            <a href="../months/03.html">3月</a>
+            
+            <a href="../months/04.html">4月</a>
+            
+            <a href="../months/05.html">5月</a>
+            
+            <a href="../months/06.html">6月</a>
+            
+            <a href="../months/07.html">7月</a>
+            
+            <a href="../months/08.html">8月</a>
+            
+            <a href="../months/09.html">9月</a>
+            
+            <a href="../months/10.html">10月</a>
+            
+            <a href="../months/11.html">11月</a>
+            
+            <a href="../months/12.html">12月</a>
+            
+        </nav>
+        
+<h1>4月権利確定銘柄 <span class="interest-badge">金利 0.484%</span></h1>
+<p class="interest-detail">権利付日: 2026/04/27 (104日間)</p>
+
+<div class="filter-controls">
+    <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
+    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn" data-filter="all">全て表示</button>
+    <span class="stock-count">
+        貸借: <strong>0</strong>銘柄 /
+        全体: 0銘柄
+    </span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>コード</th>
+            <th>日興</th>
+            <th>銘柄名</th>
+            <th>制限</th>
+            <th>株価</th>
+            <th>必要株数</th>
+            <th>必要資金</th>
+            <th>優待価値</th>
+            <th>利回り</th>
+            <th>リターン</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        <tr>
+            <td colspan="10">データがありません</td>
+        </tr>
+        
+    </tbody>
+</table>
+
+    </div>
+    
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (filter === 'nikko') {
+                row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
+            } else if (filter === 'taishaku') {
+                row.style.display = row.dataset.taishaku === 'true' ? '' : 'none';
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

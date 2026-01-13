@@ -1,0 +1,14 @@
+period,amount,is_forecast
+2014/3 実,5.46,False
+2015/3 実,10.0,False
+2016/3 実,13.0,False
+2017/3 実,26.0,False
+2018/3 実,36.0,False
+2019/3 実,20.5,False
+2020/3 実,23.5,False
+2021/3 実,31.0,False
+2022/3 実,32.0,False
+2023/3 実,33.0,False
+2024/3 実,57.0,False
+2025/3 実,43.0,False
+2026/3 予,44.0,True
