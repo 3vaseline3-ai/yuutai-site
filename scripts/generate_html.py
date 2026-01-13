@@ -178,12 +178,19 @@ def generate_month_pages(env: Environment) -> None:
                 stock["zaiko"] = zaiko_data[code].get("zaiko", {})
                 # 制限データをマージ（APIデータから取得）
                 stock["restriction"] = zaiko_data[code].get("restriction", "")
-                # 最大逆日歩をマージ
-                stock["max_gyaku"] = zaiko_data[code].get("max_gyaku")
+                # 最大逆日歩率を計算（1株あたり÷株価×100）
+                max_gyaku = zaiko_data[code].get("max_gyaku")
+                price = stock.get("price", 0)
+                required_shares = stock.get("required_shares", 0)
+                if max_gyaku and price > 0 and required_shares > 0:
+                    per_share = max_gyaku / required_shares
+                    stock["max_gyaku_rate"] = round(per_share / price * 100, 2)
+                else:
+                    stock["max_gyaku_rate"] = None
             else:
                 stock["zaiko"] = {}
                 stock["restriction"] = ""
-                stock["max_gyaku"] = None
+                stock["max_gyaku_rate"] = None
 
         # 金利情報を計算
         interest_info = calculate_month_interest(month)
