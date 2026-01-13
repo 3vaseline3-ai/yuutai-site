@@ -221,7 +221,10 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
             } else if (filter === 'nikko') {
                 row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
             } else if (filter === 'taishaku') {
-                row.style.display = row.dataset.taishaku === 'true' ? '' : 'none';
+                // 貸借で停止以外を表示
+                const isTaishaku = row.dataset.taishaku === 'true';
+                const isStop = row.dataset.restriction === '停止';
+                row.style.display = (isTaishaku && !isStop) ? '' : 'none';
             }
         });
     });

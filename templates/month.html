@@ -35,7 +35,8 @@
     <tbody>
         {% set ns = namespace(cumulative=0) %}
         {% for stock in stocks %}
-        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"{% if not stock.is_taishaku %} class="non-taishaku" style="display:none;"{% endif %}>
+        {% set is_taishaku_active = stock.is_taishaku and stock.restriction != '停止' %}
+        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"{% if not is_taishaku_active %} class="non-taishaku" style="display:none;"{% endif %}>
             <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
             <td class="number">
                 {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
@@ -54,8 +55,10 @@
             <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
+            {% if is_taishaku_active %}
             {% set ns.cumulative = ns.cumulative + stock.required_amount %}
-            <td class="number">{{ "{:,.0f}".format(ns.cumulative) }}</td>
+            {% endif %}
+            <td class="number">{% if is_taishaku_active %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
         </tr>
         {% else %}
         <tr>
@@ -144,7 +147,10 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
             } else if (filter === 'nikko') {
                 row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
             } else if (filter === 'taishaku') {
-                row.style.display = row.dataset.taishaku === 'true' ? '' : 'none';
+                // 貸借で停止以外を表示
+                const isTaishaku = row.dataset.taishaku === 'true';
+                const isStop = row.dataset.restriction === '停止';
+                row.style.display = (isTaishaku && !isStop) ? '' : 'none';
             }
         });
     });
