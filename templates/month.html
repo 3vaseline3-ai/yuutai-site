@@ -8,10 +8,11 @@
 
 <div class="filter-controls">
     <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
-    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn active" data-filter="karauri">空売可能</button>
+    <button class="filter-btn" data-filter="no-karauri">空売不可</button>
     <button class="filter-btn" data-filter="all">全て表示</button>
     <span class="stock-count">
-        貸借: <strong>{{ stocks | selectattr('is_taishaku') | list | length }}</strong>銘柄 /
+        空売可能: <strong id="karauri-count">-</strong>銘柄 /
         全体: {{ stocks | length }}銘柄
     </span>
 </div>
@@ -38,7 +39,17 @@
         {% set ns = namespace(cumulative=0) %}
         {% for stock in stocks %}
         {% set is_taishaku_active = stock.is_taishaku and stock.restriction != '停止' %}
-        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"{% if not is_taishaku_active %} class="non-taishaku" style="display:none;"{% endif %}>
+        {% set has_ippan = stock.zaiko and (
+            (stock.zaiko.nikko and stock.zaiko.nikko > 0) or
+            (stock.zaiko.kabucom and stock.zaiko.kabucom > 0) or
+            (stock.zaiko.rakuten and stock.zaiko.rakuten > 0) or
+            (stock.zaiko.sbi and stock.zaiko.sbi > 0) or
+            (stock.zaiko.gmo and stock.zaiko.gmo > 0) or
+            (stock.zaiko.matsui and stock.zaiko.matsui > 0) or
+            (stock.zaiko.monex and stock.zaiko.monex > 0)
+        ) %}
+        {% set is_karauri_ok = is_taishaku_active or has_ippan %}
+        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}" data-has-ippan="{{ has_ippan | lower }}"{% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
             <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
             <td class="number">
                 {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
@@ -58,10 +69,10 @@
             <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
-            {% if is_taishaku_active %}
+            {% if is_karauri_ok %}
             {% set ns.cumulative = ns.cumulative + stock.required_amount %}
             {% endif %}
-            <td class="number hide-mobile">{% if is_taishaku_active %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
+            <td class="number hide-mobile">{% if is_karauri_ok %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
         </tr>
         {% else %}
         <tr>
@@ -139,6 +150,21 @@
 
 {% block extra_js %}
 <script>
+function isKarauriOk(row) {
+    const isTaishaku = row.dataset.taishaku === 'true';
+    const isStop = row.dataset.restriction === '停止';
+    const hasIppan = row.dataset.hasIppan === 'true';
+    return (isTaishaku && !isStop) || hasIppan;
+}
+
+function updateKarauriCount() {
+    let count = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+        if (isKarauriOk(row)) count++;
+    });
+    document.getElementById('karauri-count').textContent = count;
+}
+
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -150,14 +176,15 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
                 row.style.display = '';
             } else if (filter === 'nikko') {
                 row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
-            } else if (filter === 'taishaku') {
-                // 貸借で停止以外を表示
-                const isTaishaku = row.dataset.taishaku === 'true';
-                const isStop = row.dataset.restriction === '停止';
-                row.style.display = (isTaishaku && !isStop) ? '' : 'none';
+            } else if (filter === 'karauri') {
+                row.style.display = isKarauriOk(row) ? '' : 'none';
+            } else if (filter === 'no-karauri') {
+                row.style.display = !isKarauriOk(row) ? '' : 'none';
             }
         });
     });
 });
+
+updateKarauriCount();
 </script>
 {% endblock %}

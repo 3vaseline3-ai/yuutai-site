@@ -180,15 +180,16 @@
             
         </nav>
         
-<h1>1月権利確定銘柄 <span class="interest-badge">金利 0.070%</span></h1>
-<p class="interest-detail">権利付日: 2026/01/28 (15日間)</p>
+<h1>1月権利確定銘柄 <span class="interest-badge">金利 0.065%</span></h1>
+<p class="interest-detail">権利付日: 2026/01/28 (14日間)</p>
 
 <div class="filter-controls">
     <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
-    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn active" data-filter="karauri">空売可能</button>
+    <button class="filter-btn" data-filter="no-karauri">空売不可</button>
     <button class="filter-btn" data-filter="all">全て表示</button>
     <span class="stock-count">
-        貸借: <strong>13</strong>銘柄 /
+        空売可能: <strong id="karauri-count">-</strong>銘柄 /
         全体: 14銘柄
     </span>
 </div>
@@ -215,7 +216,9 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/3415yutai/" target="_blank">3415</a></td>
             <td class="number">
                 
@@ -240,7 +243,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/3662yutai/" target="_blank">3662</a></td>
             <td class="number">
                 
@@ -265,7 +270,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/9262yutai/" target="_blank">9262</a></td>
             <td class="number">
                 
@@ -290,7 +297,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" class="non-taishaku" style="display:none;">
+        
+        
+        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" class="non-taishaku" style="display:none;">
             <td><a href="https://gokigen-life.tokyo/8013yutai/" target="_blank">8013</a></td>
             <td class="number">
                 
@@ -313,7 +322,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/8142yutai/" target="_blank">8142</a></td>
             <td class="number">
                 
@@ -338,7 +349,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true">
             <td><a href="https://gokigen-life.tokyo/2353yutai/" target="_blank">2353</a></td>
             <td class="number">
                 
@@ -363,7 +376,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/3399yutai/" target="_blank">3399</a></td>
             <td class="number">
                 
@@ -388,7 +403,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true">
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true">
             <td><a href="https://gokigen-life.tokyo/1928yutai/" target="_blank">1928</a></td>
             <td class="number">
                 
@@ -413,7 +430,9 @@
         </tr>
         
         
-        <tr data-taishaku="false" data-restriction="" data-nikko="false" class="non-taishaku" style="display:none;">
+        
+        
+        <tr data-taishaku="false" data-restriction="" data-nikko="false" data-has-ippan="true">
             <td><a href="https://gokigen-life.tokyo/3421yutai/" target="_blank">3421</a></td>
             <td class="number">
                 
@@ -432,11 +451,15 @@
                 0.27%
             </td>
             
-            <td class="number hide-mobile">-</td>
+            
+            
+            <td class="number hide-mobile">7,298,600</td>
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/3320yutai/" target="_blank">3320</a></td>
             <td class="number">
                 
@@ -457,11 +480,13 @@
             
             
             
-            <td class="number hide-mobile">5,828,400</td>
+            <td class="number hide-mobile">7,441,400</td>
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" class="non-taishaku" style="display:none;">
+        
+        
+        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" class="non-taishaku" style="display:none;">
             <td><a href="https://gokigen-life.tokyo/1433yutai/" target="_blank">1433</a></td>
             <td class="number">
                 
@@ -484,7 +509,9 @@
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/7678yutai/" target="_blank">7678</a></td>
             <td class="number">
                 
@@ -505,11 +532,13 @@
             
             
             
-            <td class="number hide-mobile">6,309,400</td>
+            <td class="number hide-mobile">7,922,400</td>
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/3193yutai/" target="_blank">3193</a></td>
             <td class="number">
                 
@@ -530,11 +559,13 @@
             
             
             
-            <td class="number hide-mobile">6,648,900</td>
+            <td class="number hide-mobile">8,261,900</td>
         </tr>
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false">
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none">
             <td><a href="https://gokigen-life.tokyo/6654yutai/" target="_blank">6654</a></td>
             <td class="number">
                 
@@ -555,7 +586,7 @@
             
             
             
-            <td class="number hide-mobile">6,988,500</td>
+            <td class="number hide-mobile">8,601,500</td>
         </tr>
         
     </tbody>
@@ -565,6 +596,21 @@
     </div>
     
 <script>
+function isKarauriOk(row) {
+    const isTaishaku = row.dataset.taishaku === 'true';
+    const isStop = row.dataset.restriction === '停止';
+    const hasIppan = row.dataset.hasIppan === 'true';
+    return (isTaishaku && !isStop) || hasIppan;
+}
+
+function updateKarauriCount() {
+    let count = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+        if (isKarauriOk(row)) count++;
+    });
+    document.getElementById('karauri-count').textContent = count;
+}
+
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -576,15 +622,16 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
                 row.style.display = '';
             } else if (filter === 'nikko') {
                 row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
-            } else if (filter === 'taishaku') {
-                // 貸借で停止以外を表示
-                const isTaishaku = row.dataset.taishaku === 'true';
-                const isStop = row.dataset.restriction === '停止';
-                row.style.display = (isTaishaku && !isStop) ? '' : 'none';
+            } else if (filter === 'karauri') {
+                row.style.display = isKarauriOk(row) ? '' : 'none';
+            } else if (filter === 'no-karauri') {
+                row.style.display = !isKarauriOk(row) ? '' : 'none';
             }
         });
     });
 });
+
+updateKarauriCount();
 </script>
 
 </body>

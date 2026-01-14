@@ -180,15 +180,16 @@
             
         </nav>
         
-<h1>9月権利確定銘柄 <span class="interest-badge">金利 1.202%</span></h1>
-<p class="interest-detail">権利付日: 2026/09/28 (258日間)</p>
+<h1>9月権利確定銘柄 <span class="interest-badge">金利 1.197%</span></h1>
+<p class="interest-detail">権利付日: 2026/09/28 (257日間)</p>
 
 <div class="filter-controls">
     <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
-    <button class="filter-btn active" data-filter="taishaku">貸借のみ</button>
+    <button class="filter-btn active" data-filter="karauri">空売可能</button>
+    <button class="filter-btn" data-filter="no-karauri">空売不可</button>
     <button class="filter-btn" data-filter="all">全て表示</button>
     <span class="stock-count">
-        貸借: <strong>0</strong>銘柄 /
+        空売可能: <strong id="karauri-count">-</strong>銘柄 /
         全体: 0銘柄
     </span>
 </div>
@@ -225,6 +226,21 @@
     </div>
     
 <script>
+function isKarauriOk(row) {
+    const isTaishaku = row.dataset.taishaku === 'true';
+    const isStop = row.dataset.restriction === '停止';
+    const hasIppan = row.dataset.hasIppan === 'true';
+    return (isTaishaku && !isStop) || hasIppan;
+}
+
+function updateKarauriCount() {
+    let count = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+        if (isKarauriOk(row)) count++;
+    });
+    document.getElementById('karauri-count').textContent = count;
+}
+
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -236,15 +252,16 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
                 row.style.display = '';
             } else if (filter === 'nikko') {
                 row.style.display = row.dataset.nikko === 'true' ? '' : 'none';
-            } else if (filter === 'taishaku') {
-                // 貸借で停止以外を表示
-                const isTaishaku = row.dataset.taishaku === 'true';
-                const isStop = row.dataset.restriction === '停止';
-                row.style.display = (isTaishaku && !isStop) ? '' : 'none';
+            } else if (filter === 'karauri') {
+                row.style.display = isKarauriOk(row) ? '' : 'none';
+            } else if (filter === 'no-karauri') {
+                row.style.display = !isKarauriOk(row) ? '' : 'none';
             }
         });
     });
 });
+
+updateKarauriCount();
 </script>
 
 </body>
