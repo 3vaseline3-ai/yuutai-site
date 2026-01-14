@@ -30,9 +30,10 @@
             <th class="hide-mobile">資金</th>
             <th class="hide-mobile">優待</th>
             <th class="hide-mobile">利回</th>
-            <th class="hide-mobile">最大逆</th>
-            <th>収益</th>
-            <th class="hide-mobile">累計</th>
+            <th class="hide-mobile nikko-only">月利回</th>
+            <th class="hide-mobile non-nikko">最大逆</th>
+            <th class="non-nikko">収益</th>
+            <th class="hide-mobile non-nikko">累計</th>
         </tr>
     </thead>
     <tbody>
@@ -49,7 +50,11 @@
             (stock.zaiko.monex and stock.zaiko.monex > 0)
         ) %}
         {% set is_karauri_ok = is_taishaku_active or has_ippan %}
-        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}" data-has-ippan="{{ has_ippan | lower }}" data-yield="{{ stock.simple_yield }}"{% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
+        {% set months_to_rights = month - current_month + 1 if month >= current_month else (12 - current_month) + month + 1 %}
+        {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
+        {% set interest_cost = stock.price * interest_info.interest / 100 %}
+        {% set monthly_yield = (per_share_yuutai - interest_cost) / stock.price / months_to_rights * 100 if stock.price > 0 and months_to_rights > 0 else 0 %}
+        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}" data-has-ippan="{{ has_ippan | lower }}" data-yield="{{ stock.simple_yield }}" data-monthly-yield="{{ monthly_yield }}"{% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
             <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
             <td class="number">
                 {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
@@ -65,18 +70,19 @@
             <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
             <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
             <td class="number hide-mobile">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
-            <td class="number hide-mobile">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
-            <td class="number {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
+            <td class="number hide-mobile nikko-only {% if monthly_yield >= 0.7 %}monthly-good{% elif monthly_yield >= 0.5 %}monthly-ok{% endif %}">{{ "{:.2f}".format(monthly_yield) }}%</td>
+            <td class="number hide-mobile non-nikko">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
+            <td class="number non-nikko {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
                 {{ "{:.2f}".format(stock.performance) }}%
             </td>
             {% if is_karauri_ok %}
             {% set ns.cumulative = ns.cumulative + stock.required_amount %}
             {% endif %}
-            <td class="number hide-mobile">{% if is_karauri_ok %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
+            <td class="number hide-mobile non-nikko">{% if is_karauri_ok %}{{ "{:,.0f}".format(ns.cumulative) }}{% else %}-{% endif %}</td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="12">データがありません</td>
+            <td colspan="13">データがありません</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -145,11 +151,32 @@
     font-size: 0.85em;
     font-weight: bold;
 }
+/* 日興タブ専用列 */
+.nikko-only {
+    display: none;
+}
+.nikko-mode .nikko-only {
+    display: table-cell;
+}
+.nikko-mode .non-nikko {
+    display: none;
+}
+/* 月利回りハイライト */
+.monthly-good {
+    background: #d4edda;
+    color: #155724;
+    font-weight: bold;
+}
+.monthly-ok {
+    background: #fff3cd;
+    color: #856404;
+}
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
@@ -168,11 +195,11 @@ function updateKarauriCount() {
     document.getElementById('karauri-count').textContent = count;
 }
 
-function sortByYield() {
+function sortByMonthlyYield() {
     const rows = Array.from(tbody.querySelectorAll('tr'));
     rows.sort((a, b) => {
-        const yieldA = parseFloat(a.dataset.yield) || 0;
-        const yieldB = parseFloat(b.dataset.yield) || 0;
+        const yieldA = parseFloat(a.dataset.monthlyYield) || 0;
+        const yieldB = parseFloat(b.dataset.monthlyYield) || 0;
         return yieldB - yieldA;
     });
     rows.forEach(row => tbody.appendChild(row));
@@ -183,9 +210,12 @@ function restoreOrder() {
 }
 
 function applyFilter(filter) {
+    // 日興タブの場合は nikko-mode クラスを追加
     if (filter === 'nikko') {
-        sortByYield();
+        table.classList.add('nikko-mode');
+        sortByMonthlyYield();
     } else {
+        table.classList.remove('nikko-mode');
         restoreOrder();
     }
     document.querySelectorAll('tbody tr').forEach(row => {

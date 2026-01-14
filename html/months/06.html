@@ -146,6 +146,26 @@
     font-size: 0.85em;
     font-weight: bold;
 }
+/* 日興タブ専用列 */
+.nikko-only {
+    display: none;
+}
+.nikko-mode .nikko-only {
+    display: table-cell;
+}
+.nikko-mode .non-nikko {
+    display: none;
+}
+/* 月利回りハイライト */
+.monthly-good {
+    background: #d4edda;
+    color: #155724;
+    font-weight: bold;
+}
+.monthly-ok {
+    background: #fff3cd;
+    color: #856404;
+}
 </style>
 
 </head>
@@ -207,16 +227,17 @@
             <th class="hide-mobile">資金</th>
             <th class="hide-mobile">優待</th>
             <th class="hide-mobile">利回</th>
-            <th class="hide-mobile">最大逆</th>
-            <th>収益</th>
-            <th class="hide-mobile">累計</th>
+            <th class="hide-mobile nikko-only">月利回</th>
+            <th class="hide-mobile non-nikko">最大逆</th>
+            <th class="non-nikko">収益</th>
+            <th class="hide-mobile non-nikko">累計</th>
         </tr>
     </thead>
     <tbody>
         
         
         <tr>
-            <td colspan="12">データがありません</td>
+            <td colspan="13">データがありません</td>
         </tr>
         
     </tbody>
@@ -226,6 +247,7 @@
     </div>
     
 <script>
+const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
@@ -244,11 +266,11 @@ function updateKarauriCount() {
     document.getElementById('karauri-count').textContent = count;
 }
 
-function sortByYield() {
+function sortByMonthlyYield() {
     const rows = Array.from(tbody.querySelectorAll('tr'));
     rows.sort((a, b) => {
-        const yieldA = parseFloat(a.dataset.yield) || 0;
-        const yieldB = parseFloat(b.dataset.yield) || 0;
+        const yieldA = parseFloat(a.dataset.monthlyYield) || 0;
+        const yieldB = parseFloat(b.dataset.monthlyYield) || 0;
         return yieldB - yieldA;
     });
     rows.forEach(row => tbody.appendChild(row));
@@ -259,9 +281,12 @@ function restoreOrder() {
 }
 
 function applyFilter(filter) {
+    // 日興タブの場合は nikko-mode クラスを追加
     if (filter === 'nikko') {
-        sortByYield();
+        table.classList.add('nikko-mode');
+        sortByMonthlyYield();
     } else {
+        table.classList.remove('nikko-mode');
         restoreOrder();
     }
     document.querySelectorAll('tbody tr').forEach(row => {

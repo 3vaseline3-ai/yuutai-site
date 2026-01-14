@@ -146,6 +146,26 @@
     font-size: 0.85em;
     font-weight: bold;
 }
+/* 日興タブ専用列 */
+.nikko-only {
+    display: none;
+}
+.nikko-mode .nikko-only {
+    display: table-cell;
+}
+.nikko-mode .non-nikko {
+    display: none;
+}
+/* 月利回りハイライト */
+.monthly-good {
+    background: #d4edda;
+    color: #155724;
+    font-weight: bold;
+}
+.monthly-ok {
+    background: #fff3cd;
+    color: #856404;
+}
 </style>
 
 </head>
@@ -207,9 +227,10 @@
             <th class="hide-mobile">資金</th>
             <th class="hide-mobile">優待</th>
             <th class="hide-mobile">利回</th>
-            <th class="hide-mobile">最大逆</th>
-            <th>収益</th>
-            <th class="hide-mobile">累計</th>
+            <th class="hide-mobile nikko-only">月利回</th>
+            <th class="hide-mobile non-nikko">最大逆</th>
+            <th class="non-nikko">収益</th>
+            <th class="hide-mobile non-nikko">累計</th>
         </tr>
     </thead>
     <tbody>
@@ -218,7 +239,11 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.7467">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.7467" data-monthly-yield="1.6817248908296945">
             <td><a href="https://gokigen-life.tokyo/3415yutai/" target="_blank">3415</a></td>
             <td class="number">
                 
@@ -232,20 +257,25 @@
             <td class="number hide-mobile">458,000</td>
             <td class="number hide-mobile">8,000</td>
             <td class="number hide-mobile">1.75%</td>
-            <td class="number hide-mobile">0.26%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">1.68%</td>
+            <td class="number hide-mobile non-nikko">0.26%</td>
+            <td class="number non-nikko positive">
                 1.88%
             </td>
             
             
             
-            <td class="number hide-mobile">458,000</td>
+            <td class="number hide-mobile non-nikko">458,000</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="1.5785">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="1.5785" data-monthly-yield="1.5135319652722967">
             <td><a href="https://gokigen-life.tokyo/3662yutai/" target="_blank">3662</a></td>
             <td class="number">
                 
@@ -259,20 +289,25 @@
             <td class="number hide-mobile">633,500</td>
             <td class="number hide-mobile">10,000</td>
             <td class="number hide-mobile">1.58%</td>
-            <td class="number hide-mobile">2.46%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">1.51%</td>
+            <td class="number hide-mobile non-nikko">2.46%</td>
+            <td class="number non-nikko positive">
                 1.25%
             </td>
             
             
             
-            <td class="number hide-mobile">1,091,500</td>
+            <td class="number hide-mobile non-nikko">1,091,500</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="1.2376">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="1.2376" data-monthly-yield="1.1726237623762374">
             <td><a href="https://gokigen-life.tokyo/9262yutai/" target="_blank">9262</a></td>
             <td class="number">
                 
@@ -286,20 +321,25 @@
             <td class="number hide-mobile">161,600</td>
             <td class="number hide-mobile">2,000</td>
             <td class="number hide-mobile">1.24%</td>
-            <td class="number hide-mobile">2.67%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">1.17%</td>
+            <td class="number hide-mobile non-nikko">2.67%</td>
+            <td class="number non-nikko positive">
                 1.24%
             </td>
             
             
             
-            <td class="number hide-mobile">1,253,100</td>
+            <td class="number hide-mobile non-nikko">1,253,100</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" data-yield="0.9464" class="non-taishaku" style="display:none;">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" data-yield="0.9464" data-monthly-yield="0.8813722397476341" class="non-taishaku" style="display:none;">
             <td><a href="https://gokigen-life.tokyo/8013yutai/" target="_blank">8013</a></td>
             <td class="number">
                 
@@ -313,18 +353,23 @@
             <td class="number hide-mobile">31,700</td>
             <td class="number hide-mobile">300</td>
             <td class="number hide-mobile">0.95%</td>
-            <td class="number hide-mobile">3.79%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">0.88%</td>
+            <td class="number hide-mobile non-nikko">3.79%</td>
+            <td class="number non-nikko positive">
                 0.67%
             </td>
             
-            <td class="number hide-mobile">-</td>
+            <td class="number hide-mobile non-nikko">-</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="0.4988">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="0.4988" data-monthly-yield="0.4337531172069825">
             <td><a href="https://gokigen-life.tokyo/8142yutai/" target="_blank">8142</a></td>
             <td class="number">
                 
@@ -338,20 +383,25 @@
             <td class="number hide-mobile">401,000</td>
             <td class="number hide-mobile">2,000</td>
             <td class="number hide-mobile">0.50%</td>
-            <td class="number hide-mobile">2.39%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only ">0.43%</td>
+            <td class="number hide-mobile non-nikko">2.39%</td>
+            <td class="number non-nikko positive">
                 0.67%
             </td>
             
             
             
-            <td class="number hide-mobile">1,654,100</td>
+            <td class="number hide-mobile non-nikko">1,654,100</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7435">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7435" data-monthly-yield="0.6784944237918216">
             <td><a href="https://gokigen-life.tokyo/2353yutai/" target="_blank">2353</a></td>
             <td class="number">
                 
@@ -365,20 +415,25 @@
             <td class="number hide-mobile">134,500</td>
             <td class="number hide-mobile">1,000</td>
             <td class="number hide-mobile">0.74%</td>
-            <td class="number hide-mobile">4.46%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-ok">0.68%</td>
+            <td class="number hide-mobile non-nikko">4.46%</td>
+            <td class="number non-nikko positive">
                 0.60%
             </td>
             
             
             
-            <td class="number hide-mobile">1,788,600</td>
+            <td class="number hide-mobile non-nikko">1,788,600</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.3247">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.3247" data-monthly-yield="0.25967532467532467">
             <td><a href="https://gokigen-life.tokyo/3399yutai/" target="_blank">3399</a></td>
             <td class="number">
                 
@@ -392,20 +447,25 @@
             <td class="number hide-mobile">308,000</td>
             <td class="number hide-mobile">1,000</td>
             <td class="number hide-mobile">0.32%</td>
-            <td class="number hide-mobile">2.42%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only ">0.26%</td>
+            <td class="number hide-mobile non-nikko">2.42%</td>
+            <td class="number non-nikko positive">
                 0.43%
             </td>
             
             
             
-            <td class="number hide-mobile">2,096,600</td>
+            <td class="number hide-mobile non-nikko">2,096,600</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.1397">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.1397" data-monthly-yield="0.07470382788488404">
             <td><a href="https://gokigen-life.tokyo/1928yutai/" target="_blank">1928</a></td>
             <td class="number">
                 
@@ -419,20 +479,25 @@
             <td class="number hide-mobile">3,579,000</td>
             <td class="number hide-mobile">5,000</td>
             <td class="number hide-mobile">0.14%</td>
-            <td class="number hide-mobile">2.41%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only ">0.07%</td>
+            <td class="number hide-mobile non-nikko">2.41%</td>
+            <td class="number non-nikko positive">
                 0.31%
             </td>
             
             
             
-            <td class="number hide-mobile">5,675,600</td>
+            <td class="number hide-mobile non-nikko">5,675,600</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="false" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.0613">
+        
+        
+        
+        
+        <tr data-taishaku="false" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.0613" data-monthly-yield="-0.0036503067484662645">
             <td><a href="https://gokigen-life.tokyo/3421yutai/" target="_blank">3421</a></td>
             <td class="number">
                 
@@ -446,20 +511,25 @@
             <td class="number hide-mobile">1,630,000</td>
             <td class="number hide-mobile">1,000</td>
             <td class="number hide-mobile">0.06%</td>
-            <td class="number hide-mobile">2.50%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only ">-0.00%</td>
+            <td class="number hide-mobile non-nikko">2.50%</td>
+            <td class="number non-nikko positive">
                 0.27%
             </td>
             
             
             
-            <td class="number hide-mobile">7,305,600</td>
+            <td class="number hide-mobile non-nikko">7,305,600</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="1.0526">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="1.0526" data-monthly-yield="0.9876315789473684">
             <td><a href="https://gokigen-life.tokyo/3320yutai/" target="_blank">3320</a></td>
             <td class="number">
                 
@@ -473,20 +543,25 @@
             <td class="number hide-mobile">142,500</td>
             <td class="number hide-mobile">1,500</td>
             <td class="number hide-mobile">1.05%</td>
-            <td class="number hide-mobile">2.53%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">0.99%</td>
+            <td class="number hide-mobile non-nikko">2.53%</td>
+            <td class="number non-nikko positive">
                 0.17%
             </td>
             
             
             
-            <td class="number hide-mobile">7,448,100</td>
+            <td class="number hide-mobile non-nikko">7,448,100</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" data-yield="1.1637" class="non-taishaku" style="display:none;">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="停止" data-nikko="false" data-has-ippan="none" data-yield="1.1637" data-monthly-yield="1.0986927851047323" class="non-taishaku" style="display:none;">
             <td><a href="https://gokigen-life.tokyo/1433yutai/" target="_blank">1433</a></td>
             <td class="number">
                 
@@ -500,18 +575,23 @@
             <td class="number hide-mobile">1,289,000</td>
             <td class="number hide-mobile">15,000</td>
             <td class="number hide-mobile">1.16%</td>
-            <td class="number hide-mobile">2.42%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">1.10%</td>
+            <td class="number hide-mobile non-nikko">2.42%</td>
+            <td class="number non-nikko positive">
                 0.05%
             </td>
             
-            <td class="number hide-mobile">-</td>
+            <td class="number hide-mobile non-nikko">-</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.8273">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.8273" data-monthly-yield="0.7623009307135471">
             <td><a href="https://gokigen-life.tokyo/7678yutai/" target="_blank">7678</a></td>
             <td class="number">
                 
@@ -525,20 +605,25 @@
             <td class="number hide-mobile">483,500</td>
             <td class="number hide-mobile">4,000</td>
             <td class="number hide-mobile">0.83%</td>
-            <td class="number hide-mobile">2.43%</td>
-            <td class="number positive">
+            <td class="number hide-mobile nikko-only monthly-good">0.76%</td>
+            <td class="number hide-mobile non-nikko">2.43%</td>
+            <td class="number non-nikko positive">
                 0.03%
             </td>
             
             
             
-            <td class="number hide-mobile">7,931,600</td>
+            <td class="number hide-mobile non-nikko">7,931,600</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="0.2903">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="true" data-has-ippan="true" data-yield="0.2903" data-monthly-yield="0.2252757619738752">
             <td><a href="https://gokigen-life.tokyo/3193yutai/" target="_blank">3193</a></td>
             <td class="number">
                 
@@ -552,20 +637,25 @@
             <td class="number hide-mobile">344,500</td>
             <td class="number hide-mobile">1,000</td>
             <td class="number hide-mobile">0.29%</td>
-            <td class="number hide-mobile">2.37%</td>
-            <td class="number negative">
+            <td class="number hide-mobile nikko-only ">0.23%</td>
+            <td class="number hide-mobile non-nikko">2.37%</td>
+            <td class="number non-nikko negative">
                 -0.08%
             </td>
             
             
             
-            <td class="number hide-mobile">8,276,100</td>
+            <td class="number hide-mobile non-nikko">8,276,100</td>
         </tr>
         
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.1476">
+        
+        
+        
+        
+        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="none" data-yield="0.1476" data-monthly-yield="0.08262326542663125">
             <td><a href="https://gokigen-life.tokyo/6654yutai/" target="_blank">6654</a></td>
             <td class="number">
                 
@@ -579,14 +669,15 @@
             <td class="number hide-mobile">338,700</td>
             <td class="number hide-mobile">500</td>
             <td class="number hide-mobile">0.15%</td>
-            <td class="number hide-mobile">2.55%</td>
-            <td class="number negative">
+            <td class="number hide-mobile nikko-only ">0.08%</td>
+            <td class="number hide-mobile non-nikko">2.55%</td>
+            <td class="number non-nikko negative">
                 -1.35%
             </td>
             
             
             
-            <td class="number hide-mobile">8,614,800</td>
+            <td class="number hide-mobile non-nikko">8,614,800</td>
         </tr>
         
     </tbody>
@@ -596,6 +687,7 @@
     </div>
     
 <script>
+const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
@@ -614,11 +706,11 @@ function updateKarauriCount() {
     document.getElementById('karauri-count').textContent = count;
 }
 
-function sortByYield() {
+function sortByMonthlyYield() {
     const rows = Array.from(tbody.querySelectorAll('tr'));
     rows.sort((a, b) => {
-        const yieldA = parseFloat(a.dataset.yield) || 0;
-        const yieldB = parseFloat(b.dataset.yield) || 0;
+        const yieldA = parseFloat(a.dataset.monthlyYield) || 0;
+        const yieldB = parseFloat(b.dataset.monthlyYield) || 0;
         return yieldB - yieldA;
     });
     rows.forEach(row => tbody.appendChild(row));
@@ -629,9 +721,12 @@ function restoreOrder() {
 }
 
 function applyFilter(filter) {
+    // 日興タブの場合は nikko-mode クラスを追加
     if (filter === 'nikko') {
-        sortByYield();
+        table.classList.add('nikko-mode');
+        sortByMonthlyYield();
     } else {
+        table.classList.remove('nikko-mode');
         restoreOrder();
     }
     document.querySelectorAll('tbody tr').forEach(row => {

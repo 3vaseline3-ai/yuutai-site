@@ -195,10 +195,14 @@ def generate_month_pages(env: Environment) -> None:
         # 金利情報を計算
         interest_info = calculate_month_interest(month)
 
+        # 現在の月を取得（月利回り計算用）
+        current_month = date.today().month
+
         html = template.render(
             month=month,
             stocks=month_stocks,
             interest_info=interest_info,
+            current_month=current_month,
             base_path="../",
         )
 
