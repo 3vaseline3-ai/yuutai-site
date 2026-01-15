@@ -14,7 +14,7 @@
     "is_taishaku": true,
     "kabuka": 1302,
     "kabusu": 1000,
-    "max_gyaku": 31200,
+    "max_gyaku": 33600,
     "gyaku_days": 3,
     "avg5_gyaku": 18.2,
     "haito": 25,
@@ -23,7 +23,7 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "停止",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637370"
+    "updated": "2026-01-15T23:31:25.176651"
   },
   "1444": {
     "name": "ニッソウ",
@@ -49,13 +49,13 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637384"
+    "updated": "2026-01-15T23:31:25.176664"
   },
   "1928": {
     "name": "積水ハウス",
     "zaiko": {
-      "nikko": 28700,
-      "kabucom": 480700,
+      "nikko": 7600,
+      "kabucom": 453100,
       "rakuten": 0,
       "sbi": 2,
       "gmo": 2,
@@ -66,7 +66,7 @@
     "is_taishaku": true,
     "kabuka": 3631,
     "kabusu": 1000,
-    "max_gyaku": 86400,
+    "max_gyaku": 88800,
     "gyaku_days": 3,
     "avg5_gyaku": 5.02,
     "haito": 72,
@@ -75,12 +75,12 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637390"
+    "updated": "2026-01-15T23:31:25.176671"
   },
   "2353": {
     "name": "日本駐車場開発",
     "zaiko": {
-      "nikko": 34700,
+      "nikko": 3900,
       "kabucom": null,
       "rakuten": 184200,
       "sbi": 2,
@@ -101,7 +101,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637396"
+    "updated": "2026-01-15T23:31:25.176676"
   },
   "2424": {
     "name": "ブラス",
@@ -127,7 +127,7 @@
     "yutai_syubetsu": "ギフトカード",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637400"
+    "updated": "2026-01-15T23:31:25.176681"
   },
   "2997": {
     "name": "ストレージ王",
@@ -153,7 +153,7 @@
     "yutai_syubetsu": "ギフトカード",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637405"
+    "updated": "2026-01-15T23:31:25.176685"
   },
   "3070": {
     "name": "ジェリービーンズグループ",
@@ -179,7 +179,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "1月31日<br>7月30日",
-    "updated": "2026-01-15T13:55:31.637409"
+    "updated": "2026-01-15T23:31:25.176689"
   },
   "3071": {
     "name": "ストリーム",
@@ -205,7 +205,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637417"
+    "updated": "2026-01-15T23:31:25.176697"
   },
   "3169": {
     "name": "ミサワ",
@@ -231,7 +231,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637422"
+    "updated": "2026-01-15T23:31:25.176703"
   },
   "3172": {
     "name": "ティーライフ",
@@ -257,7 +257,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637429"
+    "updated": "2026-01-15T23:31:25.176710"
   },
   "3193": {
     "name": "エターナルホスピタリティグループ",
@@ -283,7 +283,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637433"
+    "updated": "2026-01-15T23:31:25.176714"
   },
   "3246": {
     "name": "コーセーアールイー",
@@ -309,7 +309,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637439"
+    "updated": "2026-01-15T23:31:25.176720"
   },
   "3278": {
     "name": "null",
@@ -335,7 +335,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637443"
+    "updated": "2026-01-15T23:31:25.176724"
   },
   "3320": {
     "name": "クロスプラス",
@@ -361,7 +361,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637447"
+    "updated": "2026-01-15T23:31:25.176727"
   },
   "3399": {
     "name": "丸千代山岡家",
@@ -378,7 +378,7 @@
     "is_taishaku": true,
     "kabuka": 3130,
     "kabusu": 100,
-    "max_gyaku": 7440,
+    "max_gyaku": 7680,
     "gyaku_days": 3,
     "avg5_gyaku": 0.02,
     "haito": 21,
@@ -387,7 +387,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637450"
+    "updated": "2026-01-15T23:31:25.176731"
   },
   "3415": {
     "name": "ＴＯＫＹＯ　ＢＡＳＥ",
@@ -413,7 +413,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637454"
+    "updated": "2026-01-15T23:31:25.176735"
   },
   "3421": {
     "name": "稲葉製作所",
@@ -439,12 +439,12 @@
     "yutai_syubetsu": "ギフトカード",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637458"
+    "updated": "2026-01-15T23:31:25.176739"
   },
   "3455": {
     "name": "ヘルスケア＆メディカル投資法人",
     "zaiko": {
-      "nikko": 1,
+      "nikko": 5,
       "kabucom": null,
       "rakuten": 143,
       "sbi": 1,
@@ -456,7 +456,7 @@
     "is_taishaku": true,
     "kabuka": 124000,
     "kabusu": 1,
-    "max_gyaku": 2954,
+    "max_gyaku": 2976,
     "gyaku_days": 3,
     "avg5_gyaku": 240.0,
     "haito": 2906,
@@ -465,12 +465,12 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637462"
+    "updated": "2026-01-15T23:31:25.176743"
   },
   "3463": {
     "name": "いちごホテルリート投資法人",
     "zaiko": {
-      "nikko": 6,
+      "nikko": 5,
       "kabucom": null,
       "rakuten": 64,
       "sbi": 2,
@@ -482,7 +482,7 @@
     "is_taishaku": false,
     "kabuka": 130300,
     "kabusu": 1,
-    "max_gyaku": 3113,
+    "max_gyaku": 3127,
     "gyaku_days": 3,
     "avg5_gyaku": 0.0,
     "haito": 3797,
@@ -491,7 +491,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "7月31日",
-    "updated": "2026-01-15T13:55:31.637466"
+    "updated": "2026-01-15T23:31:25.176747"
   },
   "3662": {
     "name": "エイチームホールディングス",
@@ -517,7 +517,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637470"
+    "updated": "2026-01-15T23:31:25.176751"
   },
   "5031": {
     "name": "モイ",
@@ -543,7 +543,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637475"
+    "updated": "2026-01-15T23:31:25.176757"
   },
   "5248": {
     "name": "テクノロジーズ",
@@ -569,7 +569,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637481"
+    "updated": "2026-01-15T23:31:25.176762"
   },
   "6040": {
     "name": "日本スキー場開発",
@@ -595,7 +595,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637489"
+    "updated": "2026-01-15T23:31:25.176770"
   },
   "6654": {
     "name": "不二電機工業",
@@ -621,7 +621,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637493"
+    "updated": "2026-01-15T23:31:25.176774"
   },
   "7073": {
     "name": "ジェイック",
@@ -647,7 +647,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637497"
+    "updated": "2026-01-15T23:31:25.176778"
   },
   "7097": {
     "name": "さくらさくプラス",
@@ -664,7 +664,7 @@
     "is_taishaku": false,
     "kabuka": 3195,
     "kabusu": 200,
-    "max_gyaku": 15840,
+    "max_gyaku": 15360,
     "gyaku_days": 3,
     "avg5_gyaku": 0.0,
     "haito": 14,
@@ -673,7 +673,7 @@
     "yutai_syubetsu": "クオカード",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637500"
+    "updated": "2026-01-15T23:31:25.176781"
   },
   "7614": {
     "name": "オーエムツーネットワーク",
@@ -699,7 +699,7 @@
     "yutai_syubetsu": "割引券",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637504"
+    "updated": "2026-01-15T23:31:25.176785"
   },
   "7674": {
     "name": "ＮＡＴＴＹ　ＳＷＡＮＫＹホールディングス",
@@ -725,7 +725,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637507"
+    "updated": "2026-01-15T23:31:25.176788"
   },
   "7678": {
     "name": "あさくま",
@@ -751,7 +751,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637511"
+    "updated": "2026-01-15T23:31:25.176792"
   },
   "7683": {
     "name": "ダブルエー",
@@ -768,7 +768,7 @@
     "is_taishaku": false,
     "kabuka": 1407,
     "kabusu": 100,
-    "max_gyaku": 3360,
+    "max_gyaku": 3600,
     "gyaku_days": 3,
     "avg5_gyaku": 0.0,
     "haito": null,
@@ -777,7 +777,7 @@
     "yutai_syubetsu": "自社商品",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637517"
+    "updated": "2026-01-15T23:31:25.176798"
   },
   "8013": {
     "name": "ナイガイ",
@@ -803,7 +803,7 @@
     "yutai_syubetsu": "自社商品",
     "restriction": "停止",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637521"
+    "updated": "2026-01-15T23:31:25.176802"
   },
   "8142": {
     "name": "トーホー",
@@ -829,7 +829,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637526"
+    "updated": "2026-01-15T23:31:25.176808"
   },
   "9166": {
     "name": "ＧＥＮＤＡ",
@@ -846,7 +846,7 @@
     "is_taishaku": false,
     "kabuka": 834,
     "kabusu": 100,
-    "max_gyaku": 1920,
+    "max_gyaku": 2160,
     "gyaku_days": 3,
     "avg5_gyaku": 0.0,
     "haito": 0,
@@ -855,7 +855,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637530"
+    "updated": "2026-01-15T23:31:25.176811"
   },
   "9242": {
     "name": "メディア総研",
@@ -881,7 +881,7 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "",
     "d_kenri": "1月31日<br>7月31日",
-    "updated": "2026-01-15T13:55:31.637533"
+    "updated": "2026-01-15T23:31:25.176815"
   },
   "9262": {
     "name": "シルバーライフ",
@@ -907,7 +907,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "注意",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637537"
+    "updated": "2026-01-15T23:31:25.176819"
   },
   "9476": {
     "name": "中央経済社ホールディングス",
@@ -933,14 +933,14 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "9月30日",
-    "updated": "2026-01-15T13:55:31.637542"
+    "updated": "2026-01-15T23:31:25.176822"
   },
   "9632": {
     "name": "スバル興業",
     "zaiko": {
       "nikko": 0,
       "kabucom": null,
-      "rakuten": 1200,
+      "rakuten": 0,
       "sbi": 2,
       "gmo": 2,
       "matsui": null,
@@ -959,7 +959,7 @@
     "yutai_syubetsu": "買物券",
     "restriction": "",
     "d_kenri": "1月31日",
-    "updated": "2026-01-15T13:55:31.637546"
+    "updated": "2026-01-15T23:31:25.176827"
   },
   "9636": {
     "name": "きんえい",
@@ -985,7 +985,7 @@
     "yutai_syubetsu": "自社サービス",
     "restriction": "",
     "d_kenri": "7月31日",
-    "updated": "2026-01-15T13:55:31.637550"
+    "updated": "2026-01-15T23:31:25.176832"
   },
   "2590": {
     "name": "ダイドーグループホールディングス",
@@ -1002,7 +1002,7 @@
     "is_taishaku": true,
     "kabuka": 0,
     "kabusu": 200,
-    "max_gyaku": 4160,
+    "max_gyaku": 800,
     "gyaku_days": 1,
     "avg5_gyaku": 3.615,
     "haito": 15,
@@ -1011,7 +1011,7 @@
     "yutai_syubetsu": "食べ物",
     "restriction": "注意",
     "d_kenri": "1月20日<br>7月20日",
-    "updated": "2026-01-15T13:55:31.637553"
+    "updated": "2026-01-15T23:31:25.176836"
   },
   "7590": {
     "name": "タカショー",
@@ -1037,6 +1037,6 @@
     "yutai_syubetsu": "プレミアム優待クラブ",
     "restriction": "",
     "d_kenri": "1月20日",
-    "updated": "2026-01-15T13:55:31.637557"
+    "updated": "2026-01-15T23:31:25.176839"
   }
 }
