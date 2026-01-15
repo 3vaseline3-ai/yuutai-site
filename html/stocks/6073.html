@@ -120,6 +120,30 @@
         
 <h1>6073 アサンテ</h1>
 
+<h2>一般信用在庫 <span id="zaiko-status" style="font-size: 0.6em; color: #888;">読込中...</span></h2>
+<table id="zaiko-table">
+    <thead>
+        <tr>
+            <th>日興</th>
+            <th>カブコム</th>
+            <th>楽天</th>
+            <th>SBI</th>
+            <th>GMO</th>
+            <th>松井</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="zaiko-nikko">-</td>
+            <td id="zaiko-kabu">-</td>
+            <td id="zaiko-rakuten">-</td>
+            <td id="zaiko-sbi">-</td>
+            <td id="zaiko-gmo">-</td>
+            <td id="zaiko-matsui">-</td>
+        </tr>
+    </tbody>
+</table>
+
 <h2>基本情報</h2>
 <table>
     <tr>
@@ -362,5 +386,58 @@
 
     </div>
     
+<script>
+// Vercel API エンドポイント
+const ZAIKO_API_URL = 'https://yuutai-site.vercel.app/api/zaiko';
+const STOCK_CODE = '6073';
+
+async function fetchZaiko() {
+    const statusEl = document.getElementById('zaiko-status');
+
+    try {
+        const response = await fetch(`${ZAIKO_API_URL}?code=${STOCK_CODE}`);
+        const result = await response.json();
+
+        if (result.error) {
+            statusEl.textContent = 'エラー';
+            statusEl.style.color = '#dc3545';
+            return;
+        }
+
+        const data = result.data;
+
+        // 在庫数を表示
+        document.getElementById('zaiko-nikko').textContent = formatZaiko(data.nvol);
+        document.getElementById('zaiko-kabu').textContent = formatZaiko(data.kvol);
+        document.getElementById('zaiko-rakuten').textContent = formatZaiko(data.rvol);
+        document.getElementById('zaiko-sbi').textContent = formatZaiko(data.svol);
+        document.getElementById('zaiko-gmo').textContent = formatZaiko(data.gvol);
+        document.getElementById('zaiko-matsui').textContent = formatZaiko(data.mvol);
+
+        // ステータス更新
+        const now = new Date();
+        statusEl.textContent = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} 更新`;
+        statusEl.style.color = '#28a745';
+
+    } catch (err) {
+        statusEl.textContent = '接続エラー';
+        statusEl.style.color = '#dc3545';
+        console.error('Zaiko fetch error:', err);
+    }
+}
+
+function formatZaiko(vol) {
+    if (vol === null || vol === undefined || vol === 0 || vol === '0') {
+        return '-';
+    }
+    const num = parseInt(vol);
+    if (isNaN(num) || num === 0) return '-';
+    return num.toLocaleString() + '株';
+}
+
+// ページ読み込み時に実行
+document.addEventListener('DOMContentLoaded', fetchZaiko);
+</script>
+
 </body>
 </html>
