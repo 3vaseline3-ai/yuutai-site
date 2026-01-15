@@ -211,16 +211,40 @@ def generate_month_pages(env: Environment) -> None:
         print(f"Generated: {output_file} ({len(month_stocks)}銘柄)")
 
 
-def generate_stock_pages(env: Environment, stocks: list[dict]) -> None:
-    """銘柄別ページを生成"""
+def generate_stock_pages(env: Environment) -> None:
+    """銘柄別ページを生成（パフォーマンス計算済みデータを使用）"""
     template = env.get_template("stock.html")
 
-    for stock in stocks:
+    # 全月のパフォーマンスデータを取得（基本株数のみ、+xxxは除外）
+    all_stocks = get_stocks_with_performance()
+
+    # コードごとに最初のエントリのみ使用（重複排除）
+    seen_codes = set()
+    unique_stocks = []
+    for stock in all_stocks:
+        code = stock.get("code", "")
+        # 差分エントリ（+xxx株）はスキップ
+        if stock.get("is_differential", False):
+            continue
+        if code and code not in seen_codes:
+            seen_codes.add(code)
+            unique_stocks.append(stock)
+
+    for stock in unique_stocks:
         code = stock.get("code", "")
         if not code:
             continue
 
         gyaku_history = load_gyaku_hiboku(code)
+
+        # 利回り計算（simple_yieldは既に%表記）
+        simple_yield = stock.get("simple_yield", 0)
+        stock["yield"] = round(simple_yield, 2) if simple_yield else None
+
+        # 必要資金計算
+        price = stock.get("price", 0)
+        required_shares = stock.get("required_shares", 0)
+        stock["required_amount"] = price * required_shares if price and required_shares else 0
 
         html = template.render(
             stock=stock,
@@ -247,7 +271,7 @@ def generate_all() -> None:
 
     generate_index(env, stocks)
     generate_month_pages(env)  # パフォーマンス計算結果を使用
-    generate_stock_pages(env, stocks)
+    generate_stock_pages(env)  # パフォーマンス計算結果を使用
 
     print("Done!")
 
