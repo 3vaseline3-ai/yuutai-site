@@ -41,20 +41,20 @@
         {% for stock in stocks %}
         {% set is_taishaku_active = stock.is_taishaku and stock.restriction != '停止' %}
         {% set has_ippan = stock.zaiko and (
-            (stock.zaiko.nikko and stock.zaiko.nikko > 0) or
-            (stock.zaiko.kabucom and stock.zaiko.kabucom > 0) or
-            (stock.zaiko.rakuten and stock.zaiko.rakuten > 0) or
-            (stock.zaiko.sbi and stock.zaiko.sbi > 0) or
-            (stock.zaiko.gmo and stock.zaiko.gmo > 0) or
-            (stock.zaiko.matsui and stock.zaiko.matsui > 0) or
-            (stock.zaiko.monex and stock.zaiko.monex > 0)
+            (stock.zaiko.nikko|default(0, true) > 0) or
+            (stock.zaiko.kabucom|default(0, true) > 0) or
+            (stock.zaiko.rakuten|default(0, true) > 0) or
+            (stock.zaiko.sbi|default(0, true) > 0) or
+            (stock.zaiko.gmo|default(0, true) > 0) or
+            (stock.zaiko.matsui|default(0, true) > 0) or
+            (stock.zaiko.monex|default(0, true) > 0)
         ) %}
         {% set is_karauri_ok = is_taishaku_active or has_ippan %}
         {% set months_to_rights = month - current_month + 1 if month >= current_month else (12 - current_month) + month + 1 %}
         {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
         {% set interest_cost = stock.price * interest_info.interest / 100 %}
         {% set monthly_yield = (per_share_yuutai - interest_cost) / stock.price / months_to_rights * 100 if stock.price > 0 and months_to_rights > 0 else 0 %}
-        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}" data-has-ippan="{{ has_ippan | lower }}" data-yield="{{ stock.simple_yield }}" data-monthly-yield="{{ monthly_yield }}"{% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
+        <tr data-taishaku="{{ stock.is_taishaku | lower }}" data-restriction="{{ stock.restriction }}" data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}" data-has-ippan="{{ 'true' if has_ippan else 'false' }}" data-yield="{{ stock.simple_yield }}" data-monthly-yield="{{ monthly_yield }}"{% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
             <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
             <td class="number">
                 {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
