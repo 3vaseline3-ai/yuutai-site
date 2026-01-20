@@ -8,7 +8,7 @@
 <h2>月別一覧</h2>
 <ul>
     {% for m in range(1, 13) %}
-    <li><a href="/months/{{ '%02d' % m }}.html">{{ m }}月権利確定銘柄</a></li>
+    <li><a href="{{ base_path }}months/{{ '%02d' % m }}.html">{{ m }}月権利確定銘柄</a></li>
     {% endfor %}
 </ul>
 
