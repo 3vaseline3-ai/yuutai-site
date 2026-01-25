@@ -3,340 +3,687 @@
 {% block title %}{{ month }}月権利確定銘柄 - 優待クロス管理{% endblock %}
 
 {% block content %}
-<h1>{{ month }}月権利確定銘柄 <span class="interest-badge">金利 {{ "{:.3f}".format(interest_info.interest) }}%</span></h1>
-<p class="interest-detail">権利付日: {{ interest_info.kenri_date.strftime('%Y/%m/%d') }} ({{ interest_info.days }}日間)</p>
+<div class="page-header">
+    <div class="header-content">
+        <h1>{{ month }}月権利確定</h1>
+        <div class="interest-info">
+            <span class="interest-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                金利 {{ "{:.3f}".format(interest_info.interest) }}%
+            </span>
+            <span class="date-info">権利付日: {{ interest_info.kenri_date.strftime('%Y/%m/%d') }} ({{ interest_info.days }}日間)</span>
+        </div>
+    </div>
+</div>
 
 <!-- ポートフォリオ計算セクション -->
-<div class="portfolio-section">
-    <div class="portfolio-input">
-        <label>利用可能資金:</label>
-        <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
-        <span>円</span>
-        <button class="auto-select-btn" id="auto-select">自動選択</button>
+<div class="portfolio-card">
+    <div class="portfolio-header">
+        <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+            ポートフォリオ計算
+        </h2>
     </div>
-    <div class="portfolio-summary">
-        <div class="summary-item">
-            <span class="label">選択</span>
-            <span class="value"><strong id="selected-count">0</strong>銘柄</span>
-        </div>
-        <div class="summary-item">
-            <span class="label">必要資金</span>
-            <span class="value" id="total-capital">0円</span>
-        </div>
-        <div class="summary-item">
-            <span class="label">優待合計</span>
-            <span class="value" id="total-yuutai">0円</span>
-        </div>
-        <div class="summary-item highlight">
-            <span class="label">利回り</span>
-            <span class="value" id="portfolio-yield">--%</span>
+
+    <div class="portfolio-input-section">
+        <label for="available-capital">利用可能資金</label>
+        <div class="input-wrapper">
+            <span class="input-prefix">¥</span>
+            <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
+            <button class="auto-select-btn" id="auto-select">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                自動選択
+            </button>
         </div>
     </div>
-    <div class="portfolio-warning" id="capital-warning" style="display:none;">
-        資金が不足しています
+
+    <div class="portfolio-metrics">
+        <div class="metric">
+            <span class="metric-label">選択銘柄</span>
+            <span class="metric-value"><strong id="selected-count">0</strong><small>銘柄</small></span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">必要資金</span>
+            <span class="metric-value" id="total-capital">¥0</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">優待合計</span>
+            <span class="metric-value" id="total-yuutai">¥0</span>
+        </div>
+        <div class="metric highlight">
+            <span class="metric-label">ポートフォリオ利回り</span>
+            <span class="metric-value" id="portfolio-yield">--%</span>
+        </div>
     </div>
-    <button class="clear-selection-btn" id="clear-selection">選択解除</button>
+
+    <div class="portfolio-warning" id="capital-warning">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>資金が不足しています</span>
+    </div>
+
+    <div class="portfolio-actions">
+        <button class="action-btn secondary" id="clear-selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            選択解除
+        </button>
+    </div>
 </div>
 
-<div class="filter-controls">
-    <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
-    <button class="filter-btn active" data-filter="karauri">空売可能</button>
-    <button class="filter-btn" data-filter="no-karauri">空売不可</button>
-    <button class="filter-btn" data-filter="all">全て表示</button>
-    <span class="stock-count">
-        空売可能: <strong id="karauri-count">-</strong>銘柄 /
-        全体: {{ stocks | length }}銘柄
-    </span>
+<!-- フィルター -->
+<div class="filter-section">
+    <div class="filter-buttons">
+        <button class="filter-btn" data-filter="nikko">
+            <span class="filter-dot nikko"></span>
+            日興在庫あり
+        </button>
+        <button class="filter-btn active" data-filter="karauri">
+            <span class="filter-dot karauri"></span>
+            空売可能
+        </button>
+        <button class="filter-btn" data-filter="no-karauri">
+            <span class="filter-dot no-karauri"></span>
+            空売不可
+        </button>
+        <button class="filter-btn" data-filter="all">全て表示</button>
+    </div>
+    <div class="filter-stats">
+        空売可能: <strong id="karauri-count">-</strong> / 全体: <strong>{{ stocks | length }}</strong>銘柄
+    </div>
 </div>
 
-<div class="table-wrapper">
-<table>
-    <thead>
-        <tr>
-            <th class="checkbox-col"><input type="checkbox" id="select-all" title="全選択"></th>
-            <th>コード</th>
-            <th>日興</th>
-            <th>銘柄名</th>
-            <th class="hide-mobile">制限</th>
-            <th class="hide-mobile">株価</th>
-            <th class="hide-mobile">株数</th>
-            <th class="hide-mobile">資金</th>
-            <th class="hide-mobile">優待</th>
-            <th class="hide-mobile">利回</th>
-            <th class="hide-mobile nikko-only">月利回</th>
-            <th class="hide-mobile non-nikko">最大逆</th>
-            <th class="non-nikko">収益</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for stock in stocks %}
-        {% set is_taishaku_active = stock.is_taishaku and stock.restriction != '停止' %}
-        {% set has_ippan = stock.zaiko and (
-            (stock.zaiko.nikko|default(0, true) > 0) or
-            (stock.zaiko.kabucom|default(0, true) > 0) or
-            (stock.zaiko.rakuten|default(0, true) > 0) or
-            (stock.zaiko.sbi|default(0, true) > 0) or
-            (stock.zaiko.gmo|default(0, true) > 0) or
-            (stock.zaiko.matsui|default(0, true) > 0) or
-            (stock.zaiko.monex|default(0, true) > 0)
-        ) %}
-        {% set is_karauri_ok = is_taishaku_active or has_ippan %}
-        {% set months_to_rights = month - current_month + 1 if month >= current_month else (12 - current_month) + month + 1 %}
-        {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
-        {% set interest_cost = stock.price * interest_info.interest / 100 %}
-        {% set monthly_yield = (per_share_yuutai - interest_cost) / stock.price / months_to_rights * 100 if stock.price > 0 and months_to_rights > 0 else 0 %}
-        {% set stock_key = stock.code ~ "_" ~ stock.required_shares %}
-        <tr data-taishaku="{{ stock.is_taishaku | lower }}"
-            data-restriction="{{ stock.restriction }}"
-            data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"
-            data-has-ippan="{{ 'true' if has_ippan else 'false' }}"
-            data-yield="{{ stock.simple_yield }}"
-            data-monthly-yield="{{ monthly_yield }}"
-            data-stock-key="{{ stock_key }}"
-            data-amount="{{ stock.required_amount }}"
-            data-yuutai="{{ stock.yuutai_value }}"
-            data-performance="{{ stock.performance }}"
-            {% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="{{ stock_key }}"></td>
-            <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
-            <td class="number">
-                {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
-                {{ "{:,}".format(stock.zaiko.nikko) }}
+<!-- メインテーブル -->
+<div class="glass-card table-card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="checkbox-col"><input type="checkbox" id="select-all" title="全選択"></th>
+                    <th>コード</th>
+                    <th>日興</th>
+                    <th>銘柄名</th>
+                    <th class="hide-mobile">制限</th>
+                    <th class="hide-mobile">株価</th>
+                    <th class="hide-mobile">株数</th>
+                    <th class="hide-mobile">資金</th>
+                    <th class="hide-mobile">優待</th>
+                    <th class="hide-mobile">利回</th>
+                    <th class="hide-mobile nikko-only">月利回</th>
+                    <th class="hide-mobile non-nikko">最大逆</th>
+                    <th class="non-nikko">収益</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stock in stocks %}
+                {% set is_taishaku_active = stock.is_taishaku and stock.restriction != '停止' %}
+                {% set has_ippan = stock.zaiko and (
+                    (stock.zaiko.nikko|default(0, true) > 0) or
+                    (stock.zaiko.kabucom|default(0, true) > 0) or
+                    (stock.zaiko.rakuten|default(0, true) > 0) or
+                    (stock.zaiko.sbi|default(0, true) > 0) or
+                    (stock.zaiko.gmo|default(0, true) > 0) or
+                    (stock.zaiko.matsui|default(0, true) > 0) or
+                    (stock.zaiko.monex|default(0, true) > 0)
+                ) %}
+                {% set is_karauri_ok = is_taishaku_active or has_ippan %}
+                {% set months_to_rights = month - current_month + 1 if month >= current_month else (12 - current_month) + month + 1 %}
+                {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
+                {% set interest_cost = stock.price * interest_info.interest / 100 %}
+                {% set monthly_yield = (per_share_yuutai - interest_cost) / stock.price / months_to_rights * 100 if stock.price > 0 and months_to_rights > 0 else 0 %}
+                {% set stock_key = stock.code ~ "_" ~ stock.required_shares %}
+                <tr data-taishaku="{{ stock.is_taishaku | lower }}"
+                    data-restriction="{{ stock.restriction }}"
+                    data-nikko="{{ 'true' if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 else 'false' }}"
+                    data-has-ippan="{{ 'true' if has_ippan else 'false' }}"
+                    data-yield="{{ stock.simple_yield }}"
+                    data-monthly-yield="{{ monthly_yield }}"
+                    data-stock-key="{{ stock_key }}"
+                    data-amount="{{ stock.required_amount }}"
+                    data-yuutai="{{ stock.yuutai_value }}"
+                    data-performance="{{ stock.performance }}"
+                    {% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="{{ stock_key }}"></td>
+                    <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
+                    <td class="number zaiko-cell">
+                        {% if stock.zaiko and stock.zaiko.nikko and stock.zaiko.nikko > 0 %}
+                        <span class="zaiko-value">{{ "{:,}".format(stock.zaiko.nikko) }}</span>
+                        {% else %}
+                        <span class="zaiko-none">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>
+                        {% if stock.is_taishaku %}<span class="badge hide-mobile">貸借</span>{% endif %}
+                    </td>
+                    <td class="restriction hide-mobile">
+                        {% if stock.restriction == '停止' %}<span class="restriction-badge stop">停止</span>
+                        {% elif stock.restriction == '注意' %}<span class="restriction-badge caution">注意</span>
+                        {% endif %}
+                    </td>
+                    <td class="number hide-mobile">{{ "{:,.0f}".format(stock.price) }}</td>
+                    <td class="number hide-mobile">{{ stock.required_shares_display }}</td>
+                    <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
+                    <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
+                    <td class="number hide-mobile">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
+                    <td class="number hide-mobile nikko-only {% if monthly_yield >= 0.7 %}monthly-good{% elif monthly_yield >= 0.5 %}monthly-ok{% endif %}">{{ "{:.2f}".format(monthly_yield) }}%</td>
+                    <td class="number hide-mobile non-nikko">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}—{% endif %}</td>
+                    <td class="number non-nikko {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
+                        {{ "{:.2f}".format(stock.performance) }}%
+                    </td>
+                </tr>
                 {% else %}
-                <span class="zaiko-none">-</span>
-                {% endif %}
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/{{ stock.code }}" target="_blank">{{ stock.name }}</a>{% if stock.is_taishaku %}<span class="badge hide-mobile">貸借</span>{% endif %}</td>
-            <td class="restriction hide-mobile">{% if stock.restriction == '停止' %}<span class="restriction-stop">停止</span>{% elif stock.restriction == '注意' %}<span class="restriction-caution">注意</span>{% endif %}</td>
-            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.price) }}</td>
-            <td class="number hide-mobile">{{ stock.required_shares_display }}</td>
-            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
-            <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
-            <td class="number hide-mobile">{{ "{:.2f}".format(stock.simple_yield) }}%</td>
-            <td class="number hide-mobile nikko-only {% if monthly_yield >= 0.7 %}monthly-good{% elif monthly_yield >= 0.5 %}monthly-ok{% endif %}">{{ "{:.2f}".format(monthly_yield) }}%</td>
-            <td class="number hide-mobile non-nikko">{% if stock.max_gyaku_rate %}{{ "{:.2f}".format(stock.max_gyaku_rate) }}%{% else %}-{% endif %}</td>
-            <td class="number non-nikko {% if stock.performance > 0 %}positive{% elif stock.performance < 0 %}negative{% endif %}">
-                {{ "{:.2f}".format(stock.performance) }}%
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="13">データがありません</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <tr>
+                    <td colspan="13" class="empty-state">データがありません</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-.interest-badge {
-    font-size: 0.6em;
-    background: #ff6b6b;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 4px;
-    vertical-align: middle;
-    margin-left: 10px;
-}
-.interest-detail {
-    color: #666;
-    font-size: 0.9em;
-    margin-top: -10px;
-    margin-bottom: 15px;
+/* Page header */
+.page-header {
+    margin-bottom: 24px;
 }
 
-/* ポートフォリオセクション */
-.portfolio-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
 }
-.portfolio-input {
+
+.interest-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.interest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--accent-red), #dc2626);
+    color: white;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+}
+
+.date-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Portfolio card */
+.portfolio-card {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+}
+
+.portfolio-header {
+    margin-bottom: 20px;
+}
+
+.portfolio-header h2 {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
-}
-.portfolio-input label {
+    font-size: 1.1rem;
     font-weight: 600;
-}
-.portfolio-input input {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    width: 180px;
-    text-align: right;
-}
-.portfolio-input input:focus {
-    outline: 3px solid rgba(255,255,255,0.5);
-}
-.portfolio-summary {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-.summary-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-.summary-item .label {
-    font-size: 0.85em;
-    opacity: 0.9;
-}
-.summary-item .value {
-    font-size: 1.3em;
-    font-weight: bold;
-}
-.summary-item.highlight {
-    background: rgba(255,255,255,0.2);
-    padding: 10px 20px;
-    border-radius: 8px;
-}
-.summary-item.highlight .value {
-    font-size: 1.6em;
-    color: #ffd93d;
-}
-.portfolio-warning {
-    background: #ff6b6b;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    font-weight: bold;
-}
-.clear-selection-btn, .auto-select-btn {
-    margin-top: 15px;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.clear-selection-btn:hover, .auto-select-btn:hover {
-    background: rgba(255,255,255,0.3);
-}
-.auto-select-btn {
-    margin-top: 0;
-    margin-left: 10px;
-    background: #ffd93d;
-    color: #333;
-    border-color: #ffd93d;
-    font-weight: bold;
-}
-.auto-select-btn:hover {
-    background: #ffed4a;
+    color: var(--text-primary);
+    margin: 0;
 }
 
-/* チェックボックス列 */
+.portfolio-input-section {
+    margin-bottom: 24px;
+}
+
+.portfolio-input-section label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-prefix {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.portfolio-input-section input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    width: 180px;
+    text-align: right;
+    transition: all 0.2s ease;
+}
+
+.portfolio-input-section input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+}
+
+.portfolio-input-section input::placeholder {
+    color: var(--text-muted);
+}
+
+.auto-select-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auto-select-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+}
+
+/* Portfolio metrics */
+.portfolio-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.metric {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.metric-value small {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+.metric.highlight {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.metric.highlight .metric-value {
+    color: var(--accent-yellow);
+    font-size: 1.6rem;
+}
+
+/* Portfolio warning */
+.portfolio-warning {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 10px;
+    color: #fca5a5;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.portfolio-warning.show {
+    display: flex;
+}
+
+/* Portfolio actions */
+.portfolio-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+}
+
+.action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+}
+
+/* Filter section */
+.filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: var(--accent-cyan);
+}
+
+.filter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.filter-dot.nikko {
+    background: var(--accent-purple);
+}
+
+.filter-dot.karauri {
+    background: var(--accent-green);
+}
+
+.filter-dot.no-karauri {
+    background: var(--accent-red);
+}
+
+.filter-stats {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.filter-stats strong {
+    color: var(--text-primary);
+}
+
+/* Table card */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table-card .table-wrapper {
+    margin: 0;
+}
+
+/* Checkbox column */
 .checkbox-col {
-    width: 40px;
+    width: 50px;
     text-align: center;
 }
-.checkbox-col input {
+
+.checkbox-col input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
-}
-tr:has(.stock-checkbox:checked) {
-    background: #e8f4fd !important;
+    accent-color: var(--accent-cyan);
 }
 
-.filter-controls {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+/* Selected row */
+tr:has(.stock-checkbox:checked) {
+    background: rgba(0, 212, 255, 0.1) !important;
 }
-.filter-btn {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: #fff;
-    cursor: pointer;
-    border-radius: 4px;
+
+tr:has(.stock-checkbox:checked) td {
+    border-bottom-color: rgba(0, 212, 255, 0.2);
 }
-.filter-btn.active {
-    background: #0066cc;
-    color: white;
-    border-color: #0066cc;
+
+/* Zaiko cell */
+.zaiko-cell .zaiko-value {
+    color: var(--accent-purple);
+    font-weight: 600;
 }
-.stock-count {
-    margin-left: 20px;
-    color: #666;
+
+.zaiko-cell .zaiko-none {
+    color: var(--text-muted);
 }
-.zaiko-none {
-    color: #ccc;
+
+/* Name cell */
+.name-cell {
+    max-width: 200px;
 }
-.restriction {
-    text-align: center;
+
+.name-cell a {
+    display: inline-block;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
 }
-.restriction-stop {
-    background: #dc3545;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: bold;
+
+/* Restriction badges */
+.restriction-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
-.restriction-caution {
-    background: #ffc107;
-    color: #333;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: bold;
+
+.restriction-badge.stop {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
-/* 日興タブ専用列 */
+
+.restriction-badge.caution {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Monthly yield highlights */
+.monthly-good {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: var(--accent-green) !important;
+    font-weight: 700;
+}
+
+.monthly-ok {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: var(--accent-yellow) !important;
+}
+
+/* Nikko mode column visibility */
 .nikko-only {
     display: none;
 }
+
 .nikko-mode .nikko-only {
     display: table-cell;
 }
+
 .nikko-mode .non-nikko {
     display: none;
 }
-/* 月利回りハイライト */
-.monthly-good {
-    background: #d4edda;
-    color: #155724;
-    font-weight: bold;
-}
-.monthly-ok {
-    background: #fff3cd;
-    color: #856404;
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px !important;
 }
 
-/* スマホ対応 */
+/* Mobile responsive */
 @media (max-width: 768px) {
-    .portfolio-section {
-        padding: 15px;
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    .portfolio-input {
-        flex-wrap: wrap;
+
+    .interest-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
-    .portfolio-input input {
-        width: 140px;
+
+    .portfolio-card {
+        padding: 20px;
     }
-    .portfolio-summary {
-        gap: 15px;
+
+    .input-wrapper {
+        width: 100%;
     }
-    .summary-item .value {
-        font-size: 1.1em;
+
+    .portfolio-input-section input {
+        flex: 1;
+        width: auto;
     }
-    .summary-item.highlight .value {
-        font-size: 1.3em;
+
+    .auto-select-btn {
+        width: 100%;
+        justify-content: center;
     }
+
+    .portfolio-metrics {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .metric {
+        padding: 12px;
+    }
+
+    .metric-value {
+        font-size: 1.2rem;
+    }
+
+    .metric.highlight .metric-value {
+        font-size: 1.3rem;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+
+    .filter-btn {
+        flex-shrink: 0;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
     .checkbox-col {
-        width: 30px;
+        width: 40px;
+    }
+
+    .name-cell a {
+        max-width: 100px;
     }
 }
 </style>
@@ -352,7 +699,7 @@ const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
-// ポートフォリオ関連要素
+// Portfolio elements
 const availableCapitalInput = document.getElementById('available-capital');
 const selectedCountEl = document.getElementById('selected-count');
 const totalCapitalEl = document.getElementById('total-capital');
@@ -362,17 +709,17 @@ const capitalWarningEl = document.getElementById('capital-warning');
 const selectAllCheckbox = document.getElementById('select-all');
 const clearSelectionBtn = document.getElementById('clear-selection');
 
-// 数値フォーマット
+// Number formatting
 function formatNumber(num) {
     return num.toLocaleString('ja-JP');
 }
 
-// カンマ除去して数値化
+// Parse number from formatted string
 function parseNumber(str) {
     return parseInt(str.replace(/,/g, '')) || 0;
 }
 
-// localStorageから選択状態を復元
+// Load selection from localStorage
 function loadSelection() {
     const saved = localStorage.getItem(STORAGE_KEY_PORTFOLIO);
     if (saved) {
@@ -389,7 +736,7 @@ function loadSelection() {
     }
 }
 
-// 選択状態をlocalStorageに保存
+// Save selection to localStorage
 function saveSelection() {
     const selectedKeys = [];
     document.querySelectorAll('.stock-checkbox:checked').forEach(cb => {
@@ -398,13 +745,13 @@ function saveSelection() {
     localStorage.setItem(STORAGE_KEY_PORTFOLIO, JSON.stringify(selectedKeys));
 }
 
-// 資金をlocalStorageに保存
+// Save capital to localStorage
 function saveCapital() {
     const capital = parseNumber(availableCapitalInput.value);
     localStorage.setItem(STORAGE_KEY_CAPITAL, capital.toString());
 }
 
-// ポートフォリオ計算
+// Calculate portfolio
 function calculatePortfolio() {
     let totalAmount = 0;
     let totalYuutai = 0;
@@ -426,21 +773,22 @@ function calculatePortfolio() {
     const availableCapital = parseNumber(availableCapitalInput.value);
     const portfolioYield = totalAmount > 0 ? weightedPerformance / totalAmount : 0;
 
-    // UI更新
+    // Update UI
     selectedCountEl.textContent = count;
-    totalCapitalEl.textContent = formatNumber(totalAmount) + '円';
-    totalYuutaiEl.textContent = formatNumber(totalYuutai) + '円';
+    totalCapitalEl.textContent = '¥' + formatNumber(totalAmount);
+    totalYuutaiEl.textContent = '¥' + formatNumber(totalYuutai);
     portfolioYieldEl.textContent = portfolioYield.toFixed(2) + '%';
 
-    // 資金警告
+    // Capital warning
     if (availableCapital > 0 && totalAmount > availableCapital) {
-        capitalWarningEl.style.display = 'block';
-        capitalWarningEl.textContent = `資金が ${formatNumber(totalAmount - availableCapital)}円 不足しています`;
+        capitalWarningEl.classList.add('show');
+        capitalWarningEl.querySelector('span').textContent =
+            `資金が ¥${formatNumber(totalAmount - availableCapital)} 不足しています`;
     } else {
-        capitalWarningEl.style.display = 'none';
+        capitalWarningEl.classList.remove('show');
     }
 
-    // 全選択チェックボックスの状態更新
+    // Update select all checkbox
     const allCheckboxes = document.querySelectorAll('.stock-checkbox');
     const visibleCheckboxes = Array.from(allCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
     const checkedVisible = visibleCheckboxes.filter(cb => cb.checked).length;
@@ -448,7 +796,7 @@ function calculatePortfolio() {
     selectAllCheckbox.indeterminate = checkedVisible > 0 && checkedVisible < visibleCheckboxes.length;
 }
 
-// チェックボックスイベント
+// Checkbox events
 document.querySelectorAll('.stock-checkbox').forEach(cb => {
     cb.addEventListener('change', () => {
         saveSelection();
@@ -456,7 +804,7 @@ document.querySelectorAll('.stock-checkbox').forEach(cb => {
     });
 });
 
-// 全選択チェックボックス
+// Select all checkbox
 selectAllCheckbox.addEventListener('change', () => {
     const visibleCheckboxes = Array.from(document.querySelectorAll('.stock-checkbox'))
         .filter(cb => cb.closest('tr').style.display !== 'none');
@@ -465,14 +813,14 @@ selectAllCheckbox.addEventListener('change', () => {
     calculatePortfolio();
 });
 
-// 選択解除ボタン
+// Clear selection button
 clearSelectionBtn.addEventListener('click', () => {
     document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
     saveSelection();
     calculatePortfolio();
 });
 
-// 自動選択ボタン
+// Auto select button
 const autoSelectBtn = document.getElementById('auto-select');
 autoSelectBtn.addEventListener('click', () => {
     const availableCapital = parseNumber(availableCapitalInput.value);
@@ -481,10 +829,10 @@ autoSelectBtn.addEventListener('click', () => {
         return;
     }
 
-    // 一旦全部解除
+    // Clear all
     document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
 
-    // 表示中の行を収益率順にソート
+    // Sort visible rows by performance
     const visibleRows = Array.from(document.querySelectorAll('tbody tr'))
         .filter(row => row.style.display !== 'none')
         .map(row => ({
@@ -493,10 +841,10 @@ autoSelectBtn.addEventListener('click', () => {
             amount: parseFloat(row.dataset.amount) || 0,
             performance: parseFloat(row.dataset.performance) || 0
         }))
-        .filter(item => item.amount > 0 && item.performance > 0)  // 有効なもののみ
-        .sort((a, b) => b.performance - a.performance);  // 収益率降順
+        .filter(item => item.amount > 0 && item.performance > 0)
+        .sort((a, b) => b.performance - a.performance);
 
-    // 予算内で選択
+    // Select within budget
     let remainingCapital = availableCapital;
     let selectedCount = 0;
 
@@ -511,15 +859,13 @@ autoSelectBtn.addEventListener('click', () => {
     saveSelection();
     calculatePortfolio();
 
-    // 結果を通知
     if (selectedCount > 0) {
-        console.log(`自動選択: ${selectedCount}銘柄, 残り${formatNumber(remainingCapital)}円`);
+        console.log(`Auto-selected: ${selectedCount} stocks, remaining: ¥${formatNumber(remainingCapital)}`);
     }
 });
 
-// 資金入力
+// Capital input
 availableCapitalInput.addEventListener('input', (e) => {
-    // カンマ自動挿入
     const value = e.target.value.replace(/,/g, '').replace(/[^\d]/g, '');
     if (value) {
         e.target.value = formatNumber(parseInt(value));
@@ -528,7 +874,7 @@ availableCapitalInput.addEventListener('input', (e) => {
     calculatePortfolio();
 });
 
-// フィルター関連
+// Filter functions
 function isKarauriOk(row) {
     const isTaishaku = row.dataset.taishaku === 'true';
     const isStop = row.dataset.restriction === '停止';
@@ -559,7 +905,6 @@ function restoreOrder() {
 }
 
 function applyFilter(filter) {
-    // 日興タブの場合は nikko-mode クラスを追加
     if (filter === 'nikko') {
         table.classList.add('nikko-mode');
         sortByMonthlyYield();
@@ -567,6 +912,7 @@ function applyFilter(filter) {
         table.classList.remove('nikko-mode');
         restoreOrder();
     }
+
     document.querySelectorAll('tbody tr').forEach(row => {
         if (filter === 'all') {
             row.style.display = '';
@@ -578,7 +924,7 @@ function applyFilter(filter) {
             row.style.display = !isKarauriOk(row) ? '' : 'none';
         }
     });
-    // フィルター後にポートフォリオ再計算（全選択状態更新のため）
+
     calculatePortfolio();
 }
 
@@ -590,7 +936,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// 初期化
+// Initialize
 loadSelection();
 updateKarauriCount();
 applyFilter('karauri');

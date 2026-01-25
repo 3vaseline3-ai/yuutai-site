@@ -4,301 +4,880 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1月権利確定銘柄 - 優待クロス管理</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: rgba(0, 0, 0, 0.3);
+            --accent-cyan: #00d4ff;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --accent-purple: #a855f7;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        body {
+            font-family: 'Zen Kaku Gothic New', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c1445 0%, #1a0a2e 50%, #16213e 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
-        h1, h2, h3 {
-            color: #333;
-        }
-        nav {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        nav a {
-            margin-right: 15px;
-            color: #0066cc;
-            text-decoration: none;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        table {
+
+        /* Animated mesh gradient background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
         }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .bg-animation::before,
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
         }
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
+
+        .bg-animation::before {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
         }
-        tr:hover {
-            background-color: #f5f5f5;
+
+        .bg-animation::after {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #0891b2 0%, transparent 70%);
+            bottom: -150px;
+            left: -100px;
+            animation-delay: -10s;
         }
-        .positive {
-            color: #28a745;
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 25s ease-in-out infinite;
         }
-        .negative {
-            color: #dc3545;
+
+        .bg-orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #ec4899 0%, transparent 70%);
+            top: 40%;
+            left: 30%;
+            animation-delay: -5s;
         }
-        .number {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
+
+        .bg-orb:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+            top: 60%;
+            right: 20%;
+            animation-delay: -15s;
         }
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            margin-left: 5px;
-            font-size: 0.75em;
-            background-color: #17a2b8;
-            color: white;
-            border-radius: 3px;
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(-30px, -20px) scale(1.02); }
         }
+
+        /* Noise overlay for texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Glass navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-inner::-webkit-scrollbar {
+            display: none;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--glass-border);
+        }
+
+        nav a.nav-home {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        nav a.nav-home:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+        }
+
+        /* Glass card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px var(--glass-shadow);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Table styles */
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
         }
-        /* スマホ対応 */
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:last-child td:first-child {
+            border-radius: 0 0 0 12px;
+        }
+
+        tbody tr:last-child td:last-child {
+            border-radius: 0 0 12px 0;
+        }
+
+        /* Number formatting */
+        .number {
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Value colors */
+        .positive {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .negative {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #5eead4;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            margin-left: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(168, 85, 247, 0.3);
+            color: #c4b5fd;
+            border-radius: 6px;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mobile responsive */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 10px; }
-            th, td { padding: 6px 4px; font-size: 0.85em; }
-            nav { overflow-x: auto; white-space: nowrap; }
-            nav a { margin-right: 10px; }
-            .hide-mobile { display: none; }
+            nav {
+                padding: 12px 16px;
+            }
+
+            nav a {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 0 16px 24px;
+            }
+
+            .glass-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+            }
+
+            .hide-mobile {
+                display: none;
+            }
         }
     </style>
     
 <style>
-.interest-badge {
-    font-size: 0.6em;
-    background: #ff6b6b;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 4px;
-    vertical-align: middle;
-    margin-left: 10px;
-}
-.interest-detail {
-    color: #666;
-    font-size: 0.9em;
-    margin-top: -10px;
-    margin-bottom: 15px;
+/* Page header */
+.page-header {
+    margin-bottom: 24px;
 }
 
-/* ポートフォリオセクション */
-.portfolio-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
 }
-.portfolio-input {
+
+.interest-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.interest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--accent-red), #dc2626);
+    color: white;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+}
+
+.date-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Portfolio card */
+.portfolio-card {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+}
+
+.portfolio-header {
+    margin-bottom: 20px;
+}
+
+.portfolio-header h2 {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
-}
-.portfolio-input label {
+    font-size: 1.1rem;
     font-weight: 600;
-}
-.portfolio-input input {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    width: 180px;
-    text-align: right;
-}
-.portfolio-input input:focus {
-    outline: 3px solid rgba(255,255,255,0.5);
-}
-.portfolio-summary {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-.summary-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-.summary-item .label {
-    font-size: 0.85em;
-    opacity: 0.9;
-}
-.summary-item .value {
-    font-size: 1.3em;
-    font-weight: bold;
-}
-.summary-item.highlight {
-    background: rgba(255,255,255,0.2);
-    padding: 10px 20px;
-    border-radius: 8px;
-}
-.summary-item.highlight .value {
-    font-size: 1.6em;
-    color: #ffd93d;
-}
-.portfolio-warning {
-    background: #ff6b6b;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    font-weight: bold;
-}
-.clear-selection-btn, .auto-select-btn {
-    margin-top: 15px;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.clear-selection-btn:hover, .auto-select-btn:hover {
-    background: rgba(255,255,255,0.3);
-}
-.auto-select-btn {
-    margin-top: 0;
-    margin-left: 10px;
-    background: #ffd93d;
-    color: #333;
-    border-color: #ffd93d;
-    font-weight: bold;
-}
-.auto-select-btn:hover {
-    background: #ffed4a;
+    color: var(--text-primary);
+    margin: 0;
 }
 
-/* チェックボックス列 */
+.portfolio-input-section {
+    margin-bottom: 24px;
+}
+
+.portfolio-input-section label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-prefix {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.portfolio-input-section input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    width: 180px;
+    text-align: right;
+    transition: all 0.2s ease;
+}
+
+.portfolio-input-section input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+}
+
+.portfolio-input-section input::placeholder {
+    color: var(--text-muted);
+}
+
+.auto-select-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auto-select-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+}
+
+/* Portfolio metrics */
+.portfolio-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.metric {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.metric-value small {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+.metric.highlight {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.metric.highlight .metric-value {
+    color: var(--accent-yellow);
+    font-size: 1.6rem;
+}
+
+/* Portfolio warning */
+.portfolio-warning {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 10px;
+    color: #fca5a5;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.portfolio-warning.show {
+    display: flex;
+}
+
+/* Portfolio actions */
+.portfolio-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+}
+
+.action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+}
+
+/* Filter section */
+.filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: var(--accent-cyan);
+}
+
+.filter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.filter-dot.nikko {
+    background: var(--accent-purple);
+}
+
+.filter-dot.karauri {
+    background: var(--accent-green);
+}
+
+.filter-dot.no-karauri {
+    background: var(--accent-red);
+}
+
+.filter-stats {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.filter-stats strong {
+    color: var(--text-primary);
+}
+
+/* Table card */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table-card .table-wrapper {
+    margin: 0;
+}
+
+/* Checkbox column */
 .checkbox-col {
-    width: 40px;
+    width: 50px;
     text-align: center;
 }
-.checkbox-col input {
+
+.checkbox-col input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
-}
-tr:has(.stock-checkbox:checked) {
-    background: #e8f4fd !important;
+    accent-color: var(--accent-cyan);
 }
 
-.filter-controls {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+/* Selected row */
+tr:has(.stock-checkbox:checked) {
+    background: rgba(0, 212, 255, 0.1) !important;
 }
-.filter-btn {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: #fff;
-    cursor: pointer;
-    border-radius: 4px;
+
+tr:has(.stock-checkbox:checked) td {
+    border-bottom-color: rgba(0, 212, 255, 0.2);
 }
-.filter-btn.active {
-    background: #0066cc;
-    color: white;
-    border-color: #0066cc;
+
+/* Zaiko cell */
+.zaiko-cell .zaiko-value {
+    color: var(--accent-purple);
+    font-weight: 600;
 }
-.stock-count {
-    margin-left: 20px;
-    color: #666;
+
+.zaiko-cell .zaiko-none {
+    color: var(--text-muted);
 }
-.zaiko-none {
-    color: #ccc;
+
+/* Name cell */
+.name-cell {
+    max-width: 200px;
 }
-.restriction {
-    text-align: center;
+
+.name-cell a {
+    display: inline-block;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
 }
-.restriction-stop {
-    background: #dc3545;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: bold;
+
+/* Restriction badges */
+.restriction-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
-.restriction-caution {
-    background: #ffc107;
-    color: #333;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-weight: bold;
+
+.restriction-badge.stop {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
-/* 日興タブ専用列 */
+
+.restriction-badge.caution {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Monthly yield highlights */
+.monthly-good {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: var(--accent-green) !important;
+    font-weight: 700;
+}
+
+.monthly-ok {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: var(--accent-yellow) !important;
+}
+
+/* Nikko mode column visibility */
 .nikko-only {
     display: none;
 }
+
 .nikko-mode .nikko-only {
     display: table-cell;
 }
+
 .nikko-mode .non-nikko {
     display: none;
 }
-/* 月利回りハイライト */
-.monthly-good {
-    background: #d4edda;
-    color: #155724;
-    font-weight: bold;
-}
-.monthly-ok {
-    background: #fff3cd;
-    color: #856404;
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px !important;
 }
 
-/* スマホ対応 */
+/* Mobile responsive */
 @media (max-width: 768px) {
-    .portfolio-section {
-        padding: 15px;
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    .portfolio-input {
-        flex-wrap: wrap;
+
+    .interest-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
-    .portfolio-input input {
-        width: 140px;
+
+    .portfolio-card {
+        padding: 20px;
     }
-    .portfolio-summary {
-        gap: 15px;
+
+    .input-wrapper {
+        width: 100%;
     }
-    .summary-item .value {
-        font-size: 1.1em;
+
+    .portfolio-input-section input {
+        flex: 1;
+        width: auto;
     }
-    .summary-item.highlight .value {
-        font-size: 1.3em;
+
+    .auto-select-btn {
+        width: 100%;
+        justify-content: center;
     }
+
+    .portfolio-metrics {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .metric {
+        padding: 12px;
+    }
+
+    .metric-value {
+        font-size: 1.2rem;
+    }
+
+    .metric.highlight .metric-value {
+        font-size: 1.3rem;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+
+    .filter-btn {
+        flex-shrink: 0;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
     .checkbox-col {
-        width: 30px;
+        width: 40px;
+    }
+
+    .name-cell a {
+        max-width: 100px;
     }
 }
 </style>
 
 </head>
 <body>
+    <div class="bg-animation">
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+    </div>
+    <div class="noise-overlay"></div>
+
     <script>
     (function() {
         const AUTH_KEY = 'yuutai_auth';
@@ -306,16 +885,17 @@ tr:has(.stock-checkbox:checked) {
         if (localStorage.getItem(AUTH_KEY) !== 'ok') {
             const input = prompt('暗証番号を入力してください');
             if (input !== PASS) {
-                document.body.innerHTML = '<h1 style="text-align:center;margin-top:100px;">アクセス拒否</h1>';
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:1.5rem;color:rgba(255,255,255,0.5);">アクセス拒否</div>';
                 return;
             }
             localStorage.setItem(AUTH_KEY, 'ok');
         }
     })();
     </script>
-    <div class="container">
-        <nav>
-            <a href="../index.html">トップ</a>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="../index.html" class="nav-home">優待クロス</a>
             
             <a href="../months/01.html">1月</a>
             
@@ -341,640 +921,783 @@ tr:has(.stock-checkbox:checked) {
             
             <a href="../months/12.html">12月</a>
             
-        </nav>
+        </div>
+    </nav>
+
+    <div class="container">
         
-<h1>1月権利確定銘柄 <span class="interest-badge">金利 0.009%</span></h1>
-<p class="interest-detail">権利付日: 2026/01/28 (2日間)</p>
+<div class="page-header">
+    <div class="header-content">
+        <h1>1月権利確定</h1>
+        <div class="interest-info">
+            <span class="interest-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                金利 0.009%
+            </span>
+            <span class="date-info">権利付日: 2026/01/28 (2日間)</span>
+        </div>
+    </div>
+</div>
 
 <!-- ポートフォリオ計算セクション -->
-<div class="portfolio-section">
-    <div class="portfolio-input">
-        <label>利用可能資金:</label>
-        <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
-        <span>円</span>
-        <button class="auto-select-btn" id="auto-select">自動選択</button>
+<div class="portfolio-card">
+    <div class="portfolio-header">
+        <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+            ポートフォリオ計算
+        </h2>
     </div>
-    <div class="portfolio-summary">
-        <div class="summary-item">
-            <span class="label">選択</span>
-            <span class="value"><strong id="selected-count">0</strong>銘柄</span>
-        </div>
-        <div class="summary-item">
-            <span class="label">必要資金</span>
-            <span class="value" id="total-capital">0円</span>
-        </div>
-        <div class="summary-item">
-            <span class="label">優待合計</span>
-            <span class="value" id="total-yuutai">0円</span>
-        </div>
-        <div class="summary-item highlight">
-            <span class="label">利回り</span>
-            <span class="value" id="portfolio-yield">--%</span>
+
+    <div class="portfolio-input-section">
+        <label for="available-capital">利用可能資金</label>
+        <div class="input-wrapper">
+            <span class="input-prefix">¥</span>
+            <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
+            <button class="auto-select-btn" id="auto-select">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                自動選択
+            </button>
         </div>
     </div>
-    <div class="portfolio-warning" id="capital-warning" style="display:none;">
-        資金が不足しています
+
+    <div class="portfolio-metrics">
+        <div class="metric">
+            <span class="metric-label">選択銘柄</span>
+            <span class="metric-value"><strong id="selected-count">0</strong><small>銘柄</small></span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">必要資金</span>
+            <span class="metric-value" id="total-capital">¥0</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">優待合計</span>
+            <span class="metric-value" id="total-yuutai">¥0</span>
+        </div>
+        <div class="metric highlight">
+            <span class="metric-label">ポートフォリオ利回り</span>
+            <span class="metric-value" id="portfolio-yield">--%</span>
+        </div>
     </div>
-    <button class="clear-selection-btn" id="clear-selection">選択解除</button>
+
+    <div class="portfolio-warning" id="capital-warning">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>資金が不足しています</span>
+    </div>
+
+    <div class="portfolio-actions">
+        <button class="action-btn secondary" id="clear-selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            選択解除
+        </button>
+    </div>
 </div>
 
-<div class="filter-controls">
-    <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
-    <button class="filter-btn active" data-filter="karauri">空売可能</button>
-    <button class="filter-btn" data-filter="no-karauri">空売不可</button>
-    <button class="filter-btn" data-filter="all">全て表示</button>
-    <span class="stock-count">
-        空売可能: <strong id="karauri-count">-</strong>銘柄 /
-        全体: 14銘柄
-    </span>
+<!-- フィルター -->
+<div class="filter-section">
+    <div class="filter-buttons">
+        <button class="filter-btn" data-filter="nikko">
+            <span class="filter-dot nikko"></span>
+            日興在庫あり
+        </button>
+        <button class="filter-btn active" data-filter="karauri">
+            <span class="filter-dot karauri"></span>
+            空売可能
+        </button>
+        <button class="filter-btn" data-filter="no-karauri">
+            <span class="filter-dot no-karauri"></span>
+            空売不可
+        </button>
+        <button class="filter-btn" data-filter="all">全て表示</button>
+    </div>
+    <div class="filter-stats">
+        空売可能: <strong id="karauri-count">-</strong> / 全体: <strong>14</strong>銘柄
+    </div>
 </div>
 
-<div class="table-wrapper">
-<table>
-    <thead>
-        <tr>
-            <th class="checkbox-col"><input type="checkbox" id="select-all" title="全選択"></th>
-            <th>コード</th>
-            <th>日興</th>
-            <th>銘柄名</th>
-            <th class="hide-mobile">制限</th>
-            <th class="hide-mobile">株価</th>
-            <th class="hide-mobile">株数</th>
-            <th class="hide-mobile">資金</th>
-            <th class="hide-mobile">優待</th>
-            <th class="hide-mobile">利回</th>
-            <th class="hide-mobile nikko-only">月利回</th>
-            <th class="hide-mobile non-nikko">最大逆</th>
-            <th class="non-nikko">収益</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction=""
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="1.8391"
-            data-monthly-yield="1.830080459770115"
-            data-stock-key="3415_1000"
-            data-amount="435000.0"
-            data-yuutai="8000.0"
-            data-performance="1.5828"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3415_1000"></td>
-            <td><a href="https://gokigen-life.tokyo/3415yutai/" target="_blank">3415</a></td>
-            <td class="number">
+<!-- メインテーブル -->
+<div class="glass-card table-card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="checkbox-col"><input type="checkbox" id="select-all" title="全選択"></th>
+                    <th>コード</th>
+                    <th>日興</th>
+                    <th>銘柄名</th>
+                    <th class="hide-mobile">制限</th>
+                    <th class="hide-mobile">株価</th>
+                    <th class="hide-mobile">株数</th>
+                    <th class="hide-mobile">資金</th>
+                    <th class="hide-mobile">優待</th>
+                    <th class="hide-mobile">利回</th>
+                    <th class="hide-mobile nikko-only">月利回</th>
+                    <th class="hide-mobile non-nikko">最大逆</th>
+                    <th class="non-nikko">収益</th>
+                </tr>
+            </thead>
+            <tbody>
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3415" target="_blank">ＴＯＫＹＯ　ＢＡＳＥ</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"></td>
-            <td class="number hide-mobile">435</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">435,000</td>
-            <td class="number hide-mobile">8,000</td>
-            <td class="number hide-mobile">1.84%</td>
-            <td class="number hide-mobile nikko-only monthly-good">1.83%</td>
-            <td class="number hide-mobile non-nikko">0.28%</td>
-            <td class="number non-nikko positive">
-                1.58%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="1.5711"
-            data-monthly-yield="1.5620919088766692"
-            data-stock-key="3662_500"
-            data-amount="636500.0"
-            data-yuutai="10000.0"
-            data-performance="0.9914"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3662_500"></td>
-            <td><a href="https://gokigen-life.tokyo/3662yutai/" target="_blank">3662</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3662" target="_blank">エイチームホールディングス</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">1,273</td>
-            <td class="number hide-mobile">500</td>
-            <td class="number hide-mobile">636,500</td>
-            <td class="number hide-mobile">10,000</td>
-            <td class="number hide-mobile">1.57%</td>
-            <td class="number hide-mobile nikko-only monthly-good">1.56%</td>
-            <td class="number hide-mobile non-nikko">2.45%</td>
-            <td class="number non-nikko positive">
-                0.99%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="1.2225"
-            data-monthly-yield="1.2134938875305623"
-            data-stock-key="9262_200"
-            data-amount="163600.0"
-            data-yuutai="2000.0"
-            data-performance="0.9768"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9262_200"></td>
-            <td><a href="https://gokigen-life.tokyo/9262yutai/" target="_blank">9262</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/9262" target="_blank">シルバーライフ</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">818</td>
-            <td class="number hide-mobile">200</td>
-            <td class="number hide-mobile">163,600</td>
-            <td class="number hide-mobile">2,000</td>
-            <td class="number hide-mobile">1.22%</td>
-            <td class="number hide-mobile nikko-only monthly-good">1.21%</td>
-            <td class="number hide-mobile non-nikko">2.64%</td>
-            <td class="number non-nikko positive">
-                0.98%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="停止"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.9615"
-            data-monthly-yield="0.9525384615384614"
-            data-stock-key="8013_100"
-            data-amount="31200.0"
-            data-yuutai="300.0"
-            data-performance="0.5462"
-             class="non-taishaku" style="display:none;">
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8013_100"></td>
-            <td><a href="https://gokigen-life.tokyo/8013yutai/" target="_blank">8013</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/8013" target="_blank">ナイガイ</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-stop">停止</span></td>
-            <td class="number hide-mobile">312</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">31,200</td>
-            <td class="number hide-mobile">300</td>
-            <td class="number hide-mobile">0.96%</td>
-            <td class="number hide-mobile nikko-only monthly-good">0.95%</td>
-            <td class="number hide-mobile non-nikko">3.85%</td>
-            <td class="number non-nikko positive">
-                0.55%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.5013"
-            data-monthly-yield="0.49225313283208016"
-            data-stock-key="8142_100"
-            data-amount="399000.0"
-            data-yuutai="2000.0"
-            data-performance="0.5383"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8142_100"></td>
-            <td><a href="https://gokigen-life.tokyo/8142yutai/" target="_blank">8142</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
+                <tr data-taishaku="true"
+                    data-restriction=""
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="1.8391"
+                    data-monthly-yield="1.830080459770115"
+                    data-stock-key="3415_1000"
+                    data-amount="435000.0"
+                    data-yuutai="8000.0"
+                    data-performance="1.5828"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3415_1000"></td>
+                    <td><a href="https://gokigen-life.tokyo/3415yutai/" target="_blank">3415</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3415" target="_blank">ＴＯＫＹＯ　ＢＡＳＥ</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        
+                    </td>
+                    <td class="number hide-mobile">435</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">435,000</td>
+                    <td class="number hide-mobile">8,000</td>
+                    <td class="number hide-mobile">1.84%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">1.83%</td>
+                    <td class="number hide-mobile non-nikko">0.28%</td>
+                    <td class="number non-nikko positive">
+                        1.58%
+                    </td>
+                </tr>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/8142" target="_blank">トーホー</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">3,990</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">399,000</td>
-            <td class="number hide-mobile">2,000</td>
-            <td class="number hide-mobile">0.50%</td>
-            <td class="number hide-mobile nikko-only ">0.49%</td>
-            <td class="number hide-mobile non-nikko">0.30%</td>
-            <td class="number non-nikko positive">
-                0.54%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction=""
-            data-nikko="false"
-            data-has-ippan="true"
-            data-yield="0.7042"
-            data-monthly-yield="0.695225352112676"
-            data-stock-key="2353_500"
-            data-amount="142000.0"
-            data-yuutai="1000.0"
-            data-performance="0.4577"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2353_500"></td>
-            <td><a href="https://gokigen-life.tokyo/2353yutai/" target="_blank">2353</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/2353" target="_blank">日本駐車場開発</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"></td>
-            <td class="number hide-mobile">284</td>
-            <td class="number hide-mobile">500</td>
-            <td class="number hide-mobile">142,000</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">0.70%</td>
-            <td class="number hide-mobile nikko-only monthly-ok">0.70%</td>
-            <td class="number hide-mobile non-nikko">4.23%</td>
-            <td class="number non-nikko positive">
-                0.46%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.3096"
-            data-monthly-yield="0.30059752321981426"
-            data-stock-key="3399_100"
-            data-amount="323000.0"
-            data-yuutai="1000.0"
-            data-performance="0.3268"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3399_100"></td>
-            <td><a href="https://gokigen-life.tokyo/3399yutai/" target="_blank">3399</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3399" target="_blank">丸千代山岡家</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">3,230</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">323,000</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">0.31%</td>
-            <td class="number hide-mobile nikko-only ">0.30%</td>
-            <td class="number hide-mobile non-nikko">2.45%</td>
-            <td class="number non-nikko positive">
-                0.33%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction=""
-            data-nikko="false"
-            data-has-ippan="true"
-            data-yield="0.1399"
-            data-monthly-yield="0.13086013986013986"
-            data-stock-key="1928_1000"
-            data-amount="3575000.0"
-            data-yuutai="5000.0"
-            data-performance="0.2463"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1928_1000"></td>
-            <td><a href="https://gokigen-life.tokyo/1928yutai/" target="_blank">1928</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/1928" target="_blank">積水ハウス</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"></td>
-            <td class="number hide-mobile">3,575</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">3,575,000</td>
-            <td class="number hide-mobile">5,000</td>
-            <td class="number hide-mobile">0.14%</td>
-            <td class="number hide-mobile nikko-only ">0.13%</td>
-            <td class="number hide-mobile non-nikko">2.42%</td>
-            <td class="number non-nikko positive">
-                0.25%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="false"
-            data-restriction=""
-            data-nikko="false"
-            data-has-ippan="true"
-            data-yield="0.0615"
-            data-monthly-yield="0.052462814996926864"
-            data-stock-key="3421_1000"
-            data-amount="1627000.0"
-            data-yuutai="1000.0"
-            data-performance="0.2148"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3421_1000"></td>
-            <td><a href="https://gokigen-life.tokyo/3421yutai/" target="_blank">3421</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3421" target="_blank">稲葉製作所</a></td>
-            <td class="restriction hide-mobile"></td>
-            <td class="number hide-mobile">1,627</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">1,627,000</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">0.06%</td>
-            <td class="number hide-mobile nikko-only ">0.05%</td>
-            <td class="number hide-mobile non-nikko">2.51%</td>
-            <td class="number non-nikko positive">
-                0.21%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="1.0519"
-            data-monthly-yield="1.0428934081346424"
-            data-stock-key="3320_100"
-            data-amount="142600.0"
-            data-yuutai="1500.0"
-            data-performance="0.1669"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3320_100"></td>
-            <td><a href="https://gokigen-life.tokyo/3320yutai/" target="_blank">3320</a></td>
-            <td class="number">
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="1.5711"
+                    data-monthly-yield="1.5620919088766692"
+                    data-stock-key="3662_500"
+                    data-amount="636500.0"
+                    data-yuutai="10000.0"
+                    data-performance="0.9914"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3662_500"></td>
+                    <td><a href="https://gokigen-life.tokyo/3662yutai/" target="_blank">3662</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3662" target="_blank">エイチームホールディングス</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">1,273</td>
+                    <td class="number hide-mobile">500</td>
+                    <td class="number hide-mobile">636,500</td>
+                    <td class="number hide-mobile">10,000</td>
+                    <td class="number hide-mobile">1.57%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">1.56%</td>
+                    <td class="number hide-mobile non-nikko">2.45%</td>
+                    <td class="number non-nikko positive">
+                        0.99%
+                    </td>
+                </tr>
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3320" target="_blank">クロスプラス</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">1,426</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">142,600</td>
-            <td class="number hide-mobile">1,500</td>
-            <td class="number hide-mobile">1.05%</td>
-            <td class="number hide-mobile nikko-only monthly-good">1.04%</td>
-            <td class="number hide-mobile non-nikko">2.52%</td>
-            <td class="number non-nikko positive">
-                0.17%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="停止"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="1.1111"
-            data-monthly-yield="1.1021111111111113"
-            data-stock-key="1433_1000"
-            data-amount="1350000.0"
-            data-yuutai="15000.0"
-            data-performance="0.0373"
-             class="non-taishaku" style="display:none;">
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1433_1000"></td>
-            <td><a href="https://gokigen-life.tokyo/1433yutai/" target="_blank">1433</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/1433" target="_blank">ベステラ</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-stop">停止</span></td>
-            <td class="number hide-mobile">1,350</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">1,350,000</td>
-            <td class="number hide-mobile">15,000</td>
-            <td class="number hide-mobile">1.11%</td>
-            <td class="number hide-mobile nikko-only monthly-good">1.10%</td>
-            <td class="number hide-mobile non-nikko">2.49%</td>
-            <td class="number non-nikko positive">
-                0.04%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.8214"
-            data-monthly-yield="0.8123552361396305"
-            data-stock-key="7678_100"
-            data-amount="487000.0"
-            data-yuutai="4000.0"
-            data-performance="0.0201"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7678_100"></td>
-            <td><a href="https://gokigen-life.tokyo/7678yutai/" target="_blank">7678</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/7678" target="_blank">あさくま</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">4,870</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">487,000</td>
-            <td class="number hide-mobile">4,000</td>
-            <td class="number hide-mobile">0.82%</td>
-            <td class="number hide-mobile nikko-only monthly-good">0.81%</td>
-            <td class="number hide-mobile non-nikko">2.41%</td>
-            <td class="number non-nikko positive">
-                0.02%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.2886"
-            data-monthly-yield="0.2796002886002886"
-            data-stock-key="3193_100"
-            data-amount="346500.0"
-            data-yuutai="1000.0"
-            data-performance="-0.0617"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3193_100"></td>
-            <td><a href="https://gokigen-life.tokyo/3193yutai/" target="_blank">3193</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/3193" target="_blank">エターナルホスピタリティグループ</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">3,465</td>
-            <td class="number hide-mobile">100</td>
-            <td class="number hide-mobile">346,500</td>
-            <td class="number hide-mobile">1,000</td>
-            <td class="number hide-mobile">0.29%</td>
-            <td class="number hide-mobile nikko-only ">0.28%</td>
-            <td class="number hide-mobile non-nikko">2.42%</td>
-            <td class="number non-nikko negative">
-                -0.06%
-            </td>
-        </tr>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <tr data-taishaku="true"
-            data-restriction="注意"
-            data-nikko="false"
-            data-has-ippan="false"
-            data-yield="0.1478"
-            data-monthly-yield="0.13875413711583923"
-            data-stock-key="6654_300"
-            data-amount="338400.0"
-            data-yuutai="500.0"
-            data-performance="-1.085"
-            >
-            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6654_300"></td>
-            <td><a href="https://gokigen-life.tokyo/6654yutai/" target="_blank">6654</a></td>
-            <td class="number">
                 
-                <span class="zaiko-none">-</span>
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="1.2225"
+                    data-monthly-yield="1.2134938875305623"
+                    data-stock-key="9262_200"
+                    data-amount="163600.0"
+                    data-yuutai="2000.0"
+                    data-performance="0.9768"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9262_200"></td>
+                    <td><a href="https://gokigen-life.tokyo/9262yutai/" target="_blank">9262</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/9262" target="_blank">シルバーライフ</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">818</td>
+                    <td class="number hide-mobile">200</td>
+                    <td class="number hide-mobile">163,600</td>
+                    <td class="number hide-mobile">2,000</td>
+                    <td class="number hide-mobile">1.22%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">1.21%</td>
+                    <td class="number hide-mobile non-nikko">2.64%</td>
+                    <td class="number non-nikko positive">
+                        0.98%
+                    </td>
+                </tr>
                 
-            </td>
-            <td><a href="https://www.invest-jp.net/yuutai/detail/6654" target="_blank">不二電機工業</a><span class="badge hide-mobile">貸借</span></td>
-            <td class="restriction hide-mobile"><span class="restriction-caution">注意</span></td>
-            <td class="number hide-mobile">1,128</td>
-            <td class="number hide-mobile">300</td>
-            <td class="number hide-mobile">338,400</td>
-            <td class="number hide-mobile">500</td>
-            <td class="number hide-mobile">0.15%</td>
-            <td class="number hide-mobile nikko-only ">0.14%</td>
-            <td class="number hide-mobile non-nikko">2.55%</td>
-            <td class="number non-nikko negative">
-                -1.08%
-            </td>
-        </tr>
-        
-    </tbody>
-</table>
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="停止"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.9615"
+                    data-monthly-yield="0.9525384615384614"
+                    data-stock-key="8013_100"
+                    data-amount="31200.0"
+                    data-yuutai="300.0"
+                    data-performance="0.5462"
+                     class="non-taishaku" style="display:none;">
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8013_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/8013yutai/" target="_blank">8013</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/8013" target="_blank">ナイガイ</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge stop">停止</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">312</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">31,200</td>
+                    <td class="number hide-mobile">300</td>
+                    <td class="number hide-mobile">0.96%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">0.95%</td>
+                    <td class="number hide-mobile non-nikko">3.85%</td>
+                    <td class="number non-nikko positive">
+                        0.55%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.5013"
+                    data-monthly-yield="0.49225313283208016"
+                    data-stock-key="8142_100"
+                    data-amount="399000.0"
+                    data-yuutai="2000.0"
+                    data-performance="0.5383"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8142_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/8142yutai/" target="_blank">8142</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/8142" target="_blank">トーホー</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">3,990</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">399,000</td>
+                    <td class="number hide-mobile">2,000</td>
+                    <td class="number hide-mobile">0.50%</td>
+                    <td class="number hide-mobile nikko-only ">0.49%</td>
+                    <td class="number hide-mobile non-nikko">0.30%</td>
+                    <td class="number non-nikko positive">
+                        0.54%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction=""
+                    data-nikko="false"
+                    data-has-ippan="true"
+                    data-yield="0.7042"
+                    data-monthly-yield="0.695225352112676"
+                    data-stock-key="2353_500"
+                    data-amount="142000.0"
+                    data-yuutai="1000.0"
+                    data-performance="0.4577"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2353_500"></td>
+                    <td><a href="https://gokigen-life.tokyo/2353yutai/" target="_blank">2353</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/2353" target="_blank">日本駐車場開発</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        
+                    </td>
+                    <td class="number hide-mobile">284</td>
+                    <td class="number hide-mobile">500</td>
+                    <td class="number hide-mobile">142,000</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">0.70%</td>
+                    <td class="number hide-mobile nikko-only monthly-ok">0.70%</td>
+                    <td class="number hide-mobile non-nikko">4.23%</td>
+                    <td class="number non-nikko positive">
+                        0.46%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.3096"
+                    data-monthly-yield="0.30059752321981426"
+                    data-stock-key="3399_100"
+                    data-amount="323000.0"
+                    data-yuutai="1000.0"
+                    data-performance="0.3268"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3399_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/3399yutai/" target="_blank">3399</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3399" target="_blank">丸千代山岡家</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">3,230</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">323,000</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">0.31%</td>
+                    <td class="number hide-mobile nikko-only ">0.30%</td>
+                    <td class="number hide-mobile non-nikko">2.45%</td>
+                    <td class="number non-nikko positive">
+                        0.33%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction=""
+                    data-nikko="false"
+                    data-has-ippan="true"
+                    data-yield="0.1399"
+                    data-monthly-yield="0.13086013986013986"
+                    data-stock-key="1928_1000"
+                    data-amount="3575000.0"
+                    data-yuutai="5000.0"
+                    data-performance="0.2463"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1928_1000"></td>
+                    <td><a href="https://gokigen-life.tokyo/1928yutai/" target="_blank">1928</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/1928" target="_blank">積水ハウス</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        
+                    </td>
+                    <td class="number hide-mobile">3,575</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">3,575,000</td>
+                    <td class="number hide-mobile">5,000</td>
+                    <td class="number hide-mobile">0.14%</td>
+                    <td class="number hide-mobile nikko-only ">0.13%</td>
+                    <td class="number hide-mobile non-nikko">2.42%</td>
+                    <td class="number non-nikko positive">
+                        0.25%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="false"
+                    data-restriction=""
+                    data-nikko="false"
+                    data-has-ippan="true"
+                    data-yield="0.0615"
+                    data-monthly-yield="0.052462814996926864"
+                    data-stock-key="3421_1000"
+                    data-amount="1627000.0"
+                    data-yuutai="1000.0"
+                    data-performance="0.2148"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3421_1000"></td>
+                    <td><a href="https://gokigen-life.tokyo/3421yutai/" target="_blank">3421</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3421" target="_blank">稲葉製作所</a>
+                        
+                    </td>
+                    <td class="restriction hide-mobile">
+                        
+                    </td>
+                    <td class="number hide-mobile">1,627</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">1,627,000</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">0.06%</td>
+                    <td class="number hide-mobile nikko-only ">0.05%</td>
+                    <td class="number hide-mobile non-nikko">2.51%</td>
+                    <td class="number non-nikko positive">
+                        0.21%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="1.0519"
+                    data-monthly-yield="1.0428934081346424"
+                    data-stock-key="3320_100"
+                    data-amount="142600.0"
+                    data-yuutai="1500.0"
+                    data-performance="0.1669"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3320_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/3320yutai/" target="_blank">3320</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3320" target="_blank">クロスプラス</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">1,426</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">142,600</td>
+                    <td class="number hide-mobile">1,500</td>
+                    <td class="number hide-mobile">1.05%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">1.04%</td>
+                    <td class="number hide-mobile non-nikko">2.52%</td>
+                    <td class="number non-nikko positive">
+                        0.17%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="停止"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="1.1111"
+                    data-monthly-yield="1.1021111111111113"
+                    data-stock-key="1433_1000"
+                    data-amount="1350000.0"
+                    data-yuutai="15000.0"
+                    data-performance="0.0373"
+                     class="non-taishaku" style="display:none;">
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1433_1000"></td>
+                    <td><a href="https://gokigen-life.tokyo/1433yutai/" target="_blank">1433</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/1433" target="_blank">ベステラ</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge stop">停止</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">1,350</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">1,350,000</td>
+                    <td class="number hide-mobile">15,000</td>
+                    <td class="number hide-mobile">1.11%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">1.10%</td>
+                    <td class="number hide-mobile non-nikko">2.49%</td>
+                    <td class="number non-nikko positive">
+                        0.04%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.8214"
+                    data-monthly-yield="0.8123552361396305"
+                    data-stock-key="7678_100"
+                    data-amount="487000.0"
+                    data-yuutai="4000.0"
+                    data-performance="0.0201"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7678_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/7678yutai/" target="_blank">7678</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/7678" target="_blank">あさくま</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">4,870</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">487,000</td>
+                    <td class="number hide-mobile">4,000</td>
+                    <td class="number hide-mobile">0.82%</td>
+                    <td class="number hide-mobile nikko-only monthly-good">0.81%</td>
+                    <td class="number hide-mobile non-nikko">2.41%</td>
+                    <td class="number non-nikko positive">
+                        0.02%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.2886"
+                    data-monthly-yield="0.2796002886002886"
+                    data-stock-key="3193_100"
+                    data-amount="346500.0"
+                    data-yuutai="1000.0"
+                    data-performance="-0.0617"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3193_100"></td>
+                    <td><a href="https://gokigen-life.tokyo/3193yutai/" target="_blank">3193</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/3193" target="_blank">エターナルホスピタリティグループ</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">3,465</td>
+                    <td class="number hide-mobile">100</td>
+                    <td class="number hide-mobile">346,500</td>
+                    <td class="number hide-mobile">1,000</td>
+                    <td class="number hide-mobile">0.29%</td>
+                    <td class="number hide-mobile nikko-only ">0.28%</td>
+                    <td class="number hide-mobile non-nikko">2.42%</td>
+                    <td class="number non-nikko negative">
+                        -0.06%
+                    </td>
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr data-taishaku="true"
+                    data-restriction="注意"
+                    data-nikko="false"
+                    data-has-ippan="false"
+                    data-yield="0.1478"
+                    data-monthly-yield="0.13875413711583923"
+                    data-stock-key="6654_300"
+                    data-amount="338400.0"
+                    data-yuutai="500.0"
+                    data-performance="-1.085"
+                    >
+                    <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6654_300"></td>
+                    <td><a href="https://gokigen-life.tokyo/6654yutai/" target="_blank">6654</a></td>
+                    <td class="number zaiko-cell">
+                        
+                        <span class="zaiko-none">—</span>
+                        
+                    </td>
+                    <td class="name-cell">
+                        <a href="https://www.invest-jp.net/yuutai/detail/6654" target="_blank">不二電機工業</a>
+                        <span class="badge hide-mobile">貸借</span>
+                    </td>
+                    <td class="restriction hide-mobile">
+                        <span class="restriction-badge caution">注意</span>
+                        
+                    </td>
+                    <td class="number hide-mobile">1,128</td>
+                    <td class="number hide-mobile">300</td>
+                    <td class="number hide-mobile">338,400</td>
+                    <td class="number hide-mobile">500</td>
+                    <td class="number hide-mobile">0.15%</td>
+                    <td class="number hide-mobile nikko-only ">0.14%</td>
+                    <td class="number hide-mobile non-nikko">2.55%</td>
+                    <td class="number non-nikko negative">
+                        -1.08%
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
 </div>
 
     </div>
+
     
 <script>
 const MONTH = 1;
@@ -985,7 +1708,7 @@ const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
-// ポートフォリオ関連要素
+// Portfolio elements
 const availableCapitalInput = document.getElementById('available-capital');
 const selectedCountEl = document.getElementById('selected-count');
 const totalCapitalEl = document.getElementById('total-capital');
@@ -995,17 +1718,17 @@ const capitalWarningEl = document.getElementById('capital-warning');
 const selectAllCheckbox = document.getElementById('select-all');
 const clearSelectionBtn = document.getElementById('clear-selection');
 
-// 数値フォーマット
+// Number formatting
 function formatNumber(num) {
     return num.toLocaleString('ja-JP');
 }
 
-// カンマ除去して数値化
+// Parse number from formatted string
 function parseNumber(str) {
     return parseInt(str.replace(/,/g, '')) || 0;
 }
 
-// localStorageから選択状態を復元
+// Load selection from localStorage
 function loadSelection() {
     const saved = localStorage.getItem(STORAGE_KEY_PORTFOLIO);
     if (saved) {
@@ -1022,7 +1745,7 @@ function loadSelection() {
     }
 }
 
-// 選択状態をlocalStorageに保存
+// Save selection to localStorage
 function saveSelection() {
     const selectedKeys = [];
     document.querySelectorAll('.stock-checkbox:checked').forEach(cb => {
@@ -1031,13 +1754,13 @@ function saveSelection() {
     localStorage.setItem(STORAGE_KEY_PORTFOLIO, JSON.stringify(selectedKeys));
 }
 
-// 資金をlocalStorageに保存
+// Save capital to localStorage
 function saveCapital() {
     const capital = parseNumber(availableCapitalInput.value);
     localStorage.setItem(STORAGE_KEY_CAPITAL, capital.toString());
 }
 
-// ポートフォリオ計算
+// Calculate portfolio
 function calculatePortfolio() {
     let totalAmount = 0;
     let totalYuutai = 0;
@@ -1059,21 +1782,22 @@ function calculatePortfolio() {
     const availableCapital = parseNumber(availableCapitalInput.value);
     const portfolioYield = totalAmount > 0 ? weightedPerformance / totalAmount : 0;
 
-    // UI更新
+    // Update UI
     selectedCountEl.textContent = count;
-    totalCapitalEl.textContent = formatNumber(totalAmount) + '円';
-    totalYuutaiEl.textContent = formatNumber(totalYuutai) + '円';
+    totalCapitalEl.textContent = '¥' + formatNumber(totalAmount);
+    totalYuutaiEl.textContent = '¥' + formatNumber(totalYuutai);
     portfolioYieldEl.textContent = portfolioYield.toFixed(2) + '%';
 
-    // 資金警告
+    // Capital warning
     if (availableCapital > 0 && totalAmount > availableCapital) {
-        capitalWarningEl.style.display = 'block';
-        capitalWarningEl.textContent = `資金が ${formatNumber(totalAmount - availableCapital)}円 不足しています`;
+        capitalWarningEl.classList.add('show');
+        capitalWarningEl.querySelector('span').textContent =
+            `資金が ¥${formatNumber(totalAmount - availableCapital)} 不足しています`;
     } else {
-        capitalWarningEl.style.display = 'none';
+        capitalWarningEl.classList.remove('show');
     }
 
-    // 全選択チェックボックスの状態更新
+    // Update select all checkbox
     const allCheckboxes = document.querySelectorAll('.stock-checkbox');
     const visibleCheckboxes = Array.from(allCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
     const checkedVisible = visibleCheckboxes.filter(cb => cb.checked).length;
@@ -1081,7 +1805,7 @@ function calculatePortfolio() {
     selectAllCheckbox.indeterminate = checkedVisible > 0 && checkedVisible < visibleCheckboxes.length;
 }
 
-// チェックボックスイベント
+// Checkbox events
 document.querySelectorAll('.stock-checkbox').forEach(cb => {
     cb.addEventListener('change', () => {
         saveSelection();
@@ -1089,7 +1813,7 @@ document.querySelectorAll('.stock-checkbox').forEach(cb => {
     });
 });
 
-// 全選択チェックボックス
+// Select all checkbox
 selectAllCheckbox.addEventListener('change', () => {
     const visibleCheckboxes = Array.from(document.querySelectorAll('.stock-checkbox'))
         .filter(cb => cb.closest('tr').style.display !== 'none');
@@ -1098,14 +1822,14 @@ selectAllCheckbox.addEventListener('change', () => {
     calculatePortfolio();
 });
 
-// 選択解除ボタン
+// Clear selection button
 clearSelectionBtn.addEventListener('click', () => {
     document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
     saveSelection();
     calculatePortfolio();
 });
 
-// 自動選択ボタン
+// Auto select button
 const autoSelectBtn = document.getElementById('auto-select');
 autoSelectBtn.addEventListener('click', () => {
     const availableCapital = parseNumber(availableCapitalInput.value);
@@ -1114,10 +1838,10 @@ autoSelectBtn.addEventListener('click', () => {
         return;
     }
 
-    // 一旦全部解除
+    // Clear all
     document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
 
-    // 表示中の行を収益率順にソート
+    // Sort visible rows by performance
     const visibleRows = Array.from(document.querySelectorAll('tbody tr'))
         .filter(row => row.style.display !== 'none')
         .map(row => ({
@@ -1126,10 +1850,10 @@ autoSelectBtn.addEventListener('click', () => {
             amount: parseFloat(row.dataset.amount) || 0,
             performance: parseFloat(row.dataset.performance) || 0
         }))
-        .filter(item => item.amount > 0 && item.performance > 0)  // 有効なもののみ
-        .sort((a, b) => b.performance - a.performance);  // 収益率降順
+        .filter(item => item.amount > 0 && item.performance > 0)
+        .sort((a, b) => b.performance - a.performance);
 
-    // 予算内で選択
+    // Select within budget
     let remainingCapital = availableCapital;
     let selectedCount = 0;
 
@@ -1144,15 +1868,13 @@ autoSelectBtn.addEventListener('click', () => {
     saveSelection();
     calculatePortfolio();
 
-    // 結果を通知
     if (selectedCount > 0) {
-        console.log(`自動選択: ${selectedCount}銘柄, 残り${formatNumber(remainingCapital)}円`);
+        console.log(`Auto-selected: ${selectedCount} stocks, remaining: ¥${formatNumber(remainingCapital)}`);
     }
 });
 
-// 資金入力
+// Capital input
 availableCapitalInput.addEventListener('input', (e) => {
-    // カンマ自動挿入
     const value = e.target.value.replace(/,/g, '').replace(/[^\d]/g, '');
     if (value) {
         e.target.value = formatNumber(parseInt(value));
@@ -1161,7 +1883,7 @@ availableCapitalInput.addEventListener('input', (e) => {
     calculatePortfolio();
 });
 
-// フィルター関連
+// Filter functions
 function isKarauriOk(row) {
     const isTaishaku = row.dataset.taishaku === 'true';
     const isStop = row.dataset.restriction === '停止';
@@ -1192,7 +1914,6 @@ function restoreOrder() {
 }
 
 function applyFilter(filter) {
-    // 日興タブの場合は nikko-mode クラスを追加
     if (filter === 'nikko') {
         table.classList.add('nikko-mode');
         sortByMonthlyYield();
@@ -1200,6 +1921,7 @@ function applyFilter(filter) {
         table.classList.remove('nikko-mode');
         restoreOrder();
     }
+
     document.querySelectorAll('tbody tr').forEach(row => {
         if (filter === 'all') {
             row.style.display = '';
@@ -1211,7 +1933,7 @@ function applyFilter(filter) {
             row.style.display = !isKarauriOk(row) ? '' : 'none';
         }
     });
-    // フィルター後にポートフォリオ再計算（全選択状態更新のため）
+
     calculatePortfolio();
 }
 
@@ -1223,7 +1945,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// 初期化
+// Initialize
 loadSelection();
 updateKarauriCount();
 applyFilter('karauri');
