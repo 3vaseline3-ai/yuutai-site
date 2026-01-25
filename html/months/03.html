@@ -299,6 +299,20 @@ tr:has(.stock-checkbox:checked) {
 
 </head>
 <body>
+    <script>
+    (function() {
+        const AUTH_KEY = 'yuutai_auth';
+        const PASS = '1077';
+        if (localStorage.getItem(AUTH_KEY) !== 'ok') {
+            const input = prompt('暗証番号を入力してください');
+            if (input !== PASS) {
+                document.body.innerHTML = '<h1 style="text-align:center;margin-top:100px;">アクセス拒否</h1>';
+                return;
+            }
+            localStorage.setItem(AUTH_KEY, 'ok');
+        }
+    })();
+    </script>
     <div class="container">
         <nav>
             <a href="../index.html">トップ</a>
