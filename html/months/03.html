@@ -102,11 +102,104 @@
     margin-top: -10px;
     margin-bottom: 15px;
 }
+
+/* ポートフォリオセクション */
+.portfolio-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+.portfolio-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.portfolio-input label {
+    font-weight: 600;
+}
+.portfolio-input input {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    width: 180px;
+    text-align: right;
+}
+.portfolio-input input:focus {
+    outline: 3px solid rgba(255,255,255,0.5);
+}
+.portfolio-summary {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.summary-item .label {
+    font-size: 0.85em;
+    opacity: 0.9;
+}
+.summary-item .value {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+.summary-item.highlight {
+    background: rgba(255,255,255,0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+.summary-item.highlight .value {
+    font-size: 1.6em;
+    color: #ffd93d;
+}
+.portfolio-warning {
+    background: #ff6b6b;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+.clear-selection-btn {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.clear-selection-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* チェックボックス列 */
+.checkbox-col {
+    width: 40px;
+    text-align: center;
+}
+.checkbox-col input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+tr:has(.stock-checkbox:checked) {
+    background: #e8f4fd !important;
+}
+
 .filter-controls {
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 .filter-btn {
     padding: 8px 16px;
@@ -166,6 +259,31 @@
     background: #fff3cd;
     color: #856404;
 }
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+    .portfolio-section {
+        padding: 15px;
+    }
+    .portfolio-input {
+        flex-wrap: wrap;
+    }
+    .portfolio-input input {
+        width: 140px;
+    }
+    .portfolio-summary {
+        gap: 15px;
+    }
+    .summary-item .value {
+        font-size: 1.1em;
+    }
+    .summary-item.highlight .value {
+        font-size: 1.3em;
+    }
+    .checkbox-col {
+        width: 30px;
+    }
+}
 </style>
 
 </head>
@@ -203,6 +321,37 @@
 <h1>3月権利確定銘柄 <span class="interest-badge">金利 0.279%</span></h1>
 <p class="interest-detail">権利付日: 2026/03/27 (60日間)</p>
 
+<!-- ポートフォリオ計算セクション -->
+<div class="portfolio-section">
+    <div class="portfolio-input">
+        <label>利用可能資金:</label>
+        <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
+        <span>円</span>
+    </div>
+    <div class="portfolio-summary">
+        <div class="summary-item">
+            <span class="label">選択</span>
+            <span class="value"><strong id="selected-count">0</strong>銘柄</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">必要資金</span>
+            <span class="value" id="total-capital">0円</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">優待合計</span>
+            <span class="value" id="total-yuutai">0円</span>
+        </div>
+        <div class="summary-item highlight">
+            <span class="label">利回り</span>
+            <span class="value" id="portfolio-yield">--%</span>
+        </div>
+    </div>
+    <div class="portfolio-warning" id="capital-warning" style="display:none;">
+        資金が不足しています
+    </div>
+    <button class="clear-selection-btn" id="clear-selection">選択解除</button>
+</div>
+
 <div class="filter-controls">
     <button class="filter-btn" data-filter="nikko">日興在庫あり</button>
     <button class="filter-btn active" data-filter="karauri">空売可能</button>
@@ -218,6 +367,7 @@
 <table>
     <thead>
         <tr>
+            <th class="checkbox-col"><input type="checkbox" id="select-all" title="全選択"></th>
             <th>コード</th>
             <th>日興</th>
             <th>銘柄名</th>
@@ -230,7 +380,6 @@
             <th class="hide-mobile nikko-only">月利回</th>
             <th class="hide-mobile non-nikko">最大逆</th>
             <th class="non-nikko">収益</th>
-            <th class="hide-mobile non-nikko">累計</th>
         </tr>
     </thead>
     <tbody>
@@ -243,7 +392,18 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="18.1818" data-monthly-yield="5.9676060606060615">
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="18.1818"
+            data-monthly-yield="5.9676060606060615"
+            data-stock-key="9760_100"
+            data-amount="16500.0"
+            data-yuutai="3000.0"
+            data-performance="11.5394"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9760_100"></td>
             <td><a href="https://gokigen-life.tokyo/9760yutai/" target="_blank">9760</a></td>
             <td class="number">
                 
@@ -262,10 +422,6 @@
             <td class="number non-nikko positive">
                 11.54%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">16,500</td>
         </tr>
         
         
@@ -275,7 +431,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="6.1538" data-monthly-yield="1.9582820512820514">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="6.1538"
+            data-monthly-yield="1.9582820512820514"
+            data-stock-key="6096_100"
+            data-amount="32500.0"
+            data-yuutai="2000.0"
+            data-performance="5.2099"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6096_100"></td>
             <td><a href="https://gokigen-life.tokyo/6096yutai/" target="_blank">6096</a></td>
             <td class="number">
                 
@@ -294,10 +462,6 @@
             <td class="number non-nikko positive">
                 5.21%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">49,000</td>
         </tr>
         
         
@@ -307,7 +471,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="4.9505" data-monthly-yield="1.55716501650165">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="4.9505"
+            data-monthly-yield="1.55716501650165"
+            data-stock-key="3179_100"
+            data-amount="121200.0"
+            data-yuutai="6000.0"
+            data-performance="4.3101"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3179_100"></td>
             <td><a href="https://gokigen-life.tokyo/3179yutai/" target="_blank">3179</a></td>
             <td class="number">
                 
@@ -326,10 +502,6 @@
             <td class="number non-nikko positive">
                 4.31%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">170,200</td>
         </tr>
         
         
@@ -339,7 +511,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="3.6036" data-monthly-yield="1.1082012012012012">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="3.6036"
+            data-monthly-yield="1.1082012012012012"
+            data-stock-key="9788_100"
+            data-amount="55500.0"
+            data-yuutai="2000.0"
+            data-performance="2.9353"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9788_100"></td>
             <td><a href="https://gokigen-life.tokyo/9788yutai/" target="_blank">9788</a></td>
             <td class="number">
                 
@@ -358,10 +542,6 @@
             <td class="number non-nikko positive">
                 2.94%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">225,700</td>
         </tr>
         
         
@@ -371,7 +551,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="3.4722" data-monthly-yield="1.0644074074074075">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="3.4722"
+            data-monthly-yield="1.0644074074074075"
+            data-stock-key="4442_500"
+            data-amount="216000.0"
+            data-yuutai="7500.0"
+            data-performance="2.8866"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4442_500"></td>
             <td><a href="https://gokigen-life.tokyo/4442yutai/" target="_blank">4442</a></td>
             <td class="number">
                 
@@ -390,10 +582,6 @@
             <td class="number non-nikko positive">
                 2.89%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">441,700</td>
         </tr>
         
         
@@ -403,7 +591,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="false" data-yield="3.6541" data-monthly-yield="1.1250267965895253">
+        
+        <tr data-taishaku="true"
+            data-restriction="注意"
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="3.6541"
+            data-monthly-yield="1.1250267965895253"
+            data-stock-key="7769_100"
+            data-amount="410500.0"
+            data-yuutai="15000.0"
+            data-performance="2.866"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7769_100"></td>
             <td><a href="https://gokigen-life.tokyo/7769yutai/" target="_blank">7769</a></td>
             <td class="number">
                 
@@ -422,10 +622,6 @@
             <td class="number non-nikko positive">
                 2.87%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">852,200</td>
         </tr>
         
         
@@ -435,7 +631,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="3.75" data-monthly-yield="1.1570000000000003">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="3.75"
+            data-monthly-yield="1.1570000000000003"
+            data-stock-key="4765_500"
+            data-amount="320000.0"
+            data-yuutai="12000.0"
+            data-performance="2.8487"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4765_500"></td>
             <td><a href="https://gokigen-life.tokyo/4765yutai/" target="_blank">4765</a></td>
             <td class="number">
                 
@@ -454,10 +662,6 @@
             <td class="number non-nikko positive">
                 2.85%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">1,172,200</td>
         </tr>
         
         
@@ -467,7 +671,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="3.0675" data-monthly-yield="0.9294948875255624">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="3.0675"
+            data-monthly-yield="0.9294948875255624"
+            data-stock-key="7780_100"
+            data-amount="163000.0"
+            data-yuutai="5000.0"
+            data-performance="2.6645"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7780_100"></td>
             <td><a href="https://gokigen-life.tokyo/7780yutai/" target="_blank">7780</a></td>
             <td class="number">
                 
@@ -486,10 +702,6 @@
             <td class="number non-nikko positive">
                 2.66%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">1,335,200</td>
         </tr>
         
         
@@ -499,7 +711,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="false" data-yield="2.7624" data-monthly-yield="0.8278103130755063">
+        
+        <tr data-taishaku="true"
+            data-restriction="注意"
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.7624"
+            data-monthly-yield="0.8278103130755063"
+            data-stock-key="3521_1200"
+            data-amount="217200.0"
+            data-yuutai="6000.0"
+            data-performance="2.5484"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3521_1200"></td>
             <td><a href="https://gokigen-life.tokyo/3521yutai/" target="_blank">3521</a></td>
             <td class="number">
                 
@@ -518,10 +742,6 @@
             <td class="number non-nikko positive">
                 2.55%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">1,552,400</td>
         </tr>
         
         
@@ -531,7 +751,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="3.125" data-monthly-yield="0.9486666666666665">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="3.125"
+            data-monthly-yield="0.9486666666666665"
+            data-stock-key="4681_100"
+            data-amount="192000.0"
+            data-yuutai="6000.0"
+            data-performance="2.4926"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4681_100"></td>
             <td><a href="https://gokigen-life.tokyo/4681yutai/" target="_blank">4681</a></td>
             <td class="number">
                 
@@ -550,10 +782,6 @@
             <td class="number non-nikko positive">
                 2.49%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">1,744,400</td>
         </tr>
         
         
@@ -563,7 +791,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.8129" data-monthly-yield="0.8446465072667605">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.8129"
+            data-monthly-yield="0.8446465072667605"
+            data-stock-key="2749_500"
+            data-amount="355500.0"
+            data-yuutai="10000.0"
+            data-performance="2.4133"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2749_500"></td>
             <td><a href="https://gokigen-life.tokyo/2749yutai/" target="_blank">2749</a></td>
             <td class="number">
                 
@@ -582,10 +822,6 @@
             <td class="number non-nikko positive">
                 2.41%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">2,099,900</td>
         </tr>
         
         
@@ -595,7 +831,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.8531" data-monthly-yield="0.8580223490252021">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.8531"
+            data-monthly-yield="0.8580223490252021"
+            data-stock-key="6545_100"
+            data-amount="70100.0"
+            data-yuutai="2000.0"
+            data-performance="2.3035"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6545_100"></td>
             <td><a href="https://gokigen-life.tokyo/6545yutai/" target="_blank">6545</a></td>
             <td class="number">
                 
@@ -614,10 +862,6 @@
             <td class="number non-nikko positive">
                 2.30%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">2,170,000</td>
         </tr>
         
         
@@ -627,7 +871,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.5424" data-monthly-yield="0.754457627118644">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.5424"
+            data-monthly-yield="0.754457627118644"
+            data-stock-key="7743_100"
+            data-amount="59000.0"
+            data-yuutai="1500.0"
+            data-performance="2.2179"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7743_100"></td>
             <td><a href="https://gokigen-life.tokyo/7743yutai/" target="_blank">7743</a></td>
             <td class="number">
                 
@@ -646,10 +902,6 @@
             <td class="number non-nikko positive">
                 2.22%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">2,229,000</td>
         </tr>
         
         
@@ -659,7 +911,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.8551" data-monthly-yield="0.8587011658339283">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.8551"
+            data-monthly-yield="0.8587011658339283"
+            data-stock-key="4053_3000"
+            data-amount="1401000.0"
+            data-yuutai="40000.0"
+            data-performance="2.2036"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4053_3000"></td>
             <td><a href="https://gokigen-life.tokyo/4053yutai/" target="_blank">4053</a></td>
             <td class="number">
                 
@@ -678,10 +942,6 @@
             <td class="number non-nikko positive">
                 2.20%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">3,630,000</td>
         </tr>
         
         
@@ -691,7 +951,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.7115" data-monthly-yield="0.8108322487346349">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.7115"
+            data-monthly-yield="0.8108322487346349"
+            data-stock-key="6045_100"
+            data-amount="184400.0"
+            data-yuutai="5000.0"
+            data-performance="2.0927"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6045_100"></td>
             <td><a href="https://gokigen-life.tokyo/6045yutai/" target="_blank">6045</a></td>
             <td class="number">
                 
@@ -710,10 +982,6 @@
             <td class="number non-nikko positive">
                 2.09%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">3,814,400</td>
         </tr>
         
         
@@ -723,7 +991,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="3.736" data-monthly-yield="1.1523300124533002">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="3.736"
+            data-monthly-yield="1.1523300124533002"
+            data-stock-key="7416_100"
+            data-amount="80300.0"
+            data-yuutai="3000.0"
+            data-performance="2.0324"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7416_100"></td>
             <td><a href="https://gokigen-life.tokyo/7416yutai/" target="_blank">7416</a></td>
             <td class="number">
                 
@@ -742,10 +1022,6 @@
             <td class="number non-nikko positive">
                 2.03%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">3,894,700</td>
         </tr>
         
         
@@ -755,7 +1031,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="false" data-yield="2.6792" data-monthly-yield="0.8000564858227283">
+        
+        <tr data-taishaku="true"
+            data-restriction="注意"
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.6792"
+            data-monthly-yield="0.8000564858227283"
+            data-stock-key="9633_100"
+            data-amount="149300.0"
+            data-yuutai="4000.0"
+            data-performance="2.0253"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9633_100"></td>
             <td><a href="https://gokigen-life.tokyo/9633yutai/" target="_blank">9633</a></td>
             <td class="number">
                 
@@ -774,10 +1062,6 @@
             <td class="number non-nikko positive">
                 2.03%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">4,044,000</td>
         </tr>
         
         
@@ -787,7 +1071,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.693" data-monthly-yield="0.8046660682226212">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.693"
+            data-monthly-yield="0.8046660682226212"
+            data-stock-key="4718_100"
+            data-amount="222800.0"
+            data-yuutai="6000.0"
+            data-performance="2.0106"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4718_100"></td>
             <td><a href="https://gokigen-life.tokyo/4718yutai/" target="_blank">4718</a></td>
             <td class="number">
                 
@@ -806,10 +1102,6 @@
             <td class="number non-nikko positive">
                 2.01%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">4,266,800</td>
         </tr>
         
         
@@ -819,7 +1111,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.627" data-monthly-yield="0.7826567425569176">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.627"
+            data-monthly-yield="0.7826567425569176"
+            data-stock-key="3232_100"
+            data-amount="57100.0"
+            data-yuutai="1500.0"
+            data-performance="2.0021"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3232_100"></td>
             <td><a href="https://gokigen-life.tokyo/3232yutai/" target="_blank">3232</a></td>
             <td class="number">
                 
@@ -838,10 +1142,6 @@
             <td class="number non-nikko positive">
                 2.00%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">4,323,900</td>
         </tr>
         
         
@@ -851,7 +1151,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.3223" data-monthly-yield="0.6811136398823348">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.3223"
+            data-monthly-yield="0.6811136398823348"
+            data-stock-key="2730_100"
+            data-amount="215300.0"
+            data-yuutai="5000.0"
+            data-performance="1.8833"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2730_100"></td>
             <td><a href="https://gokigen-life.tokyo/2730yutai/" target="_blank">2730</a></td>
             <td class="number">
                 
@@ -870,10 +1182,6 @@
             <td class="number non-nikko positive">
                 1.88%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">4,539,200</td>
         </tr>
         
         
@@ -883,7 +1191,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.1368" data-monthly-yield="0.6192507122507123">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.1368"
+            data-monthly-yield="0.6192507122507123"
+            data-stock-key="4923_100"
+            data-amount="117000.0"
+            data-yuutai="2500.0"
+            data-performance="1.8758"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4923_100"></td>
             <td><a href="https://gokigen-life.tokyo/4923yutai/" target="_blank">4923</a></td>
             <td class="number">
                 
@@ -902,10 +1222,6 @@
             <td class="number non-nikko positive">
                 1.88%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">4,656,200</td>
         </tr>
         
         
@@ -915,7 +1231,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.6042" data-monthly-yield="0.7750555555555556">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.6042"
+            data-monthly-yield="0.7750555555555556"
+            data-stock-key="3992_1000"
+            data-amount="576000.0"
+            data-yuutai="15000.0"
+            data-performance="1.875"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3992_1000"></td>
             <td><a href="https://gokigen-life.tokyo/3992yutai/" target="_blank">3992</a></td>
             <td class="number">
                 
@@ -934,10 +1262,6 @@
             <td class="number non-nikko positive">
                 1.88%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">5,232,200</td>
         </tr>
         
         
@@ -947,7 +1271,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.027" data-monthly-yield="0.5826756756756757">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.027"
+            data-monthly-yield="0.5826756756756757"
+            data-stock-key="8051_100"
+            data-amount="148000.0"
+            data-yuutai="3000.0"
+            data-performance="1.8298"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8051_100"></td>
             <td><a href="https://gokigen-life.tokyo/8051yutai/" target="_blank">8051</a></td>
             <td class="number">
                 
@@ -966,10 +1302,6 @@
             <td class="number non-nikko positive">
                 1.83%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">5,380,200</td>
         </tr>
         
         
@@ -979,7 +1311,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="2.0661" data-monthly-yield="0.5957052341597796">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.0661"
+            data-monthly-yield="0.5957052341597796"
+            data-stock-key="3924_100"
+            data-amount="96800.0"
+            data-yuutai="2000.0"
+            data-performance="1.7768"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3924_100"></td>
             <td><a href="https://gokigen-life.tokyo/3924yutai/" target="_blank">3924</a></td>
             <td class="number">
                 
@@ -998,10 +1342,6 @@
             <td class="number non-nikko positive">
                 1.78%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">5,477,000</td>
         </tr>
         
         
@@ -1011,7 +1351,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.8595" data-monthly-yield="0.5268347107438016">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.8595"
+            data-monthly-yield="0.5268347107438016"
+            data-stock-key="3679_1000"
+            data-amount="484000.0"
+            data-yuutai="9000.0"
+            data-performance="1.765"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3679_1000"></td>
             <td><a href="https://gokigen-life.tokyo/3679yutai/" target="_blank">3679</a></td>
             <td class="number">
                 
@@ -1030,10 +1382,6 @@
             <td class="number non-nikko positive">
                 1.76%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">5,961,000</td>
         </tr>
         
         
@@ -1043,7 +1391,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="2.2542" data-monthly-yield="0.658385366769982">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="2.2542"
+            data-monthly-yield="0.658385366769982"
+            data-stock-key="7616_500"
+            data-amount="887250.0"
+            data-yuutai="20000.0"
+            data-performance="1.6154"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7616_500"></td>
             <td><a href="https://gokigen-life.tokyo/7616yutai/" target="_blank">7616</a></td>
             <td class="number">
                 
@@ -1062,10 +1422,6 @@
             <td class="number non-nikko positive">
                 1.62%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">6,848,250</td>
         </tr>
         
         
@@ -1075,7 +1431,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="2.0534" data-monthly-yield="0.5914626967830253">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.0534"
+            data-monthly-yield="0.5914626967830253"
+            data-stock-key="8742_100"
+            data-amount="48700.0"
+            data-yuutai="1000.0"
+            data-performance="1.5885"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8742_100"></td>
             <td><a href="https://gokigen-life.tokyo/8742yutai/" target="_blank">8742</a></td>
             <td class="number">
                 
@@ -1094,10 +1462,6 @@
             <td class="number non-nikko positive">
                 1.59%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">6,896,950</td>
         </tr>
         
         
@@ -1107,7 +1471,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.6745" data-monthly-yield="0.46516030363920524">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.6745"
+            data-monthly-yield="0.46516030363920524"
+            data-stock-key="9039_100"
+            data-amount="298600.0"
+            data-yuutai="5000.0"
+            data-performance="1.5477"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9039_100"></td>
             <td><a href="https://gokigen-life.tokyo/9039yutai/" target="_blank">9039</a></td>
             <td class="number">
                 
@@ -1126,10 +1502,6 @@
             <td class="number non-nikko positive">
                 1.55%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">7,195,550</td>
         </tr>
         
         
@@ -1139,7 +1511,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6639" data-monthly-yield="0.46163117027176925">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6639"
+            data-monthly-yield="0.46163117027176925"
+            data-stock-key="6089_500"
+            data-amount="601000.0"
+            data-yuutai="10000.0"
+            data-performance="1.53"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6089_500"></td>
             <td><a href="https://gokigen-life.tokyo/6089yutai/" target="_blank">6089</a></td>
             <td class="number">
                 
@@ -1158,10 +1542,6 @@
             <td class="number non-nikko positive">
                 1.53%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">7,796,550</td>
         </tr>
         
         
@@ -1171,7 +1551,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.8018" data-monthly-yield="0.5076006006006005">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.8018"
+            data-monthly-yield="0.5076006006006005"
+            data-stock-key="9788_200"
+            data-amount="111000.0"
+            data-yuutai="2000.0"
+            data-performance="1.4938"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9788_200"></td>
             <td><a href="https://gokigen-life.tokyo/9788yutai/" target="_blank">9788</a></td>
             <td class="number">
                 
@@ -1190,10 +1582,6 @@
             <td class="number non-nikko positive">
                 1.49%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">7,907,550</td>
         </tr>
         
         
@@ -1203,7 +1591,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.8018" data-monthly-yield="0.5076006006006005">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.8018"
+            data-monthly-yield="0.5076006006006005"
+            data-stock-key="9788_200"
+            data-amount="111000.0"
+            data-yuutai="2000.0"
+            data-performance="1.4938"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9788_200"></td>
             <td><a href="https://gokigen-life.tokyo/9788yutai/" target="_blank">9788</a></td>
             <td class="number">
                 
@@ -1222,10 +1622,6 @@
             <td class="number non-nikko positive">
                 1.49%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">8,018,550</td>
         </tr>
         
         
@@ -1235,7 +1631,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="1.5974" data-monthly-yield="0.43948136315228964">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="1.5974"
+            data-monthly-yield="0.43948136315228964"
+            data-stock-key="4678_100"
+            data-amount="31300.0"
+            data-yuutai="500.0"
+            data-performance="1.378"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4678_100"></td>
             <td><a href="https://gokigen-life.tokyo/4678yutai/" target="_blank">4678</a></td>
             <td class="number">
                 
@@ -1254,10 +1662,6 @@
             <td class="number non-nikko positive">
                 1.38%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">8,049,850</td>
         </tr>
         
         
@@ -1267,7 +1671,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="2.3401" data-monthly-yield="0.68703120124805">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.3401"
+            data-monthly-yield="0.68703120124805"
+            data-stock-key="3178_100"
+            data-amount="128200.0"
+            data-yuutai="3000.0"
+            data-performance="1.3582"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3178_100"></td>
             <td><a href="https://gokigen-life.tokyo/3178yutai/" target="_blank">3178</a></td>
             <td class="number">
                 
@@ -1286,10 +1702,6 @@
             <td class="number non-nikko positive">
                 1.36%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">8,178,050</td>
         </tr>
         
         
@@ -1299,7 +1711,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="2.6786" data-monthly-yield="0.7998571428571429">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="2.6786"
+            data-monthly-yield="0.7998571428571429"
+            data-stock-key="9423_5000"
+            data-amount="560000.0"
+            data-yuutai="15000.0"
+            data-performance="1.3482"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9423_5000"></td>
             <td><a href="https://gokigen-life.tokyo/9423yutai/" target="_blank">9423</a></td>
             <td class="number">
                 
@@ -1318,10 +1742,6 @@
             <td class="number non-nikko positive">
                 1.35%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">8,738,050</td>
         </tr>
         
         
@@ -1331,7 +1751,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.2376" data-monthly-yield="0.3195412541254125">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.2376"
+            data-monthly-yield="0.3195412541254125"
+            data-stock-key="3179_200"
+            data-amount="242400.0"
+            data-yuutai="3000.0"
+            data-performance="1.3398"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3179_200"></td>
             <td><a href="https://gokigen-life.tokyo/3179yutai/" target="_blank">3179</a></td>
             <td class="number">
                 
@@ -1350,10 +1782,6 @@
             <td class="number non-nikko positive">
                 1.34%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">8,980,450</td>
         </tr>
         
         
@@ -1363,7 +1791,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="1.468" data-monthly-yield="0.3963325504012527">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="1.468"
+            data-monthly-yield="0.3963325504012527"
+            data-stock-key="7458_200"
+            data-amount="340600.0"
+            data-yuutai="5000.0"
+            data-performance="1.2668"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7458_200"></td>
             <td><a href="https://gokigen-life.tokyo/7458yutai/" target="_blank">7458</a></td>
             <td class="number">
                 
@@ -1382,10 +1822,6 @@
             <td class="number non-nikko positive">
                 1.27%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">9,321,050</td>
         </tr>
         
         
@@ -1395,7 +1831,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.5015" data-monthly-yield="0.40750050050050046">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.5015"
+            data-monthly-yield="0.40750050050050046"
+            data-stock-key="9887_100"
+            data-amount="666000.0"
+            data-yuutai="10000.0"
+            data-performance="1.2017"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9887_100"></td>
             <td><a href="https://gokigen-life.tokyo/9887yutai/" target="_blank">9887</a></td>
             <td class="number">
                 
@@ -1414,10 +1862,6 @@
             <td class="number non-nikko positive">
                 1.20%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">9,987,050</td>
         </tr>
         
         
@@ -1427,7 +1871,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.4409" data-monthly-yield="0.3873073967339097">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.4409"
+            data-monthly-yield="0.3873073967339097"
+            data-stock-key="5269_2000"
+            data-amount="694000.0"
+            data-yuutai="10000.0"
+            data-performance="1.1787"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="5269_2000"></td>
             <td><a href="https://gokigen-life.tokyo/5269yutai/" target="_blank">5269</a></td>
             <td class="number">
                 
@@ -1446,10 +1902,6 @@
             <td class="number non-nikko positive">
                 1.18%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">10,681,050</td>
         </tr>
         
         
@@ -1459,7 +1911,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.5504" data-monthly-yield="0.4237958656330749">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.5504"
+            data-monthly-yield="0.4237958656330749"
+            data-stock-key="9969_500"
+            data-amount="129000.0"
+            data-yuutai="2000.0"
+            data-performance="1.1752"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9969_500"></td>
             <td><a href="https://gokigen-life.tokyo/9969yutai/" target="_blank">9969</a></td>
             <td class="number">
                 
@@ -1478,10 +1942,6 @@
             <td class="number non-nikko positive">
                 1.18%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">10,810,050</td>
         </tr>
         
         
@@ -1491,7 +1951,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.1429" data-monthly-yield="0.2879523809523809">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.1429"
+            data-monthly-yield="0.2879523809523809"
+            data-stock-key="9274_100"
+            data-amount="87500.0"
+            data-yuutai="1000.0"
+            data-performance="1.1654"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9274_100"></td>
             <td><a href="https://gokigen-life.tokyo/9274yutai/" target="_blank">9274</a></td>
             <td class="number">
                 
@@ -1510,10 +1982,6 @@
             <td class="number non-nikko positive">
                 1.17%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">10,897,550</td>
         </tr>
         
         
@@ -1523,7 +1991,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.5209" data-monthly-yield="0.4139708491761724">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.5209"
+            data-monthly-yield="0.4139708491761724"
+            data-stock-key="3484_500"
+            data-amount="657500.0"
+            data-yuutai="10000.0"
+            data-performance="1.1077"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3484_500"></td>
             <td><a href="https://gokigen-life.tokyo/3484yutai/" target="_blank">3484</a></td>
             <td class="number">
                 
@@ -1542,10 +2022,6 @@
             <td class="number non-nikko positive">
                 1.11%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">11,555,050</td>
         </tr>
         
         
@@ -1555,7 +2031,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.9189" data-monthly-yield="0.2133162408870918">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.9189"
+            data-monthly-yield="0.2133162408870918"
+            data-stock-key="9831_1000"
+            data-amount="544100.0"
+            data-yuutai="5000.0"
+            data-performance="1.0533"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9831_1000"></td>
             <td><a href="https://gokigen-life.tokyo/9831yutai/" target="_blank">9831</a></td>
             <td class="number">
                 
@@ -1574,10 +2062,6 @@
             <td class="number non-nikko positive">
                 1.05%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">12,099,150</td>
         </tr>
         
         
@@ -1587,7 +2071,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.2277" data-monthly-yield="0.31624902803355837">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.2277"
+            data-monthly-yield="0.31624902803355837"
+            data-stock-key="9041_100"
+            data-amount="325800.0"
+            data-yuutai="4000.0"
+            data-performance="1.0329"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9041_100"></td>
             <td><a href="https://gokigen-life.tokyo/9041yutai/" target="_blank">9041</a></td>
             <td class="number">
                 
@@ -1606,10 +2102,6 @@
             <td class="number non-nikko positive">
                 1.03%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">12,424,950</td>
         </tr>
         
         
@@ -1619,7 +2111,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.7857" data-monthly-yield="0.5022380952380953">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.7857"
+            data-monthly-yield="0.5022380952380953"
+            data-stock-key="2378_100"
+            data-amount="112000.0"
+            data-yuutai="2000.0"
+            data-performance="1.031"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2378_100"></td>
             <td><a href="https://gokigen-life.tokyo/2378yutai/" target="_blank">2378</a></td>
             <td class="number">
                 
@@ -1638,10 +2142,6 @@
             <td class="number non-nikko positive">
                 1.03%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">12,536,950</td>
         </tr>
         
         
@@ -1651,7 +2151,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.1696" data-monthly-yield="0.29686354775828455">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.1696"
+            data-monthly-yield="0.29686354775828455"
+            data-stock-key="9882_100"
+            data-amount="171000.0"
+            data-yuutai="2000.0"
+            data-performance="1.0132"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9882_100"></td>
             <td><a href="https://gokigen-life.tokyo/9882yutai/" target="_blank">9882</a></td>
             <td class="number">
                 
@@ -1670,10 +2182,6 @@
             <td class="number non-nikko positive">
                 1.01%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">12,707,950</td>
         </tr>
         
         
@@ -1683,7 +2191,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="1.0359" data-monthly-yield="0.2523157912911358">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="1.0359"
+            data-monthly-yield="0.2523157912911358"
+            data-stock-key="7087_700"
+            data-amount="965300.0"
+            data-yuutai="10000.0"
+            data-performance="1.0065"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7087_700"></td>
             <td><a href="https://gokigen-life.tokyo/7087yutai/" target="_blank">7087</a></td>
             <td class="number">
                 
@@ -1702,10 +2222,6 @@
             <td class="number non-nikko positive">
                 1.01%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">13,673,250</td>
         </tr>
         
         
@@ -1715,7 +2231,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6949" data-monthly-yield="0.47197175141242936">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6949"
+            data-monthly-yield="0.47197175141242936"
+            data-stock-key="3690_100"
+            data-amount="59000.0"
+            data-yuutai="1000.0"
+            data-performance="0.9898"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3690_100"></td>
             <td><a href="https://gokigen-life.tokyo/3690yutai/" target="_blank">3690</a></td>
             <td class="number">
                 
@@ -1734,10 +2262,6 @@
             <td class="number non-nikko positive">
                 0.99%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">13,732,250</td>
         </tr>
         
         
@@ -1747,7 +2271,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.6731" data-monthly-yield="0.13135897435897434">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.6731"
+            data-monthly-yield="0.13135897435897434"
+            data-stock-key="3848_1000"
+            data-amount="1040000.0"
+            data-yuutai="7000.0"
+            data-performance="0.9508"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3848_1000"></td>
             <td><a href="https://gokigen-life.tokyo/3848yutai/" target="_blank">3848</a></td>
             <td class="number">
                 
@@ -1766,10 +2302,6 @@
             <td class="number non-nikko positive">
                 0.95%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">14,772,250</td>
         </tr>
         
         
@@ -1779,7 +2311,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.0823" data-monthly-yield="0.26775036075036074">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.0823"
+            data-monthly-yield="0.26775036075036074"
+            data-stock-key="6463_200"
+            data-amount="277200.0"
+            data-yuutai="3000.0"
+            data-performance="0.9367"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6463_200"></td>
             <td><a href="https://gokigen-life.tokyo/6463yutai/" target="_blank">6463</a></td>
             <td class="number">
                 
@@ -1798,10 +2342,6 @@
             <td class="number non-nikko positive">
                 0.94%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">15,049,450</td>
         </tr>
         
         
@@ -1811,7 +2351,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.0384" data-monthly-yield="0.25314053305642087">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.0384"
+            data-monthly-yield="0.25314053305642087"
+            data-stock-key="7522_100"
+            data-amount="96300.0"
+            data-yuutai="1000.0"
+            data-performance="0.9335"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7522_100"></td>
             <td><a href="https://gokigen-life.tokyo/7522yutai/" target="_blank">7522</a></td>
             <td class="number">
                 
@@ -1830,10 +2382,6 @@
             <td class="number non-nikko positive">
                 0.93%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">15,145,750</td>
         </tr>
         
         
@@ -1843,7 +2391,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.995" data-monthly-yield="0.23867495854063017">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.995"
+            data-monthly-yield="0.23867495854063017"
+            data-stock-key="3880_100"
+            data-amount="100500.0"
+            data-yuutai="1000.0"
+            data-performance="0.8814"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3880_100"></td>
             <td><a href="https://gokigen-life.tokyo/3880yutai/" target="_blank">3880</a></td>
             <td class="number">
                 
@@ -1862,10 +2422,6 @@
             <td class="number non-nikko positive">
                 0.88%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">15,246,250</td>
         </tr>
         
         
@@ -1875,7 +2431,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.4006" data-monthly-yield="0.3738534080298786">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.4006"
+            data-monthly-yield="0.3738534080298786"
+            data-stock-key="9010_100"
+            data-amount="214200.0"
+            data-yuutai="3000.0"
+            data-performance="0.8777"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9010_100"></td>
             <td><a href="https://gokigen-life.tokyo/9010yutai/" target="_blank">9010</a></td>
             <td class="number">
                 
@@ -1894,10 +2462,6 @@
             <td class="number non-nikko positive">
                 0.88%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">15,460,450</td>
         </tr>
         
         
@@ -1907,7 +2471,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.0999" data-monthly-yield="0.2736361136571952">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.0999"
+            data-monthly-yield="0.2736361136571952"
+            data-stock-key="6562_1000"
+            data-amount="1091000.0"
+            data-yuutai="12000.0"
+            data-performance="0.8607"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6562_1000"></td>
             <td><a href="https://gokigen-life.tokyo/6562yutai/" target="_blank">6562</a></td>
             <td class="number">
                 
@@ -1926,10 +2502,6 @@
             <td class="number non-nikko positive">
                 0.86%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">16,551,450</td>
         </tr>
         
         
@@ -1939,7 +2511,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="false" data-yield="1.1189" data-monthly-yield="0.2799752770673487">
+        
+        <tr data-taishaku="true"
+            data-restriction="注意"
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.1189"
+            data-monthly-yield="0.2799752770673487"
+            data-stock-key="9553_800"
+            data-amount="625600.0"
+            data-yuutai="7000.0"
+            data-performance="0.8513"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9553_800"></td>
             <td><a href="https://gokigen-life.tokyo/9553yutai/" target="_blank">9553</a></td>
             <td class="number">
                 
@@ -1958,10 +2542,6 @@
             <td class="number non-nikko positive">
                 0.85%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">17,177,050</td>
         </tr>
         
         
@@ -1971,7 +2551,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.8117" data-monthly-yield="0.17756277056277053">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.8117"
+            data-monthly-yield="0.17756277056277053"
+            data-stock-key="8137_400"
+            data-amount="1232000.0"
+            data-yuutai="10000.0"
+            data-performance="0.8423"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8137_400"></td>
             <td><a href="https://gokigen-life.tokyo/8137yutai/" target="_blank">8137</a></td>
             <td class="number">
                 
@@ -1990,10 +2582,6 @@
             <td class="number non-nikko positive">
                 0.84%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">18,409,050</td>
         </tr>
         
         
@@ -2003,7 +2591,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.8117" data-monthly-yield="0.17756277056277053">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.8117"
+            data-monthly-yield="0.17756277056277053"
+            data-stock-key="8137_400"
+            data-amount="1232000.0"
+            data-yuutai="10000.0"
+            data-performance="0.8423"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8137_400"></td>
             <td><a href="https://gokigen-life.tokyo/8137yutai/" target="_blank">8137</a></td>
             <td class="number">
                 
@@ -2022,10 +2622,6 @@
             <td class="number non-nikko positive">
                 0.84%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">19,641,050</td>
         </tr>
         
         
@@ -2035,7 +2631,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7342" data-monthly-yield="0.15173813020068527">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.7342"
+            data-monthly-yield="0.15173813020068527"
+            data-stock-key="3183_100"
+            data-amount="136200.0"
+            data-yuutai="1000.0"
+            data-performance="0.8315"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3183_100"></td>
             <td><a href="https://gokigen-life.tokyo/3183yutai/" target="_blank">3183</a></td>
             <td class="number">
                 
@@ -2054,10 +2662,6 @@
             <td class="number non-nikko positive">
                 0.83%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">19,777,250</td>
         </tr>
         
         
@@ -2067,7 +2671,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.1976" data-monthly-yield="0.30620159680638714">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.1976"
+            data-monthly-yield="0.30620159680638714"
+            data-stock-key="3059_100"
+            data-amount="83500.0"
+            data-yuutai="1000.0"
+            data-performance="0.8145"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3059_100"></td>
             <td><a href="https://gokigen-life.tokyo/3059yutai/" target="_blank">3059</a></td>
             <td class="number">
                 
@@ -2086,10 +2702,6 @@
             <td class="number non-nikko positive">
                 0.81%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">19,860,750</td>
         </tr>
         
         
@@ -2099,7 +2711,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="2.4185" data-monthly-yield="0.7131674008810572">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="2.4185"
+            data-monthly-yield="0.7131674008810572"
+            data-stock-key="3067_500"
+            data-amount="227000.0"
+            data-yuutai="5490.0"
+            data-performance="0.7956"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3067_500"></td>
             <td><a href="https://gokigen-life.tokyo/3067yutai/" target="_blank">3067</a></td>
             <td class="number">
                 
@@ -2118,10 +2742,6 @@
             <td class="number non-nikko positive">
                 0.80%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">20,087,750</td>
         </tr>
         
         
@@ -2131,7 +2751,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.932" data-monthly-yield="0.21765548306927618">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.932"
+            data-monthly-yield="0.21765548306927618"
+            data-stock-key="7294_100"
+            data-amount="107300.0"
+            data-yuutai="1000.0"
+            data-performance="0.7739"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7294_100"></td>
             <td><a href="https://gokigen-life.tokyo/7294yutai/" target="_blank">7294</a></td>
             <td class="number">
                 
@@ -2150,10 +2782,6 @@
             <td class="number non-nikko positive">
                 0.77%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">20,195,050</td>
         </tr>
         
         
@@ -2163,7 +2791,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.9289" data-monthly-yield="0.2166454559529339">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.9289"
+            data-monthly-yield="0.2166454559529339"
+            data-stock-key="2730_400"
+            data-amount="861200.0"
+            data-yuutai="8000.0"
+            data-performance="0.7686"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2730_400"></td>
             <td><a href="https://gokigen-life.tokyo/2730yutai/" target="_blank">2730</a></td>
             <td class="number">
                 
@@ -2182,10 +2822,6 @@
             <td class="number non-nikko positive">
                 0.77%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">21,056,250</td>
         </tr>
         
         
@@ -2195,7 +2831,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.9524" data-monthly-yield="0.22446031746031744">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.9524"
+            data-monthly-yield="0.22446031746031744"
+            data-stock-key="165A_1000"
+            data-amount="210000.0"
+            data-yuutai="2000.0"
+            data-performance="0.7619"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="165A_1000"></td>
             <td><a href="https://gokigen-life.tokyo/165Ayutai/" target="_blank">165A</a></td>
             <td class="number">
                 
@@ -2214,10 +2862,6 @@
             <td class="number non-nikko positive">
                 0.76%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">21,266,250</td>
         </tr>
         
         
@@ -2227,7 +2871,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.9524" data-monthly-yield="0.22446031746031744">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.9524"
+            data-monthly-yield="0.22446031746031744"
+            data-stock-key="165A_4000"
+            data-amount="840000.0"
+            data-yuutai="8000.0"
+            data-performance="0.7619"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="165A_4000"></td>
             <td><a href="https://gokigen-life.tokyo/165Ayutai/" target="_blank">165A</a></td>
             <td class="number">
                 
@@ -2246,10 +2902,6 @@
             <td class="number non-nikko positive">
                 0.76%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">22,106,250</td>
         </tr>
         
         
@@ -2259,7 +2911,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.8389" data-monthly-yield="0.1866420581655481">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.8389"
+            data-monthly-yield="0.1866420581655481"
+            data-stock-key="3863_100"
+            data-amount="119200.0"
+            data-yuutai="1000.0"
+            data-performance="0.7612"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3863_100"></td>
             <td><a href="https://gokigen-life.tokyo/3863yutai/" target="_blank">3863</a></td>
             <td class="number">
                 
@@ -2278,10 +2942,6 @@
             <td class="number non-nikko positive">
                 0.76%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">22,225,450</td>
         </tr>
         
         
@@ -2291,7 +2951,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.9234" data-monthly-yield="0.2147870113881194">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.9234"
+            data-monthly-yield="0.2147870113881194"
+            data-stock-key="3912_1000"
+            data-amount="1083000.0"
+            data-yuutai="10000.0"
+            data-performance="0.7378"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3912_1000"></td>
             <td><a href="https://gokigen-life.tokyo/3912yutai/" target="_blank">3912</a></td>
             <td class="number">
                 
@@ -2310,10 +2982,6 @@
             <td class="number non-nikko positive">
                 0.74%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">23,308,450</td>
         </tr>
         
         
@@ -2323,7 +2991,19 @@
         
         
         
-        <tr data-taishaku="false" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.5865" data-monthly-yield="0.10250342130987292">
+        
+        <tr data-taishaku="false"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.5865"
+            data-monthly-yield="0.10250342130987292"
+            data-stock-key="3763_100"
+            data-amount="170500.0"
+            data-yuutai="1000.0"
+            data-performance="0.7351"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3763_100"></td>
             <td><a href="https://gokigen-life.tokyo/3763yutai/" target="_blank">3763</a></td>
             <td class="number">
                 
@@ -2342,10 +3022,6 @@
             <td class="number non-nikko positive">
                 0.74%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">23,478,950</td>
         </tr>
         
         
@@ -2355,7 +3031,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.0764" data-monthly-yield="0.2658087549336204">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.0764"
+            data-monthly-yield="0.2658087549336204"
+            data-stock-key="9059_100"
+            data-amount="92900.0"
+            data-yuutai="1000.0"
+            data-performance="0.7113"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9059_100"></td>
             <td><a href="https://gokigen-life.tokyo/9059yutai/" target="_blank">9059</a></td>
             <td class="number">
                 
@@ -2374,10 +3062,6 @@
             <td class="number non-nikko positive">
                 0.71%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">23,571,850</td>
         </tr>
         
         
@@ -2387,7 +3071,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.8013" data-monthly-yield="0.17409401709401706">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.8013"
+            data-monthly-yield="0.17409401709401706"
+            data-stock-key="5659_100"
+            data-amount="124800.0"
+            data-yuutai="1000.0"
+            data-performance="0.7085"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="5659_100"></td>
             <td><a href="https://gokigen-life.tokyo/5659yutai/" target="_blank">5659</a></td>
             <td class="number">
                 
@@ -2406,10 +3102,6 @@
             <td class="number non-nikko positive">
                 0.71%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">23,696,650</td>
         </tr>
         
         
@@ -2419,7 +3111,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.777" data-monthly-yield="0.16600025900025897">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.777"
+            data-monthly-yield="0.16600025900025897"
+            data-stock-key="3291_100"
+            data-amount="257400.0"
+            data-yuutai="2000.0"
+            data-performance="0.7077"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3291_100"></td>
             <td><a href="https://gokigen-life.tokyo/3291yutai/" target="_blank">3291</a></td>
             <td class="number">
                 
@@ -2438,10 +3142,6 @@
             <td class="number non-nikko positive">
                 0.71%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">23,954,050</td>
         </tr>
         
         
@@ -2451,7 +3151,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.9646" data-monthly-yield="0.22854340836012862">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.9646"
+            data-monthly-yield="0.22854340836012862"
+            data-stock-key="9663_500"
+            data-amount="3110000.0"
+            data-yuutai="30000.0"
+            data-performance="0.7005"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9663_500"></td>
             <td><a href="https://gokigen-life.tokyo/9663yutai/" target="_blank">9663</a></td>
             <td class="number">
                 
@@ -2470,10 +3182,6 @@
             <td class="number non-nikko positive">
                 0.70%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">27,064,050</td>
         </tr>
         
         
@@ -2483,7 +3191,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6441" data-monthly-yield="0.12168441391155001">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6441"
+            data-monthly-yield="0.12168441391155001"
+            data-stock-key="9536_200"
+            data-amount="465800.0"
+            data-yuutai="3000.0"
+            data-performance="0.699"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9536_200"></td>
             <td><a href="https://gokigen-life.tokyo/9536yutai/" target="_blank">9536</a></td>
             <td class="number">
                 
@@ -2502,10 +3222,6 @@
             <td class="number non-nikko positive">
                 0.70%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">27,529,850</td>
         </tr>
         
         
@@ -2515,7 +3231,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6441" data-monthly-yield="0.12168441391155001">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6441"
+            data-monthly-yield="0.12168441391155001"
+            data-stock-key="9536_200"
+            data-amount="465800.0"
+            data-yuutai="3000.0"
+            data-performance="0.699"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9536_200"></td>
             <td><a href="https://gokigen-life.tokyo/9536yutai/" target="_blank">9536</a></td>
             <td class="number">
                 
@@ -2534,10 +3262,6 @@
             <td class="number non-nikko positive">
                 0.70%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">27,995,650</td>
         </tr>
         
         
@@ -2547,7 +3271,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.3333" data-monthly-yield="0.35144444444444445">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.3333"
+            data-monthly-yield="0.35144444444444445"
+            data-stock-key="3166_100"
+            data-amount="150000.0"
+            data-yuutai="2000.0"
+            data-performance="0.6973"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3166_100"></td>
             <td><a href="https://gokigen-life.tokyo/3166yutai/" target="_blank">3166</a></td>
             <td class="number">
                 
@@ -2566,10 +3302,6 @@
             <td class="number non-nikko positive">
                 0.70%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">28,145,650</td>
         </tr>
         
         
@@ -2579,7 +3311,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.6623" data-monthly-yield="0.12775055187637968">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.6623"
+            data-monthly-yield="0.12775055187637968"
+            data-stock-key="7417_100"
+            data-amount="151000.0"
+            data-yuutai="1000.0"
+            data-performance="0.6856"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7417_100"></td>
             <td><a href="https://gokigen-life.tokyo/7417yutai/" target="_blank">7417</a></td>
             <td class="number">
                 
@@ -2598,10 +3342,6 @@
             <td class="number non-nikko positive">
                 0.69%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">28,296,650</td>
         </tr>
         
         
@@ -2611,7 +3351,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.9485" data-monthly-yield="0.2231555485298767">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.9485"
+            data-monthly-yield="0.2231555485298767"
+            data-stock-key="9021_100"
+            data-amount="316300.0"
+            data-yuutai="3000.0"
+            data-performance="0.6778"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9021_100"></td>
             <td><a href="https://gokigen-life.tokyo/9021yutai/" target="_blank">9021</a></td>
             <td class="number">
                 
@@ -2630,10 +3382,6 @@
             <td class="number non-nikko positive">
                 0.68%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">28,612,950</td>
         </tr>
         
         
@@ -2643,7 +3391,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7123" data-monthly-yield="0.14441690408357075">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.7123"
+            data-monthly-yield="0.14441690408357075"
+            data-stock-key="7482_100"
+            data-amount="140400.0"
+            data-yuutai="1000.0"
+            data-performance="0.6744"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7482_100"></td>
             <td><a href="https://gokigen-life.tokyo/7482yutai/" target="_blank">7482</a></td>
             <td class="number">
                 
@@ -2662,10 +3422,6 @@
             <td class="number non-nikko positive">
                 0.67%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">28,753,350</td>
         </tr>
         
         
@@ -2675,7 +3431,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4282" data-monthly-yield="0.04973479874393375">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4282"
+            data-monthly-yield="0.04973479874393375"
+            data-stock-key="9045_100"
+            data-amount="350300.0"
+            data-yuutai="1500.0"
+            data-performance="0.6701"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9045_100"></td>
             <td><a href="https://gokigen-life.tokyo/9045yutai/" target="_blank">9045</a></td>
             <td class="number">
                 
@@ -2694,10 +3462,6 @@
             <td class="number non-nikko positive">
                 0.67%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">29,103,650</td>
         </tr>
         
         
@@ -2707,7 +3471,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.9174" data-monthly-yield="0.2128103975535168">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.9174"
+            data-monthly-yield="0.2128103975535168"
+            data-stock-key="8281_100"
+            data-amount="109000.0"
+            data-yuutai="1000.0"
+            data-performance="0.6561"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8281_100"></td>
             <td><a href="https://gokigen-life.tokyo/8281yutai/" target="_blank">8281</a></td>
             <td class="number">
                 
@@ -2726,10 +3502,6 @@
             <td class="number non-nikko positive">
                 0.66%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">29,212,650</td>
         </tr>
         
         
@@ -2739,7 +3511,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.5035" data-monthly-yield="0.07484155756965423">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.5035"
+            data-monthly-yield="0.07484155756965423"
+            data-stock-key="7463_100"
+            data-amount="99300.0"
+            data-yuutai="500.0"
+            data-performance="0.619"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7463_100"></td>
             <td><a href="https://gokigen-life.tokyo/7463yutai/" target="_blank">7463</a></td>
             <td class="number">
                 
@@ -2758,10 +3542,6 @@
             <td class="number non-nikko positive">
                 0.62%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">29,311,950</td>
         </tr>
         
         
@@ -2771,7 +3551,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.7663" data-monthly-yield="0.16242784163473817">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.7663"
+            data-monthly-yield="0.16242784163473817"
+            data-stock-key="8699_100"
+            data-amount="130500.0"
+            data-yuutai="1000.0"
+            data-performance="0.613"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8699_100"></td>
             <td><a href="https://gokigen-life.tokyo/8699yutai/" target="_blank">8699</a></td>
             <td class="number">
                 
@@ -2790,10 +3582,6 @@
             <td class="number non-nikko positive">
                 0.61%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">29,442,450</td>
         </tr>
         
         
@@ -2803,7 +3591,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4677" data-monthly-yield="0.06290894917368256">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4677"
+            data-monthly-yield="0.06290894917368256"
+            data-stock-key="6238_500"
+            data-amount="534500.0"
+            data-yuutai="2500.0"
+            data-performance="0.6101"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6238_500"></td>
             <td><a href="https://gokigen-life.tokyo/6238yutai/" target="_blank">6238</a></td>
             <td class="number">
                 
@@ -2822,10 +3622,6 @@
             <td class="number non-nikko positive">
                 0.61%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">29,976,950</td>
         </tr>
         
         
@@ -2835,7 +3631,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4677" data-monthly-yield="0.06290894917368256">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4677"
+            data-monthly-yield="0.06290894917368256"
+            data-stock-key="6238_500"
+            data-amount="534500.0"
+            data-yuutai="2500.0"
+            data-performance="0.6101"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6238_500"></td>
             <td><a href="https://gokigen-life.tokyo/6238yutai/" target="_blank">6238</a></td>
             <td class="number">
                 
@@ -2854,10 +3662,6 @@
             <td class="number non-nikko positive">
                 0.61%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">30,511,450</td>
         </tr>
         
         
@@ -2867,7 +3671,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.5659" data-monthly-yield="0.09564365214110544">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.5659"
+            data-monthly-yield="0.09564365214110544"
+            data-stock-key="4538_1500"
+            data-amount="3534000.0"
+            data-yuutai="20000.0"
+            data-performance="0.6095"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4538_1500"></td>
             <td><a href="https://gokigen-life.tokyo/4538yutai/" target="_blank">4538</a></td>
             <td class="number">
                 
@@ -2886,10 +3702,6 @@
             <td class="number non-nikko positive">
                 0.61%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">34,045,450</td>
         </tr>
         
         
@@ -2899,7 +3711,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6667" data-monthly-yield="0.1292222222222222">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6667"
+            data-monthly-yield="0.1292222222222222"
+            data-stock-key="1780_100"
+            data-amount="150000.0"
+            data-yuutai="1000.0"
+            data-performance="0.6043"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1780_100"></td>
             <td><a href="https://gokigen-life.tokyo/1780yutai/" target="_blank">1780</a></td>
             <td class="number">
                 
@@ -2918,10 +3742,6 @@
             <td class="number non-nikko positive">
                 0.60%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">34,195,450</td>
         </tr>
         
         
@@ -2931,7 +3751,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7457" data-monthly-yield="0.15557071836937608">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.7457"
+            data-monthly-yield="0.15557071836937608"
+            data-stock-key="7570_100"
+            data-amount="134100.0"
+            data-yuutai="1000.0"
+            data-performance="0.5911"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7570_100"></td>
             <td><a href="https://gokigen-life.tokyo/7570yutai/" target="_blank">7570</a></td>
             <td class="number">
                 
@@ -2950,10 +3782,6 @@
             <td class="number non-nikko positive">
                 0.59%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">34,329,550</td>
         </tr>
         
         
@@ -2963,7 +3791,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7156" data-monthly-yield="0.1455211687537269">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.7156"
+            data-monthly-yield="0.1455211687537269"
+            data-stock-key="4661_500"
+            data-amount="1397500.0"
+            data-yuutai="10000.0"
+            data-performance="0.5885"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4661_500"></td>
             <td><a href="https://gokigen-life.tokyo/4661yutai/" target="_blank">4661</a></td>
             <td class="number">
                 
@@ -2982,10 +3822,6 @@
             <td class="number non-nikko positive">
                 0.59%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">35,727,050</td>
         </tr>
         
         
@@ -2995,7 +3831,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6129" data-monthly-yield="0.11131096128307284">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6129"
+            data-monthly-yield="0.11131096128307284"
+            data-stock-key="8282_100"
+            data-amount="163150.0"
+            data-yuutai="1000.0"
+            data-performance="0.5826"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8282_100"></td>
             <td><a href="https://gokigen-life.tokyo/8282yutai/" target="_blank">8282</a></td>
             <td class="number">
                 
@@ -3014,10 +3862,6 @@
             <td class="number non-nikko positive">
                 0.58%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">35,890,200</td>
         </tr>
         
         
@@ -3027,7 +3871,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6809" data-monthly-yield="0.13397795071335927">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6809"
+            data-monthly-yield="0.13397795071335927"
+            data-stock-key="7874_100"
+            data-amount="102800.0"
+            data-yuutai="700.0"
+            data-performance="0.5698"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7874_100"></td>
             <td><a href="https://gokigen-life.tokyo/7874yutai/" target="_blank">7874</a></td>
             <td class="number">
                 
@@ -3046,10 +3902,6 @@
             <td class="number non-nikko positive">
                 0.57%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">35,993,000</td>
         </tr>
         
         
@@ -3059,7 +3911,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.7141" data-monthly-yield="0.145038562247084">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.7141"
+            data-monthly-yield="0.145038562247084"
+            data-stock-key="3397_100"
+            data-amount="420100.0"
+            data-yuutai="3000.0"
+            data-performance="0.5641"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3397_100"></td>
             <td><a href="https://gokigen-life.tokyo/3397yutai/" target="_blank">3397</a></td>
             <td class="number">
                 
@@ -3078,10 +3942,6 @@
             <td class="number non-nikko positive">
                 0.56%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">36,413,100</td>
         </tr>
         
         
@@ -3091,7 +3951,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6889" data-monthly-yield="0.1366211251435132">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6889"
+            data-monthly-yield="0.1366211251435132"
+            data-stock-key="8841_500"
+            data-amount="435500.0"
+            data-yuutai="3000.0"
+            data-performance="0.5498"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8841_500"></td>
             <td><a href="https://gokigen-life.tokyo/8841yutai/" target="_blank">8841</a></td>
             <td class="number">
                 
@@ -3110,10 +3982,6 @@
             <td class="number non-nikko positive">
                 0.55%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">36,848,600</td>
         </tr>
         
         
@@ -3123,7 +3991,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="1.0433" data-monthly-yield="0.25476560598156844">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="1.0433"
+            data-monthly-yield="0.25476560598156844"
+            data-stock-key="3221_300"
+            data-amount="958500.0"
+            data-yuutai="10000.0"
+            data-performance="0.5487"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="3221_300"></td>
             <td><a href="https://gokigen-life.tokyo/3221yutai/" target="_blank">3221</a></td>
             <td class="number">
                 
@@ -3142,10 +4022,6 @@
             <td class="number non-nikko positive">
                 0.55%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">37,807,100</td>
         </tr>
         
         
@@ -3155,7 +4031,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.9709" data-monthly-yield="0.23062459546925565">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.9709"
+            data-monthly-yield="0.23062459546925565"
+            data-stock-key="8163_1000"
+            data-amount="1236000.0"
+            data-yuutai="12000.0"
+            data-performance="0.536"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8163_1000"></td>
             <td><a href="https://gokigen-life.tokyo/8163yutai/" target="_blank">8163</a></td>
             <td class="number">
                 
@@ -3174,10 +4062,6 @@
             <td class="number non-nikko positive">
                 0.54%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">39,043,100</td>
         </tr>
         
         
@@ -3187,7 +4071,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="注意" data-nikko="false" data-has-ippan="false" data-yield="0.624" data-monthly-yield="0.1150083203328133">
+        
+        <tr data-taishaku="true"
+            data-restriction="注意"
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.624"
+            data-monthly-yield="0.1150083203328133"
+            data-stock-key="2705_100"
+            data-amount="641000.0"
+            data-yuutai="4000.0"
+            data-performance="0.5181"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2705_100"></td>
             <td><a href="https://gokigen-life.tokyo/2705yutai/" target="_blank">2705</a></td>
             <td class="number">
                 
@@ -3206,10 +4102,6 @@
             <td class="number non-nikko positive">
                 0.52%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">39,684,100</td>
         </tr>
         
         
@@ -3219,7 +4111,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.5208" data-monthly-yield="0.0806111111111111">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.5208"
+            data-monthly-yield="0.0806111111111111"
+            data-stock-key="8084_100"
+            data-amount="384000.0"
+            data-yuutai="2000.0"
+            data-performance="0.5163"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8084_100"></td>
             <td><a href="https://gokigen-life.tokyo/8084yutai/" target="_blank">8084</a></td>
             <td class="number">
                 
@@ -3238,10 +4142,6 @@
             <td class="number non-nikko positive">
                 0.52%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">40,068,100</td>
         </tr>
         
         
@@ -3251,7 +4151,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.5945" data-monthly-yield="0.10517677368212446">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.5945"
+            data-monthly-yield="0.10517677368212446"
+            data-stock-key="9405_100"
+            data-amount="84100.0"
+            data-yuutai="500.0"
+            data-performance="0.5114"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9405_100"></td>
             <td><a href="https://gokigen-life.tokyo/9405yutai/" target="_blank">9405</a></td>
             <td class="number">
                 
@@ -3270,10 +4182,6 @@
             <td class="number non-nikko positive">
                 0.51%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">40,152,200</td>
         </tr>
         
         
@@ -3283,7 +4191,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6268" data-monthly-yield="0.44926475279106853">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6268"
+            data-monthly-yield="0.44926475279106853"
+            data-stock-key="9380_2500"
+            data-amount="1045000.0"
+            data-yuutai="17000.0"
+            data-performance="0.5"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9380_2500"></td>
             <td><a href="https://gokigen-life.tokyo/9380yutai/" target="_blank">9380</a></td>
             <td class="number">
                 
@@ -3302,10 +4222,6 @@
             <td class="number non-nikko positive">
                 0.50%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">41,197,200</td>
         </tr>
         
         
@@ -3315,7 +4231,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6177" data-monthly-yield="0.11288840848260241">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6177"
+            data-monthly-yield="0.11288840848260241"
+            data-stock-key="6073_100"
+            data-amount="161900.0"
+            data-yuutai="1000.0"
+            data-performance="0.4982"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6073_100"></td>
             <td><a href="https://gokigen-life.tokyo/6073yutai/" target="_blank">6073</a></td>
             <td class="number">
                 
@@ -3334,10 +4262,6 @@
             <td class="number non-nikko positive">
                 0.50%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">41,359,100</td>
         </tr>
         
         
@@ -3347,7 +4271,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.776" data-monthly-yield="0.1656652871184687">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.776"
+            data-monthly-yield="0.1656652871184687"
+            data-stock-key="9900_1000"
+            data-amount="1933000.0"
+            data-yuutai="15000.0"
+            data-performance="0.4789"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9900_1000"></td>
             <td><a href="https://gokigen-life.tokyo/9900yutai/" target="_blank">9900</a></td>
             <td class="number">
                 
@@ -3366,10 +4302,6 @@
             <td class="number non-nikko positive">
                 0.48%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">43,292,100</td>
         </tr>
         
         
@@ -3379,7 +4311,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4819" data-monthly-yield="0.06764257028112448">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4819"
+            data-monthly-yield="0.06764257028112448"
+            data-stock-key="4559_100"
+            data-amount="207500.0"
+            data-yuutai="1000.0"
+            data-performance="0.4631"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4559_100"></td>
             <td><a href="https://gokigen-life.tokyo/4559yutai/" target="_blank">4559</a></td>
             <td class="number">
                 
@@ -3398,10 +4342,6 @@
             <td class="number non-nikko positive">
                 0.46%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">43,499,600</td>
         </tr>
         
         
@@ -3411,7 +4351,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4988" data-monthly-yield="0.07325103906899418">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4988"
+            data-monthly-yield="0.07325103906899418"
+            data-stock-key="8881_1000"
+            data-amount="802000.0"
+            data-yuutai="4000.0"
+            data-performance="0.4471"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8881_1000"></td>
             <td><a href="https://gokigen-life.tokyo/8881yutai/" target="_blank">8881</a></td>
             <td class="number">
                 
@@ -3430,10 +4382,6 @@
             <td class="number non-nikko positive">
                 0.45%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">44,301,600</td>
         </tr>
         
         
@@ -3443,7 +4391,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.3851" data-monthly-yield="0.035369704749679064">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.3851"
+            data-monthly-yield="0.035369704749679064"
+            data-stock-key="4694_100"
+            data-amount="389500.0"
+            data-yuutai="1500.0"
+            data-performance="0.4383"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="4694_100"></td>
             <td><a href="https://gokigen-life.tokyo/4694yutai/" target="_blank">4694</a></td>
             <td class="number">
                 
@@ -3462,10 +4422,6 @@
             <td class="number non-nikko positive">
                 0.44%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">44,691,100</td>
         </tr>
         
         
@@ -3475,7 +4431,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.5593" data-monthly-yield="0.09342803877703207">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.5593"
+            data-monthly-yield="0.09342803877703207"
+            data-stock-key="8473_100"
+            data-amount="357600.0"
+            data-yuutai="2000.0"
+            data-performance="0.4271"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8473_100"></td>
             <td><a href="https://gokigen-life.tokyo/8473yutai/" target="_blank">8473</a></td>
             <td class="number">
                 
@@ -3494,10 +4462,6 @@
             <td class="number non-nikko positive">
                 0.43%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">45,048,700</td>
         </tr>
         
         
@@ -3507,7 +4471,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4928" data-monthly-yield="0.07125755584756897">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4928"
+            data-monthly-yield="0.07125755584756897"
+            data-stock-key="9044_200"
+            data-amount="608800.0"
+            data-yuutai="3000.0"
+            data-performance="0.4249"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9044_200"></td>
             <td><a href="https://gokigen-life.tokyo/9044yutai/" target="_blank">9044</a></td>
             <td class="number">
                 
@@ -3526,10 +4502,6 @@
             <td class="number non-nikko positive">
                 0.42%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">45,657,500</td>
         </tr>
         
         
@@ -3539,7 +4511,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6173" data-monthly-yield="0.11276131687242799">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6173"
+            data-monthly-yield="0.11276131687242799"
+            data-stock-key="9936_100"
+            data-amount="324000.0"
+            data-yuutai="2000.0"
+            data-performance="0.4085"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9936_100"></td>
             <td><a href="https://gokigen-life.tokyo/9936yutai/" target="_blank">9936</a></td>
             <td class="number">
                 
@@ -3558,10 +4542,6 @@
             <td class="number non-nikko positive">
                 0.41%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">45,981,500</td>
         </tr>
         
         
@@ -3571,7 +4551,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.3845" data-monthly-yield="0.03515583749839804">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.3845"
+            data-monthly-yield="0.03515583749839804"
+            data-stock-key="9319_300"
+            data-amount="520200.0"
+            data-yuutai="2000.0"
+            data-performance="0.4024"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9319_300"></td>
             <td><a href="https://gokigen-life.tokyo/9319yutai/" target="_blank">9319</a></td>
             <td class="number">
                 
@@ -3590,10 +4582,6 @@
             <td class="number non-nikko positive">
                 0.40%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">46,501,700</td>
         </tr>
         
         
@@ -3603,7 +4591,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4645" data-monthly-yield="0.06182272797646695">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4645"
+            data-monthly-yield="0.06182272797646695"
+            data-stock-key="2730_500"
+            data-amount="1076500.0"
+            data-yuutai="5000.0"
+            data-performance="0.397"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2730_500"></td>
             <td><a href="https://gokigen-life.tokyo/2730yutai/" target="_blank">2730</a></td>
             <td class="number">
                 
@@ -3622,10 +4622,6 @@
             <td class="number non-nikko positive">
                 0.40%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">47,578,200</td>
         </tr>
         
         
@@ -3635,7 +4631,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.6302" data-monthly-yield="0.11705645267165551">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.6302"
+            data-monthly-yield="0.11705645267165551"
+            data-stock-key="8160_100"
+            data-amount="253900.0"
+            data-yuutai="1600.0"
+            data-performance="0.3818"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8160_100"></td>
             <td><a href="https://gokigen-life.tokyo/8160yutai/" target="_blank">8160</a></td>
             <td class="number">
                 
@@ -3654,10 +4662,6 @@
             <td class="number non-nikko positive">
                 0.38%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">47,832,100</td>
         </tr>
         
         
@@ -3667,7 +4671,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.4687" data-monthly-yield="0.06321948838117554">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.4687"
+            data-monthly-yield="0.06321948838117554"
+            data-stock-key="8739_1500"
+            data-amount="2560500.0"
+            data-yuutai="12000.0"
+            data-performance="0.3749"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8739_1500"></td>
             <td><a href="https://gokigen-life.tokyo/8739yutai/" target="_blank">8739</a></td>
             <td class="number">
                 
@@ -3686,10 +4702,6 @@
             <td class="number non-nikko positive">
                 0.37%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">50,392,600</td>
         </tr>
         
         
@@ -3699,7 +4711,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.3679" data-monthly-yield="0.029639195486877597">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.3679"
+            data-monthly-yield="0.029639195486877597"
+            data-stock-key="8173_100"
+            data-amount="271800.0"
+            data-yuutai="1000.0"
+            data-performance="0.3543"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8173_100"></td>
             <td><a href="https://gokigen-life.tokyo/8173yutai/" target="_blank">8173</a></td>
             <td class="number">
                 
@@ -3718,10 +4742,6 @@
             <td class="number non-nikko positive">
                 0.35%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">50,664,400</td>
         </tr>
         
         
@@ -3731,7 +4751,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.4354" data-monthly-yield="0.38546889952153107">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.4354"
+            data-monthly-yield="0.38546889952153107"
+            data-stock-key="9380_500"
+            data-amount="209000.0"
+            data-yuutai="3000.0"
+            data-performance="0.3469"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="9380_500"></td>
             <td><a href="https://gokigen-life.tokyo/9380yutai/" target="_blank">9380</a></td>
             <td class="number">
                 
@@ -3750,10 +4782,6 @@
             <td class="number non-nikko positive">
                 0.35%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">50,873,400</td>
         </tr>
         
         
@@ -3763,7 +4791,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.19" data-monthly-yield="-0.02965874901029296">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.19"
+            data-monthly-yield="-0.02965874901029296"
+            data-stock-key="2359_200"
+            data-amount="421000.0"
+            data-yuutai="800.0"
+            data-performance="0.3448"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="2359_200"></td>
             <td><a href="https://gokigen-life.tokyo/2359yutai/" target="_blank">2359</a></td>
             <td class="number">
                 
@@ -3782,10 +4822,6 @@
             <td class="number non-nikko positive">
                 0.34%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">51,294,400</td>
         </tr>
         
         
@@ -3795,7 +4831,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.4237" data-monthly-yield="0.04824293785310734">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.4237"
+            data-monthly-yield="0.04824293785310734"
+            data-stock-key="7191_100"
+            data-amount="118000.0"
+            data-yuutai="500.0"
+            data-performance="0.339"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7191_100"></td>
             <td><a href="https://gokigen-life.tokyo/7191yutai/" target="_blank">7191</a></td>
             <td class="number">
                 
@@ -3814,10 +4862,6 @@
             <td class="number non-nikko positive">
                 0.34%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">51,412,400</td>
         </tr>
         
         
@@ -3827,7 +4871,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.3428" data-monthly-yield="0.021272654553765268">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.3428"
+            data-monthly-yield="0.021272654553765268"
+            data-stock-key="7552_100"
+            data-amount="291700.0"
+            data-yuutai="1000.0"
+            data-performance="0.25"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7552_100"></td>
             <td><a href="https://gokigen-life.tokyo/7552yutai/" target="_blank">7552</a></td>
             <td class="number">
                 
@@ -3846,10 +4902,6 @@
             <td class="number non-nikko positive">
                 0.25%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">51,704,100</td>
         </tr>
         
         
@@ -3859,7 +4911,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="true" data-has-ippan="true" data-yield="0.3268" data-monthly-yield="0.015932461873638323">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="true"
+            data-has-ippan="true"
+            data-yield="0.3268"
+            data-monthly-yield="0.015932461873638323"
+            data-stock-key="6820_100"
+            data-amount="306000.0"
+            data-yuutai="1000.0"
+            data-performance="0.2481"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6820_100"></td>
             <td><a href="https://gokigen-life.tokyo/6820yutai/" target="_blank">6820</a></td>
             <td class="number">
                 
@@ -3878,10 +4942,6 @@
             <td class="number non-nikko positive">
                 0.25%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">52,010,100</td>
         </tr>
         
         
@@ -3891,7 +4951,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6556" data-monthly-yield="0.45887637969094924">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6556"
+            data-monthly-yield="0.45887637969094924"
+            data-stock-key="7412_100"
+            data-amount="60400.0"
+            data-yuutai="1000.0"
+            data-performance="0.2172"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7412_100"></td>
             <td><a href="https://gokigen-life.tokyo/7412yutai/" target="_blank">7412</a></td>
             <td class="number">
                 
@@ -3910,10 +4982,6 @@
             <td class="number non-nikko positive">
                 0.22%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">52,070,500</td>
         </tr>
         
         
@@ -3923,7 +4991,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6556" data-monthly-yield="0.45887637969094924">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6556"
+            data-monthly-yield="0.45887637969094924"
+            data-stock-key="7412_400"
+            data-amount="241600.0"
+            data-yuutai="4000.0"
+            data-performance="0.2172"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7412_400"></td>
             <td><a href="https://gokigen-life.tokyo/7412yutai/" target="_blank">7412</a></td>
             <td class="number">
                 
@@ -3942,10 +5022,6 @@
             <td class="number non-nikko positive">
                 0.22%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">52,312,100</td>
         </tr>
         
         
@@ -3955,7 +5031,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.6556" data-monthly-yield="0.45887637969094924">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.6556"
+            data-monthly-yield="0.45887637969094924"
+            data-stock-key="7412_500"
+            data-amount="302000.0"
+            data-yuutai="5000.0"
+            data-performance="0.2172"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7412_500"></td>
             <td><a href="https://gokigen-life.tokyo/7412yutai/" target="_blank">7412</a></td>
             <td class="number">
                 
@@ -3974,10 +5062,6 @@
             <td class="number non-nikko positive">
                 0.22%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">52,614,100</td>
         </tr>
         
         
@@ -3987,7 +5071,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="true" data-yield="0.9566" data-monthly-yield="0.22587755102040818">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="true"
+            data-yield="0.9566"
+            data-monthly-yield="0.22587755102040818"
+            data-stock-key="6059_2000"
+            data-amount="784000.0"
+            data-yuutai="7500.0"
+            data-performance="0.1563"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6059_2000"></td>
             <td><a href="https://gokigen-life.tokyo/6059yutai/" target="_blank">6059</a></td>
             <td class="number">
                 
@@ -4006,10 +5102,6 @@
             <td class="number non-nikko positive">
                 0.16%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">53,398,100</td>
         </tr>
         
         
@@ -4019,7 +5111,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="1.385" data-monthly-yield="0.36868051708217914">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="1.385"
+            data-monthly-yield="0.36868051708217914"
+            data-stock-key="1420_100"
+            data-amount="72200.0"
+            data-yuutai="1000.0"
+            data-performance="0.0907"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="1420_100"></td>
             <td><a href="https://gokigen-life.tokyo/1420yutai/" target="_blank">1420</a></td>
             <td class="number">
                 
@@ -4038,10 +5142,6 @@
             <td class="number non-nikko positive">
                 0.09%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">53,470,300</td>
         </tr>
         
         
@@ -4051,7 +5151,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.0" data-monthly-yield="0">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.0"
+            data-monthly-yield="0"
+            data-stock-key="6569_1000"
+            data-amount="0.0"
+            data-yuutai="10000.0"
+            data-performance="0.0"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6569_1000"></td>
             <td><a href="https://gokigen-life.tokyo/6569yutai/" target="_blank">6569</a></td>
             <td class="number">
                 
@@ -4070,10 +5182,6 @@
             <td class="number non-nikko ">
                 0.00%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">53,470,300</td>
         </tr>
         
         
@@ -4083,7 +5191,19 @@
         
         
         
-        <tr data-taishaku="true" data-restriction="" data-nikko="false" data-has-ippan="false" data-yield="0.0" data-monthly-yield="0">
+        
+        <tr data-taishaku="true"
+            data-restriction=""
+            data-nikko="false"
+            data-has-ippan="false"
+            data-yield="0.0"
+            data-monthly-yield="0"
+            data-stock-key="6569_1000"
+            data-amount="0.0"
+            data-yuutai="15000.0"
+            data-performance="0.0"
+            >
+            <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6569_1000"></td>
             <td><a href="https://gokigen-life.tokyo/6569yutai/" target="_blank">6569</a></td>
             <td class="number">
                 
@@ -4102,10 +5222,6 @@
             <td class="number non-nikko ">
                 0.00%
             </td>
-            
-            
-            
-            <td class="number hide-mobile non-nikko">53,470,300</td>
         </tr>
         
     </tbody>
@@ -4115,10 +5231,146 @@
     </div>
     
 <script>
+const MONTH = 3;
+const STORAGE_KEY_PORTFOLIO = `yuutai_portfolio_${MONTH}`;
+const STORAGE_KEY_CAPITAL = 'yuutai_capital';
+
 const table = document.querySelector('table');
 const tbody = document.querySelector('tbody');
 const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
+// ポートフォリオ関連要素
+const availableCapitalInput = document.getElementById('available-capital');
+const selectedCountEl = document.getElementById('selected-count');
+const totalCapitalEl = document.getElementById('total-capital');
+const totalYuutaiEl = document.getElementById('total-yuutai');
+const portfolioYieldEl = document.getElementById('portfolio-yield');
+const capitalWarningEl = document.getElementById('capital-warning');
+const selectAllCheckbox = document.getElementById('select-all');
+const clearSelectionBtn = document.getElementById('clear-selection');
+
+// 数値フォーマット
+function formatNumber(num) {
+    return num.toLocaleString('ja-JP');
+}
+
+// カンマ除去して数値化
+function parseNumber(str) {
+    return parseInt(str.replace(/,/g, '')) || 0;
+}
+
+// localStorageから選択状態を復元
+function loadSelection() {
+    const saved = localStorage.getItem(STORAGE_KEY_PORTFOLIO);
+    if (saved) {
+        const selectedKeys = JSON.parse(saved);
+        selectedKeys.forEach(key => {
+            const checkbox = document.querySelector(`.stock-checkbox[data-key="${key}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    const savedCapital = localStorage.getItem(STORAGE_KEY_CAPITAL);
+    if (savedCapital) {
+        availableCapitalInput.value = formatNumber(parseInt(savedCapital));
+    }
+}
+
+// 選択状態をlocalStorageに保存
+function saveSelection() {
+    const selectedKeys = [];
+    document.querySelectorAll('.stock-checkbox:checked').forEach(cb => {
+        selectedKeys.push(cb.dataset.key);
+    });
+    localStorage.setItem(STORAGE_KEY_PORTFOLIO, JSON.stringify(selectedKeys));
+}
+
+// 資金をlocalStorageに保存
+function saveCapital() {
+    const capital = parseNumber(availableCapitalInput.value);
+    localStorage.setItem(STORAGE_KEY_CAPITAL, capital.toString());
+}
+
+// ポートフォリオ計算
+function calculatePortfolio() {
+    let totalAmount = 0;
+    let totalYuutai = 0;
+    let weightedPerformance = 0;
+    let count = 0;
+
+    document.querySelectorAll('.stock-checkbox:checked').forEach(cb => {
+        const row = cb.closest('tr');
+        const amount = parseFloat(row.dataset.amount) || 0;
+        const yuutai = parseFloat(row.dataset.yuutai) || 0;
+        const performance = parseFloat(row.dataset.performance) || 0;
+
+        totalAmount += amount;
+        totalYuutai += yuutai;
+        weightedPerformance += performance * amount;
+        count++;
+    });
+
+    const availableCapital = parseNumber(availableCapitalInput.value);
+    const portfolioYield = totalAmount > 0 ? weightedPerformance / totalAmount : 0;
+
+    // UI更新
+    selectedCountEl.textContent = count;
+    totalCapitalEl.textContent = formatNumber(totalAmount) + '円';
+    totalYuutaiEl.textContent = formatNumber(totalYuutai) + '円';
+    portfolioYieldEl.textContent = portfolioYield.toFixed(2) + '%';
+
+    // 資金警告
+    if (availableCapital > 0 && totalAmount > availableCapital) {
+        capitalWarningEl.style.display = 'block';
+        capitalWarningEl.textContent = `資金が ${formatNumber(totalAmount - availableCapital)}円 不足しています`;
+    } else {
+        capitalWarningEl.style.display = 'none';
+    }
+
+    // 全選択チェックボックスの状態更新
+    const allCheckboxes = document.querySelectorAll('.stock-checkbox');
+    const visibleCheckboxes = Array.from(allCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
+    const checkedVisible = visibleCheckboxes.filter(cb => cb.checked).length;
+    selectAllCheckbox.checked = visibleCheckboxes.length > 0 && checkedVisible === visibleCheckboxes.length;
+    selectAllCheckbox.indeterminate = checkedVisible > 0 && checkedVisible < visibleCheckboxes.length;
+}
+
+// チェックボックスイベント
+document.querySelectorAll('.stock-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+        saveSelection();
+        calculatePortfolio();
+    });
+});
+
+// 全選択チェックボックス
+selectAllCheckbox.addEventListener('change', () => {
+    const visibleCheckboxes = Array.from(document.querySelectorAll('.stock-checkbox'))
+        .filter(cb => cb.closest('tr').style.display !== 'none');
+    visibleCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+    saveSelection();
+    calculatePortfolio();
+});
+
+// 選択解除ボタン
+clearSelectionBtn.addEventListener('click', () => {
+    document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
+    saveSelection();
+    calculatePortfolio();
+});
+
+// 資金入力
+availableCapitalInput.addEventListener('input', (e) => {
+    // カンマ自動挿入
+    const value = e.target.value.replace(/,/g, '').replace(/[^\d]/g, '');
+    if (value) {
+        e.target.value = formatNumber(parseInt(value));
+    }
+    saveCapital();
+    calculatePortfolio();
+});
+
+// フィルター関連
 function isKarauriOk(row) {
     const isTaishaku = row.dataset.taishaku === 'true';
     const isStop = row.dataset.restriction === '停止';
@@ -4168,6 +5420,8 @@ function applyFilter(filter) {
             row.style.display = !isKarauriOk(row) ? '' : 'none';
         }
     });
+    // フィルター後にポートフォリオ再計算（全選択状態更新のため）
+    calculatePortfolio();
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -4178,8 +5432,11 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
+// 初期化
+loadSelection();
 updateKarauriCount();
 applyFilter('karauri');
+calculatePortfolio();
 </script>
 
 </body>
