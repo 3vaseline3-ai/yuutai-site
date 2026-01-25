@@ -64,6 +64,28 @@ python scripts/fetch_stock_price.py --all
 python scripts/generate_html.py
 ```
 
+## デプロイ（GitHub Actions）
+
+### 自動デプロイ
+毎日スケジュール実行（cron）で自動更新。
+
+### 手動デプロイ（kachi.csv変更時など）
+```bash
+# 1. 変更をコミット＆プッシュ＆アクション実行（一括）
+git add -A && git commit -m "Update kachi.csv" && git push && gh workflow run update-and-deploy.yml
+
+# 2. アクション状況確認
+gh run list --limit 3
+```
+
+### ワークフロー内容（.github/workflows/update-and-deploy.yml）
+1. 在庫データ取得（fetch_zaiko.py）
+2. 株価取得（fetch_stock_price.py）
+3. HTML生成（generate_html.py）
+4. GitHub Pagesにデプロイ
+
+**注意**: ワークフローはpushトリガーなし。`gh workflow run`で手動実行が必要。
+
 ## データフロー
 
 ```
@@ -89,9 +111,10 @@ kachi.csv → calc_performance.py ← ←←←←←←←←
 
 ### パフォーマンス計算式
 ```
-(優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100
+(優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100 × 0.8
 ```
 - 配当×0.15315: 配当調整金（税引後還付分）
+- ×0.8: 保守的見積もり係数
 
 ## 一般信用在庫API（重要）
 
