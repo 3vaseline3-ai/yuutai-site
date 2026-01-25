@@ -1,9 +1,10 @@
 """優待クロスのパフォーマンス計算
 
 パフォーマンス計算式:
-  (優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100
+  (優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100 × 0.8
 
 ※ 0.15315 = 配当調整金の還付率（源泉徴収20.315% - 所得税5%）
+※ 0.8 = 保守的見積もり係数
 """
 
 import sys
@@ -127,7 +128,7 @@ def calc_performance(
     dividend_benefit = dividend * DIVIDEND_ADJUSTMENT_RATE
     net_benefit = yuutai_per_share - gyaku_hiboku + dividend_benefit
 
-    return (net_benefit / price) * 100
+    return (net_benefit / price) * 100 * 0.8  # 保守的見積もり
 
 
 def load_kachi() -> list[dict]:
