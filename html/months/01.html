@@ -166,7 +166,7 @@
     margin-top: 15px;
     font-weight: bold;
 }
-.clear-selection-btn {
+.clear-selection-btn, .auto-select-btn {
     margin-top: 15px;
     padding: 8px 16px;
     background: rgba(255,255,255,0.2);
@@ -176,8 +176,19 @@
     cursor: pointer;
     transition: background 0.2s;
 }
-.clear-selection-btn:hover {
+.clear-selection-btn:hover, .auto-select-btn:hover {
     background: rgba(255,255,255,0.3);
+}
+.auto-select-btn {
+    margin-top: 0;
+    margin-left: 10px;
+    background: #ffd93d;
+    color: #333;
+    border-color: #ffd93d;
+    font-weight: bold;
+}
+.auto-select-btn:hover {
+    background: #ffed4a;
 }
 
 /* チェックボックス列 */
@@ -327,6 +338,7 @@ tr:has(.stock-checkbox:checked) {
         <label>利用可能資金:</label>
         <input type="text" id="available-capital" placeholder="1,000,000" inputmode="numeric">
         <span>円</span>
+        <button class="auto-select-btn" id="auto-select">自動選択</button>
     </div>
     <div class="portfolio-summary">
         <div class="summary-item">
@@ -1077,6 +1089,51 @@ clearSelectionBtn.addEventListener('click', () => {
     document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
     saveSelection();
     calculatePortfolio();
+});
+
+// 自動選択ボタン
+const autoSelectBtn = document.getElementById('auto-select');
+autoSelectBtn.addEventListener('click', () => {
+    const availableCapital = parseNumber(availableCapitalInput.value);
+    if (availableCapital <= 0) {
+        alert('利用可能資金を入力してください');
+        return;
+    }
+
+    // 一旦全部解除
+    document.querySelectorAll('.stock-checkbox').forEach(cb => cb.checked = false);
+
+    // 表示中の行を収益率順にソート
+    const visibleRows = Array.from(document.querySelectorAll('tbody tr'))
+        .filter(row => row.style.display !== 'none')
+        .map(row => ({
+            row: row,
+            checkbox: row.querySelector('.stock-checkbox'),
+            amount: parseFloat(row.dataset.amount) || 0,
+            performance: parseFloat(row.dataset.performance) || 0
+        }))
+        .filter(item => item.amount > 0 && item.performance > 0)  // 有効なもののみ
+        .sort((a, b) => b.performance - a.performance);  // 収益率降順
+
+    // 予算内で選択
+    let remainingCapital = availableCapital;
+    let selectedCount = 0;
+
+    for (const item of visibleRows) {
+        if (item.amount <= remainingCapital) {
+            item.checkbox.checked = true;
+            remainingCapital -= item.amount;
+            selectedCount++;
+        }
+    }
+
+    saveSelection();
+    calculatePortfolio();
+
+    // 結果を通知
+    if (selectedCount > 0) {
+        console.log(`自動選択: ${selectedCount}銘柄, 残り${formatNumber(remainingCapital)}円`);
+    }
 });
 
 // 資金入力
