@@ -195,19 +195,60 @@ def load_latest_prices() -> dict[str, float]:
         return data.get("prices", {})
 
 
+def load_close_prices() -> dict[str, float]:
+    """gyaku_hiboku CSVから権利付最終日の終値を読み込み
+
+    各銘柄の最新の権利付最終日の終値を取得
+    """
+    close_prices = {}
+
+    if not GYAKU_HIBOKU_DIR.exists():
+        return close_prices
+
+    for csv_file in GYAKU_HIBOKU_DIR.glob("*.csv"):
+        code = csv_file.stem
+        try:
+            with open(csv_file, encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # 最初の行（最新）のclose_priceを取得
+                    close_price = row.get("close_price", "")
+                    if close_price:
+                        close_prices[code] = float(close_price)
+                    break
+        except (ValueError, KeyError):
+            continue
+
+    return close_prices
+
+
 # グローバルにキャッシュ
 _latest_prices: dict[str, float] | None = None
+_close_prices: dict[str, float] | None = None
 
 
 def get_latest_price(stock: dict, code: str = "") -> float:
-    """最新の株価を取得（yfinance優先、なければAPIデータから）"""
-    global _latest_prices
+    """株価を取得（権利付最終日の終値優先）
 
-    # 最新株価をロード（初回のみ）
+    優先順位:
+    1. gyaku_hiboku CSVの権利付最終日の終値
+    2. yfinanceの現在値（フォールバック）
+    3. APIデータのkabuka（フォールバック）
+    """
+    global _latest_prices, _close_prices
+
+    # 権利付最終日の終値をロード（初回のみ）
+    if _close_prices is None:
+        _close_prices = load_close_prices()
+
+    # 権利付最終日の終値があればそれを使う（最優先）
+    if code and code in _close_prices:
+        return _close_prices[code]
+
+    # フォールバック: yfinanceの現在値
     if _latest_prices is None:
         _latest_prices = load_latest_prices()
 
-    # yfinanceの最新株価があればそれを使う
     if code and code in _latest_prices:
         return _latest_prices[code]
 
