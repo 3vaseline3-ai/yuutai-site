@@ -4,7 +4,9 @@
   実現利益係数 × (1株優待価値 + 配当×0.15) ÷ 現在株価 × 100
 
 実現利益係数（各年）:
-  (1株優待価値 - 逆日歩 + 配当×0.15) ÷ (1株優待価値 + 配当×0.15)
+  過去の優待クロスパフォーマンス ÷ 逆日歩なしパフォーマンス
+  = {(1株優待価値 - 逆日歩 + 配当×0.15) / 終値}
+    ÷ {(1株優待価値 + 配当×0.15) / 終値}
 
 ※ 実現利益係数は過去3年分の平均
 ※ データがない銘柄はデフォルト係数0.8を使用
@@ -19,7 +21,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import csv
 import json
 from dataclasses import dataclass
-from config import DATA_DIR, KACHI_CSV, GYAKU_HIBOKU_DIR, STOCK_PRICE_DIR, IPPAN_ZAIKO_DIR
+from config import (
+    DATA_DIR,
+    KACHI_CSV,
+    GYAKU_HIBOKU_DIR,
+    STOCK_PRICE_DIR,
+    IPPAN_ZAIKO_DIR,
+    INVEST_JP_HTML_DIR,
+)
 from fetch_zaiko import load_latest_zaiko
 
 
@@ -31,6 +40,22 @@ DEFAULT_REALIZATION_FACTOR = 0.8
 
 # 実現利益係数の計算に使う年数
 REALIZATION_FACTOR_YEARS = 3
+
+# invest-jp HTMLフォルダ名（権利月）
+INVEST_JP_MONTH_DIRS = {
+    1: "01_january",
+    2: "02_february",
+    3: "03_march",
+    4: "04_april",
+    5: "05_may",
+    6: "06_june",
+    7: "07_july",
+    8: "08_august",
+    9: "09_september",
+    10: "10_october",
+    11: "11_november",
+    12: "12_december",
+}
 
 
 @dataclass
@@ -110,7 +135,34 @@ class StockPerformance:
         }
 
 
-def load_gyaku_history(code: str) -> list[dict]:
+def get_invest_jp_html_path(code: str, settlement_month: int | None) -> Path | None:
+    """invest-jpの保存HTMLパスを取得"""
+    if not settlement_month:
+        return None
+    month_dir = INVEST_JP_MONTH_DIRS.get(settlement_month)
+    if not month_dir:
+        return None
+    html_path = INVEST_JP_HTML_DIR / month_dir / f"{code}.html"
+    return html_path if html_path.exists() else None
+
+
+def load_invest_jp_history(code: str, settlement_month: int | None) -> list[dict]:
+    """invest-jp保存HTMLから逆日歩履歴を読み込み"""
+    html_path = get_invest_jp_html_path(code, settlement_month)
+    if not html_path:
+        return []
+    try:
+        from scripts.parse_invest_jp import parse_stock_html
+    except Exception:
+        return []
+
+    data = parse_stock_html(html_path)
+    if not data:
+        return []
+    return data.get("gyaku_hiboku", [])
+
+
+def load_gyaku_history(code: str, settlement_month: int | None = None) -> list[dict]:
     """逆日歩履歴を読み込み（過去3年分）
 
     Args:
@@ -119,6 +171,10 @@ def load_gyaku_history(code: str) -> list[dict]:
     Returns:
         逆日歩履歴リスト [{"gyaku_hiboku": float, "dividend": float, "close_price": float}, ...]
     """
+    invest_records = load_invest_jp_history(code, settlement_month)
+    if invest_records:
+        return invest_records
+
     csv_file = GYAKU_HIBOKU_DIR / f"{code}.csv"
     if not csv_file.exists():
         return []
@@ -161,20 +217,21 @@ def calc_realization_factor(yuutai_per_share: float, history: list[dict]) -> flo
 
     factors = []
     for record in history:
+        if len(factors) >= REALIZATION_FACTOR_YEARS:
+            break
         gyaku = record.get("gyaku_hiboku", 0)
         dividend = record.get("dividend", 0)
+        close_price = record.get("close_price", 0)
+        if close_price <= 0:
+            continue
         dividend_benefit = dividend * DIVIDEND_ADJUSTMENT_RATE
 
-        # 理論上の利益（逆日歩なし）
-        theoretical = yuutai_per_share + dividend_benefit
-        if theoretical <= 0:
+        actual_perf = (yuutai_per_share - gyaku + dividend_benefit) / close_price
+        no_gyaku_perf = (yuutai_per_share + dividend_benefit) / close_price
+        if no_gyaku_perf <= 0:
             continue
 
-        # 実際の利益
-        actual = yuutai_per_share - gyaku + dividend_benefit
-
-        # 実現利益係数
-        factor = actual / theoretical
+        factor = actual_perf / no_gyaku_perf
         factors.append(factor)
 
     if not factors:
@@ -403,7 +460,7 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
         dividend = get_latest_dividend(stock)
 
         # 過去の逆日歩履歴を取得して実現利益係数を計算
-        history = load_gyaku_history(code)
+        history = load_gyaku_history(code, settlement_month)
         realization_factor = calc_realization_factor(yuutai_per_share, history)
 
         # 現在の株価を取得
