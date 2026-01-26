@@ -138,6 +138,7 @@
                     (stock.zaiko.matsui|default(0, true) > 0) or
                     (stock.zaiko.monex|default(0, true) > 0)
                 ) %}
+                {% set nikko_available = stock.zaiko and (stock.zaiko.nikko|default(0, true) > 0) %}
                 {% set is_karauri_ok = is_taishaku_active or has_ippan %}
                 {% set months_to_rights = month - current_month + 1 if month >= current_month else (12 - current_month) + month + 1 %}
                 {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
@@ -146,7 +147,7 @@
                 {% set net_yield = stock.simple_yield - interest_info.interest %}
                 {% set row_classes = [] %}
                 {% if not is_karauri_ok %}{% set row_classes = row_classes + ['non-taishaku'] %}{% endif %}
-                {% if net_yield > expected_yield_threshold %}{% set row_classes = row_classes + ['threshold-hit'] %}{% endif %}
+                {% if nikko_available and net_yield > expected_yield_threshold %}{% set row_classes = row_classes + ['threshold-hit'] %}{% endif %}
                 {% set stock_key = stock.code ~ "_" ~ stock.required_shares %}
                 <tr data-taishaku="{{ stock.is_taishaku | lower }}"
                     data-restriction="{{ stock.restriction }}"
