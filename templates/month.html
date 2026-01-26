@@ -143,6 +143,10 @@
                 {% set per_share_yuutai = stock.yuutai_value / stock.required_shares if stock.required_shares > 0 else 0 %}
                 {% set interest_cost = stock.price * interest_info.interest / 100 %}
                 {% set monthly_yield = (per_share_yuutai - interest_cost) / stock.price / months_to_rights * 100 if stock.price > 0 and months_to_rights > 0 else 0 %}
+                {% set net_yield = stock.simple_yield - interest_info.interest %}
+                {% set row_classes = [] %}
+                {% if not is_karauri_ok %}{% set row_classes = row_classes + ['non-taishaku'] %}{% endif %}
+                {% if net_yield > expected_yield_threshold %}{% set row_classes = row_classes + ['threshold-hit'] %}{% endif %}
                 {% set stock_key = stock.code ~ "_" ~ stock.required_shares %}
                 <tr data-taishaku="{{ stock.is_taishaku | lower }}"
                     data-restriction="{{ stock.restriction }}"
@@ -154,7 +158,8 @@
                     data-amount="{{ stock.required_amount }}"
                     data-yuutai="{{ stock.yuutai_value }}"
                     data-performance="{{ stock.performance }}"
-                    {% if not is_karauri_ok %} class="non-taishaku" style="display:none;"{% endif %}>
+                    {% if row_classes %} class="{{ ' '.join(row_classes) }}"{% endif %}
+                    {% if not is_karauri_ok %} style="display:none;"{% endif %}>
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="{{ stock_key }}"></td>
                     <td><a href="https://gokigen-life.tokyo/{{ stock.code }}yutai/" target="_blank">{{ stock.code }}</a></td>
                     <td class="number zaiko-cell">
@@ -591,6 +596,12 @@ tr:has(.stock-checkbox:checked) td {
 .monthly-ok {
     background: rgba(251, 191, 36, 0.15) !important;
     color: var(--accent-yellow) !important;
+}
+
+/* Threshold highlight */
+.threshold-hit {
+    background: rgba(255, 215, 0, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.35);
 }
 
 /* Nikko mode column visibility */

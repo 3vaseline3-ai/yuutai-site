@@ -22,6 +22,8 @@ from scripts.fetch_zaiko import load_latest_zaiko
 
 # 金利計算用定数
 INTEREST_RATE = 1.7  # 年利1.7%
+# 期待利回り計算の保有資産（円）
+PORTFOLIO_CAPITAL = 6_000_000
 
 
 def is_business_day(d: date) -> bool:
@@ -161,9 +163,42 @@ def generate_index(env: Environment, stocks: list[dict]) -> None:
     print(f"Generated: {output_file}")
 
 
+def calculate_max_portfolio_yield(stocks: list[dict], capital: float) -> float:
+    """最大利回りとなるように資金内で銘柄を選ぶ（簡易貪欲）"""
+    candidates = []
+    for stock in stocks:
+        amount = float(stock.get("required_amount") or 0)
+        performance = stock.get("performance")
+        if amount > 0 and performance is not None:
+            candidates.append((float(performance), amount))
+
+    candidates.sort(key=lambda x: x[0], reverse=True)
+
+    remaining = capital
+    total_amount = 0.0
+    weighted_perf = 0.0
+    for performance, amount in candidates:
+        if amount <= remaining:
+            remaining -= amount
+            total_amount += amount
+            weighted_perf += performance * amount
+
+    return (weighted_perf / total_amount) if total_amount > 0 else 0.0
+
+
+def compute_monthly_expected_yields(capital: float) -> dict[int, float]:
+    """各月の期待利回り（最大資金内の収益利回り）を計算"""
+    expected = {}
+    for month in range(1, 13):
+        stocks = get_stocks_with_performance(month)
+        expected[month] = calculate_max_portfolio_yield(stocks, capital)
+    return expected
+
+
 def generate_month_pages(env: Environment) -> None:
     """月別ページを生成（パフォーマンス降順）"""
     template = env.get_template("month.html")
+    expected_yields = compute_monthly_expected_yields(PORTFOLIO_CAPITAL)
 
     # 各月のページを生成
     for month in range(1, 13):
@@ -203,6 +238,9 @@ def generate_month_pages(env: Environment) -> None:
             stocks=month_stocks,
             interest_info=interest_info,
             current_month=current_month,
+            expected_yield_threshold=sum(
+                expected_yields.get(m, 0) for m in range(1, month + 1)
+            ),
             base_path="../",
         )
 
