@@ -99,10 +99,10 @@ class StockPerformance:
 
     @property
     def simple_yield(self) -> float:
-        """シンプル利回り（優待価値÷株数÷株価）"""
+        """シンプル利回り（(優待価値÷株数 + 配当*0.15)÷株価）"""
         if self.price <= 0 or self.required_shares <= 0:
             return 0.0
-        return (self.yuutai_per_share / self.price) * 100
+        return ((self.yuutai_per_share + self.dividend_benefit) / self.price) * 100
 
     @property
     def required_shares_display(self) -> str:
