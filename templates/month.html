@@ -173,7 +173,7 @@
                         {% elif stock.restriction == '注意' %}<span class="restriction-badge caution">注意</span>
                         {% endif %}
                     </td>
-                    <td class="number hide-mobile">{{ "{:,.0f}".format(stock.price) }}</td>
+                    <td class="number hide-mobile"><a href="https://irbank.net/td/search?q={{ stock.code }}+優待" target="_blank">{{ "{:,.0f}".format(stock.price) }}</a></td>
                     <td class="number hide-mobile">{{ stock.required_shares_display }}</td>
                     <td class="number hide-mobile">{{ "{:,.0f}".format(stock.required_amount) }}</td>
                     <td class="number hide-mobile">{{ "{:,.0f}".format(stock.yuutai_value) }}</td>
