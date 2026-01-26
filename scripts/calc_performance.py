@@ -1,10 +1,14 @@
 """優待クロスのパフォーマンス計算
 
 パフォーマンス計算式:
-  (優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100 × 0.8
+  実現利益係数 × (1株優待価値 + 配当×0.15) ÷ 現在株価 × 100
 
-※ 0.15315 = 配当調整金の還付率（源泉徴収20.315% - 所得税5%）
-※ 0.8 = 保守的見積もり係数
+実現利益係数（各年）:
+  (1株優待価値 - 逆日歩 + 配当×0.15) ÷ (1株優待価値 + 配当×0.15)
+
+※ 実現利益係数は過去3年分の平均
+※ データがない銘柄はデフォルト係数0.8を使用
+※ 0.15 = 配当調整金の還付率（簡略化）
 """
 
 import sys
@@ -20,7 +24,13 @@ from fetch_zaiko import load_latest_zaiko
 
 
 # 配当調整金の還付率
-DIVIDEND_ADJUSTMENT_RATE = 0.15315
+DIVIDEND_ADJUSTMENT_RATE = 0.15
+
+# デフォルトの実現利益係数（データがない銘柄用）
+DEFAULT_REALIZATION_FACTOR = 0.8
+
+# 実現利益係数の計算に使う年数
+REALIZATION_FACTOR_YEARS = 3
 
 
 @dataclass
@@ -100,35 +110,105 @@ class StockPerformance:
         }
 
 
+def load_gyaku_history(code: str) -> list[dict]:
+    """逆日歩履歴を読み込み（過去3年分）
+
+    Args:
+        code: 銘柄コード
+
+    Returns:
+        逆日歩履歴リスト [{"gyaku_hiboku": float, "dividend": float, "close_price": float}, ...]
+    """
+    csv_file = GYAKU_HIBOKU_DIR / f"{code}.csv"
+    if not csv_file.exists():
+        return []
+
+    history = []
+    try:
+        with open(csv_file, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for i, row in enumerate(reader):
+                if i >= REALIZATION_FACTOR_YEARS:
+                    break
+                try:
+                    history.append({
+                        "gyaku_hiboku": float(row.get("gyaku_hiboku", 0) or 0),
+                        "dividend": float(row.get("dividend", 0) or 0),
+                        "close_price": float(row.get("close_price", 0) or 0),
+                    })
+                except (ValueError, TypeError):
+                    continue
+    except Exception:
+        return []
+
+    return history
+
+
+def calc_realization_factor(yuutai_per_share: float, history: list[dict]) -> float:
+    """実現利益係数を計算（過去3年平均）
+
+    実現利益係数 = (1株優待価値 - 逆日歩 + 配当×0.15) / (1株優待価値 + 配当×0.15)
+
+    Args:
+        yuutai_per_share: 1株あたり優待価値
+        history: 逆日歩履歴リスト
+
+    Returns:
+        実現利益係数（0.0〜1.0）、データがない場合はデフォルト値
+    """
+    if not history or yuutai_per_share <= 0:
+        return DEFAULT_REALIZATION_FACTOR
+
+    factors = []
+    for record in history:
+        gyaku = record.get("gyaku_hiboku", 0)
+        dividend = record.get("dividend", 0)
+        dividend_benefit = dividend * DIVIDEND_ADJUSTMENT_RATE
+
+        # 理論上の利益（逆日歩なし）
+        theoretical = yuutai_per_share + dividend_benefit
+        if theoretical <= 0:
+            continue
+
+        # 実際の利益
+        actual = yuutai_per_share - gyaku + dividend_benefit
+
+        # 実現利益係数
+        factor = actual / theoretical
+        factors.append(factor)
+
+    if not factors:
+        return DEFAULT_REALIZATION_FACTOR
+
+    return sum(factors) / len(factors)
+
+
 def calc_performance(
-    yuutai_value: float,
-    required_shares: int,
-    gyaku_hiboku: float,
+    yuutai_per_share: float,
+    realization_factor: float,
     dividend: float,
-    price: float,
+    current_price: float,
 ) -> float:
     """パフォーマンスを計算
 
-    式: (優待価値÷株数 - 逆日歩 + 配当×0.15315) ÷ 株価 × 100
+    式: 実現利益係数 × (1株優待価値 + 配当×0.15) ÷ 現在株価 × 100
 
     Args:
-        yuutai_value: 優待価値（円）
-        required_shares: 必要株数
-        gyaku_hiboku: 逆日歩（1株あたり、円）
+        yuutai_per_share: 1株あたり優待価値（円）
+        realization_factor: 実現利益係数
         dividend: 配当（1株あたり、円）
-        price: 株価（円）
+        current_price: 現在の株価（円）
 
     Returns:
         パフォーマンス（%）
     """
-    if price <= 0 or required_shares <= 0:
+    if current_price <= 0:
         return 0.0
 
-    yuutai_per_share = yuutai_value / required_shares
     dividend_benefit = dividend * DIVIDEND_ADJUSTMENT_RATE
-    net_benefit = yuutai_per_share - gyaku_hiboku + dividend_benefit
+    theoretical_benefit = yuutai_per_share + dividend_benefit
 
-    return (net_benefit / price) * 100 * 0.8  # 保守的見積もり
+    return realization_factor * theoretical_benefit / current_price * 100
 
 
 def load_kachi() -> list[dict]:
@@ -260,8 +340,37 @@ def get_latest_price(stock: dict, code: str = "") -> float:
     return 0.0
 
 
+def get_current_price(stock: dict, code: str = "") -> float:
+    """現在の株価を取得（パフォーマンス予測用）
+
+    優先順位:
+    1. yfinanceの現在値
+    2. APIデータのkabuka
+    """
+    global _latest_prices
+
+    # yfinanceの現在値をロード（初回のみ）
+    if _latest_prices is None:
+        _latest_prices = load_latest_prices()
+
+    # yfinanceの現在値があればそれを使う
+    if code and code in _latest_prices:
+        return _latest_prices[code]
+
+    # フォールバック: APIデータのkabuka
+    kabuka = stock.get("kabuka")
+    if kabuka is not None:
+        return float(kabuka)
+
+    return 0.0
+
+
 def calculate_all_performance(month: int | None = None) -> list[StockPerformance]:
-    """全銘柄のパフォーマンスを計算（同一銘柄・異なる株数も別々に表示）"""
+    """全銘柄のパフォーマンスを計算（同一銘柄・異なる株数も別々に表示）
+
+    新しい計算式:
+    パフォーマンス = 実現利益係数 × (1株優待価値 + 配当×0.15) ÷ 現在株価 × 100
+    """
     kachi_list = load_kachi()
 
     results = []
@@ -286,28 +395,40 @@ def calculate_all_performance(month: int | None = None) -> list[StockPerformance
         required_shares_raw = str(kachi_data.get("required_shares", "0")).strip()
         is_differential = required_shares_raw.startswith("+")
         required_shares = int(required_shares_raw)
-        gyaku_hiboku = get_latest_gyaku_hiboku(stock, settlement_month)
-        dividend = get_latest_dividend(stock)
-        price = get_latest_price(stock, code)
 
-        # パフォーマンス計算
+        # 1株あたり優待価値
+        yuutai_per_share = yuutai_value / required_shares if required_shares > 0 else 0
+
+        # 配当（APIから取得）
+        dividend = get_latest_dividend(stock)
+
+        # 過去の逆日歩履歴を取得して実現利益係数を計算
+        history = load_gyaku_history(code)
+        realization_factor = calc_realization_factor(yuutai_per_share, history)
+
+        # 現在の株価を取得
+        current_price = get_current_price(stock, code)
+
+        # パフォーマンス計算（新しい式）
         perf = calc_performance(
-            yuutai_value=yuutai_value,
-            required_shares=required_shares,
-            gyaku_hiboku=gyaku_hiboku,
+            yuutai_per_share=yuutai_per_share,
+            realization_factor=realization_factor,
             dividend=dividend,
-            price=price,
+            current_price=current_price,
         )
+
+        # 表示用に5年平均逆日歩を取得
+        gyaku_hiboku_display = get_latest_gyaku_hiboku(stock, settlement_month)
 
         result = StockPerformance(
             code=code,
             name=kachi_data.get("name") or stock.get("name", ""),
             settlement_month=settlement_month,
-            price=price,
+            price=current_price,
             required_shares=required_shares,
             yuutai_value=yuutai_value,
             yuutai_content=kachi_data.get("yuutai_content", ""),
-            gyaku_hiboku=gyaku_hiboku,
+            gyaku_hiboku=gyaku_hiboku_display,
             dividend=dividend,
             performance=perf,
             is_taishaku=stock.get("is_taishaku", False),
