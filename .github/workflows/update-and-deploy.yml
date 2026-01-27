@@ -16,6 +16,8 @@ permissions:
 
 jobs:
   update-and-deploy:
+    # schedule / workflow_dispatch の自動commitが push を発火させるので、bot由来の push はスキップ
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     steps:

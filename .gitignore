@@ -15,3 +15,4 @@ data/html_cache/
 # 環境設定
 .env
 accounts.json
+PROJECT.md
