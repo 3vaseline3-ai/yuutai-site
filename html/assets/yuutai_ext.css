@@ -1,0 +1,194 @@
+/* Extension UI for yuutai month pages */
+.yuutai-ext-card {
+    margin-top: 20px;
+}
+
+.yuutai-ext-card h2 {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.yuutai-ext-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.yuutai-ext-field label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.yuutai-ext-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.yuutai-ext-control input[type="range"] {
+    width: 100%;
+}
+
+.yuutai-ext-value {
+    min-width: 52px;
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    color: var(--text-primary);
+}
+
+.yuutai-ext-note {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.yuutai-ext-quick {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.yuutai-ext-quick button {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.78rem;
+}
+
+.yuutai-ext-quick button:hover {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.yuutai-ext-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.85rem;
+}
+
+.yuutai-ext-table th,
+.yuutai-ext-table td {
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.yuutai-ext-table th:first-child,
+.yuutai-ext-table td:first-child {
+    text-align: left;
+}
+
+.yuutai-ext-table thead th {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.yuutai-ext-warning {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.85rem;
+}
+
+.yuutai-ext-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.yuutai-ext-badge.ok {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.yuutai-ext-badge.ng {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.yuutai-ext-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.yuutai-ext-inline input[type="number"],
+.yuutai-ext-inline input[type="text"],
+.yuutai-ext-inline select {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.yuutai-ext-inline button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.yuutai-ext-inline button:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.yuutai-ext-emphasis {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.4rem;
+    color: var(--accent-cyan);
+}
+
+.yuutai-ext-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.dp-select-btn {
+    margin-left: 8px;
+    background: rgba(168, 85, 247, 0.16);
+    border-color: rgba(168, 85, 247, 0.45);
+}
+
+.dp-select-btn:hover {
+    background: rgba(168, 85, 247, 0.28);
+}
+
+@media (max-width: 768px) {
+    .yuutai-ext-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .yuutai-ext-table th,
+    .yuutai-ext-table td {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+}
