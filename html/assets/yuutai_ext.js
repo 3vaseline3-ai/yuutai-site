@@ -58,6 +58,28 @@
         return Math.round(num).toLocaleString('ja-JP');
     };
 
+    const formatYen = (num) => {
+        if (!Number.isFinite(num)) return '—';
+        return Math.round(num).toLocaleString('ja-JP');
+    };
+
+    const formatManYen = (amountYen) => {
+        if (!Number.isFinite(amountYen)) return '—';
+        const man = amountYen / 10000;
+        if (!Number.isFinite(man)) return '—';
+        const s = man >= 1000 ? formatNumber(man) : man.toFixed(1).replace(/\.0$/, '');
+        return `${s}万`;
+    };
+
+    const amountCellHtml = (amountYen) => {
+        if (!Number.isFinite(amountYen) || amountYen <= 0) {
+            return '<td class="yuutai-ext__amt">—</td>';
+        }
+        const yenStr = formatYen(amountYen);
+        const manStr = formatManYen(amountYen);
+        return `<td class="yuutai-ext__amt" title="${yenStr}円"><div class="yuutai-ext__amt-man">${manStr}</div><div class="yuutai-ext__amt-yen">${yenStr}円</div></td>`;
+    };
+
     const parseNumber = (value) => {
         if (value == null) return 0;
         const str = String(value).replace(/,/g, '').replace(/[^\d.-]/g, '');
@@ -380,6 +402,7 @@
             return {
                 code: row.code,
                 name: row.name,
+                amount: row.amount,
                 nikko: row.nikko,
                 instExpectedPct: expected.instExpectedPct,
                 genExpectedPct: expected.genExpectedPct,
@@ -394,10 +417,18 @@
 
         items.sort((a, b) => (b.marginPct ?? -999) - (a.marginPct ?? -999));
 
-        let html = '<table class="yuutai-ext-table"><thead><tr><th>コード</th><th>銘柄</th><th>日興</th><th>gen%</th><th>inst%</th><th>spread%</th><th>必要%</th><th>margin%</th><th>判定</th></tr></thead><tbody>';
+        const colSpan = 10;
+        let html = '<table class="yuutai-ext-table"><thead><tr><th>コード</th><th class="yuutai-ext__name">銘柄</th><th>取得金額</th><th>日興</th><th>gen%</th><th>inst%</th><th>spread%</th><th>必要%</th><th>margin%</th><th>判定</th></tr></thead><tbody>';
+        if (!items.length) {
+            html += `<tr><td colspan="${colSpan}">候補がありません（フィルタ/日興在庫トグルをご確認ください）</td></tr>`;
+        }
         items.forEach((item) => {
             const ok = item.marginPct >= 0;
-            html += `<tr><td>${item.code}</td><td>${item.name}</td><td>${item.nikko ? 'あり' : 'なし'}</td><td>${item.genExpectedPct.toFixed(2)}</td><td>${item.instExpectedPct.toFixed(2)}</td><td>${item.spreadPct.toFixed(2)}</td><td>${requiredSpreadPct.toFixed(2)}</td><td>${item.marginPct.toFixed(2)}</td><td><span class="yuutai-ext-badge ${ok ? 'ok' : 'ng'}">${ok ? 'OK' : 'NG'}</span></td></tr>`;
+            const amtTag =
+                Number.isFinite(item.amount) && item.amount > 0
+                    ? `<span class="yuutai-ext__amt-tag">${formatManYen(item.amount)}</span>`
+                    : '';
+            html += `<tr><td>${item.code}</td><td class="yuutai-ext__name" title="${item.name}">${amtTag}${item.name}</td>${amountCellHtml(item.amount)}<td>${item.nikko ? 'あり' : 'なし'}</td><td>${item.genExpectedPct.toFixed(2)}</td><td>${item.instExpectedPct.toFixed(2)}</td><td>${item.spreadPct.toFixed(2)}</td><td>${requiredSpreadPct.toFixed(2)}</td><td>${item.marginPct.toFixed(2)}</td><td><span class="yuutai-ext-badge ${ok ? 'ok' : 'ng'}">${ok ? 'OK' : 'NG'}</span></td></tr>`;
         });
         html += '</tbody></table>';
         extElements.earlyBody.innerHTML = html;

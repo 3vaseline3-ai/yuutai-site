@@ -1,8 +1,11 @@
 name: Update Data and Deploy
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    # 1時間おきに実行（日本時間の毎時）
+    # 1時間おきに実行（cronはUTC）
     - cron: '0 * * * *'
   workflow_dispatch:  # 手動実行も可能
 
@@ -29,15 +32,18 @@ jobs:
           pip install -r requirements.txt
 
       - name: Fetch stock prices
+        if: github.event_name != 'push'
         run: python scripts/fetch_stock_price.py --all
 
       - name: Fetch zaiko (inventory)
+        if: github.event_name != 'push'
         run: python scripts/fetch_zaiko.py --all
 
       - name: Generate HTML
         run: python scripts/generate_html.py
 
       - name: Commit and push changes
+        if: github.event_name != 'push'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"

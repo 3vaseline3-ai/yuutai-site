@@ -192,3 +192,36 @@
         font-size: 0.8rem;
     }
 }
+
+/* ---- 金額（取得金額）表示を“ぱっと見”重視に ---- */
+
+.yuutai-ext__amt {
+    text-align: right;
+}
+
+.yuutai-ext__amt-man {
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+}
+
+.yuutai-ext__amt-yen {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    color: var(--text-secondary);
+}
+
+.yuutai-ext__amt-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 0.78rem;
+    margin-right: 6px;
+    color: var(--text-secondary);
+}
+
+.yuutai-ext-table th.yuutai-ext__name,
+.yuutai-ext-table td.yuutai-ext__name {
+    text-align: left;
+}
