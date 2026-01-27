@@ -202,6 +202,7 @@
 {% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="../assets/yuutai_ext.css">
 <style>
 /* Page header */
 .page-header {
@@ -702,6 +703,7 @@ tr:has(.stock-checkbox:checked) td {
 {% endblock %}
 
 {% block extra_js %}
+<script src="../assets/yuutai_ext.js" defer></script>
 <script>
 const MONTH = {{ month }};
 const STORAGE_KEY_PORTFOLIO = `yuutai_portfolio_${MONTH}`;
