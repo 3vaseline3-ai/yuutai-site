@@ -10,6 +10,69 @@
     gap: 8px;
 }
 
+/* ---- O(δ) 折りたたみ（details/summary） ---- */
+
+.yuutai-ext-collapsible-summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 0;
+    border-radius: 12px;
+    transition: background 0.15s ease;
+}
+
+.yuutai-ext-collapsible-summary::-webkit-details-marker {
+    display: none;
+}
+
+.yuutai-ext-collapsible-summary::marker {
+    content: '';
+}
+
+.yuutai-ext-collapsible-summary:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.yuutai-ext-collapsible-summary:focus-visible {
+    outline: 2px solid rgba(0, 212, 255, 0.35);
+    outline-offset: 4px;
+}
+
+.yuutai-ext-collapsible-summary h2 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.yuutai-ext-collapsible[open] > .yuutai-ext-collapsible-summary {
+    margin-bottom: 20px;
+}
+
+.yuutai-ext-collapsible-chevron {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+    border-right: 2px solid var(--text-secondary);
+    border-bottom: 2px solid var(--text-secondary);
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+    opacity: 0.9;
+}
+
+.yuutai-ext-collapsible[open] .yuutai-ext-collapsible-chevron {
+    transform: rotate(45deg);
+    border-color: var(--text-primary);
+    opacity: 1;
+}
+
+.yuutai-ext-collapsible-summary:hover .yuutai-ext-collapsible-chevron {
+    border-color: var(--text-primary);
+}
+
 .yuutai-ext-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

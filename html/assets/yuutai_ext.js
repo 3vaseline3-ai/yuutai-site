@@ -19,6 +19,10 @@
         stepYen: 'yuutai_setting_step_yen'
     };
 
+    const UI_STATE_KEYS = {
+        odeltaOpen: 'yuutaiext_odelta_open'
+    };
+
     const state = {
         settings: { ...SETTINGS_DEFAULT },
         monthCache: new Map(),
@@ -604,14 +608,24 @@
     };
 
     const setupCurveCard = () => {
-        const card = document.createElement('div');
-        card.className = 'glass-card yuutai-ext-card';
+        const card = document.createElement('details');
+        card.className = 'glass-card yuutai-ext-card yuutai-ext-collapsible';
         card.innerHTML = `
-            <div class="portfolio-header">
+            <summary class="yuutai-ext-collapsible-summary">
                 <h2>限界利回り（O(δ)）</h2>
-            </div>
-            <div class="yuutai-ext-body"></div>
+                <span class="yuutai-ext-collapsible-chevron" aria-hidden="true"></span>
+            </summary>
+            <div class="yuutai-ext-body yuutai-ext-collapsible-body"></div>
         `;
+
+        const openRaw = localStorage.getItem(UI_STATE_KEYS.odeltaOpen);
+        if (openRaw === '1') {
+            card.open = true;
+        }
+        card.addEventListener('toggle', () => {
+            localStorage.setItem(UI_STATE_KEYS.odeltaOpen, card.open ? '1' : '0');
+        });
+
         extElements.curveCard = card;
         extElements.curveBody = card.querySelector('.yuutai-ext-body');
     };
