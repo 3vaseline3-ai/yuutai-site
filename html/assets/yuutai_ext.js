@@ -20,7 +20,13 @@
     };
 
     const UI_STATE_KEYS = {
-        odeltaOpen: 'yuutaiext_odelta_open'
+        focusCurrentOnly: 'yuutaiext_focus_current_only',
+        openPortfolio: 'yuutaiext_open_portfolio',
+        openFilter: 'yuutaiext_open_filter',
+        openSettings: 'yuutaiext_open_settings',
+        odeltaOpen: 'yuutaiext_odelta_open',
+        openEarly: 'yuutaiext_open_early',
+        openScenario: 'yuutaiext_open_scenario'
     };
 
     const state = {
@@ -128,6 +134,143 @@
 
     const persistSetting = (key, value) => {
         localStorage.setItem(key, String(value));
+    };
+
+    const getStorageBool = (key, fallback) => {
+        const raw = localStorage.getItem(key);
+        if (raw == null) return fallback;
+        return raw === '1';
+    };
+
+    const setStorageBool = (key, value) => {
+        localStorage.setItem(key, value ? '1' : '0');
+    };
+
+    const ensureStorageBoolDefault = (key, defaultValue) => {
+        const raw = localStorage.getItem(key);
+        if (raw == null) {
+            setStorageBool(key, defaultValue);
+        }
+    };
+
+    const isFocusCurrentOnlyEnabled = () => getStorageBool(UI_STATE_KEYS.focusCurrentOnly, true);
+
+    let suppressUiStatePersist = false;
+    const collapsibles = [];
+
+    const withSuppressPersist = (fn) => {
+        suppressUiStatePersist = true;
+        try {
+            fn();
+        } finally {
+            suppressUiStatePersist = false;
+        }
+    };
+
+    const bindPersistOnToggle = (detailsEl, storageKey) => {
+        if (!detailsEl || !storageKey) return;
+        detailsEl.addEventListener('toggle', () => {
+            if (suppressUiStatePersist) return;
+            if (isFocusCurrentOnlyEnabled()) return;
+            setStorageBool(storageKey, detailsEl.open);
+        });
+    };
+
+    const registerCollapsible = (detailsEl, storageKey, defaultOpen) => {
+        if (!detailsEl) return;
+        if (detailsEl.dataset.yuutaiExtCollapsibleRegistered === '1') return;
+        detailsEl.dataset.yuutaiExtCollapsibleRegistered = '1';
+        collapsibles.push({ detailsEl, storageKey, defaultOpen });
+        bindPersistOnToggle(detailsEl, storageKey);
+    };
+
+    const syncCollapsibleOpen = ({ detailsEl, storageKey, defaultOpen }) => {
+        if (!detailsEl) return;
+        const focusEnabled = isFocusCurrentOnlyEnabled();
+        const shouldOpen = focusEnabled ? false : getStorageBool(storageKey, defaultOpen);
+        withSuppressPersist(() => {
+            detailsEl.open = shouldOpen;
+        });
+    };
+
+    const syncAllCollapsibles = () => {
+        collapsibles.forEach(syncCollapsibleOpen);
+    };
+
+    const injectFocusToggle = () => {
+        if (document.getElementById('yuutai-ext-focus-toggle')) return;
+        const target = document.querySelector('.page-header .header-content .interest-info')
+            || document.querySelector('.page-header .header-content')
+            || document.querySelector('.page-header');
+        if (!target) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'yuutai-ext-focus-toggle';
+        wrapper.innerHTML = `
+            <label class="yuutai-ext-focus-label">
+                <input type="checkbox" id="yuutai-ext-focus-toggle">
+                <span class="yuutai-ext-focus-switch" aria-hidden="true"></span>
+                <span class="yuutai-ext-focus-text">フォーカス表示（当月の優待以外は閉じる）</span>
+            </label>
+        `;
+        target.appendChild(wrapper);
+
+        const checkbox = wrapper.querySelector('#yuutai-ext-focus-toggle');
+        if (!checkbox) return;
+        checkbox.checked = isFocusCurrentOnlyEnabled();
+        checkbox.addEventListener('change', () => {
+            setStorageBool(UI_STATE_KEYS.focusCurrentOnly, checkbox.checked);
+            syncAllCollapsibles();
+        });
+    };
+
+    const makeHostCollapsible = (hostEl, { title, headerSelector, storageKey, defaultOpen = true, detailsClass = '', bodyClass = '' }) => {
+        if (!hostEl) return null;
+        const existingDetails = Array.from(hostEl.children).find((child) => (
+            child.tagName === 'DETAILS' && child.classList.contains('yuutai-ext-section-collapsible')
+        ));
+        if (existingDetails) return existingDetails;
+
+        let headerEl = null;
+        if (headerSelector) {
+            const normalized = headerSelector.replace(/^:scope\s*>\s*/, '');
+            const candidate = hostEl.querySelector(normalized);
+            headerEl = candidate && candidate.parentElement === hostEl ? candidate : null;
+        }
+
+        const details = document.createElement('details');
+        details.className = ['yuutai-ext-section-collapsible', 'yuutai-ext-collapsible', detailsClass].filter(Boolean).join(' ');
+
+        const summary = document.createElement('summary');
+        summary.className = 'yuutai-ext-collapsible-summary';
+
+        if (headerEl) {
+            headerEl.remove();
+            summary.appendChild(headerEl);
+        } else {
+            const h2 = document.createElement('h2');
+            h2.textContent = title || '';
+            summary.appendChild(h2);
+        }
+
+        const chevron = document.createElement('span');
+        chevron.className = 'yuutai-ext-collapsible-chevron';
+        chevron.setAttribute('aria-hidden', 'true');
+        summary.appendChild(chevron);
+
+        const body = document.createElement('div');
+        body.className = ['yuutai-ext-collapsible-body', bodyClass].filter(Boolean).join(' ');
+        while (hostEl.firstChild) {
+            body.appendChild(hostEl.firstChild);
+        }
+
+        details.appendChild(summary);
+        details.appendChild(body);
+        hostEl.appendChild(details);
+
+        registerCollapsible(details, storageKey, defaultOpen);
+        syncCollapsibleOpen({ detailsEl: details, storageKey, defaultOpen });
+        return details;
     };
 
     const getVisibleRows = () => {
@@ -618,13 +761,8 @@
             <div class="yuutai-ext-body yuutai-ext-collapsible-body"></div>
         `;
 
-        const openRaw = localStorage.getItem(UI_STATE_KEYS.odeltaOpen);
-        if (openRaw === '1') {
-            card.open = true;
-        }
-        card.addEventListener('toggle', () => {
-            localStorage.setItem(UI_STATE_KEYS.odeltaOpen, card.open ? '1' : '0');
-        });
+        registerCollapsible(card, UI_STATE_KEYS.odeltaOpen, false);
+        syncCollapsibleOpen({ detailsEl: card, storageKey: UI_STATE_KEYS.odeltaOpen, defaultOpen: false });
 
         extElements.curveCard = card;
         extElements.curveBody = card.querySelector('.yuutai-ext-body');
@@ -826,6 +964,9 @@
     };
 
     const init = () => {
+        ensureStorageBoolDefault(UI_STATE_KEYS.focusCurrentOnly, true);
+        injectFocusToggle();
+
         readSettings();
         setupSettingsCard();
         setupCurveCard();
@@ -839,6 +980,50 @@
         fragment.appendChild(extElements.earlyCard);
         fragment.appendChild(extElements.scenarioCard);
         portfolioCard.parentNode.insertBefore(fragment, portfolioCard.nextSibling);
+
+        makeHostCollapsible(portfolioCard, {
+            title: 'ポートフォリオ計算',
+            headerSelector: ':scope > .portfolio-header',
+            storageKey: UI_STATE_KEYS.openPortfolio,
+            defaultOpen: true,
+            detailsClass: 'yuutai-ext-collapsible-host'
+        });
+        makeHostCollapsible(extElements.settingsCard, {
+            title: '拡張設定',
+            headerSelector: ':scope > .portfolio-header',
+            storageKey: UI_STATE_KEYS.openSettings,
+            defaultOpen: true,
+            detailsClass: 'yuutai-ext-collapsible-host'
+        });
+        makeHostCollapsible(extElements.earlyCard, {
+            title: '早期取得シミュレーション',
+            headerSelector: ':scope > .portfolio-header',
+            storageKey: UI_STATE_KEYS.openEarly,
+            defaultOpen: true,
+            detailsClass: 'yuutai-ext-collapsible-host'
+        });
+        makeHostCollapsible(extElements.scenarioCard, {
+            title: 'Kシナリオ比較',
+            headerSelector: ':scope > .portfolio-header',
+            storageKey: UI_STATE_KEYS.openScenario,
+            defaultOpen: true,
+            detailsClass: 'yuutai-ext-collapsible-host'
+        });
+
+        const filterSection = document.querySelector('.filter-section');
+        if (filterSection) {
+            filterSection.classList.add('yuutai-ext-filter-collapsible-host');
+            makeHostCollapsible(filterSection, {
+                title: 'フィルタ',
+                headerSelector: '',
+                storageKey: UI_STATE_KEYS.openFilter,
+                defaultOpen: true,
+                detailsClass: 'yuutai-ext-filter-collapsible',
+                bodyClass: 'yuutai-ext-filter-body'
+            });
+        }
+
+        syncAllCollapsibles();
 
         setupTargetOptions();
         syncSettingsInputs();
