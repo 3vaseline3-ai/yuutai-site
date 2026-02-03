@@ -26,6 +26,23 @@ INTEREST_RATE = 1.7  # 年利1.7%
 PORTFOLIO_CAPITAL = 6_000_000
 
 
+def parse_settlement_month(settlement_month: int) -> tuple[int, int | None]:
+    """settlement_monthを月と日に分解
+
+    Args:
+        settlement_month: 1-12は月末権利、101-1231は月中権利（例：220=2月20日）
+
+    Returns:
+        (month, day): dayはNoneなら月末権利
+    """
+    if settlement_month <= 12:
+        return (settlement_month, None)
+    # 3桁以上は月中権利（例：220 → 2月20日、1115 → 11月15日）
+    month = settlement_month // 100
+    day = settlement_month % 100
+    return (month, day)
+
+
 def is_business_day(d: date) -> bool:
     """営業日かどうかを判定（土日祝を除く）"""
     if d.weekday() >= 5:  # 土日
@@ -71,9 +88,37 @@ def get_kenri_tsuki_bi(year: int, month: int) -> date:
     return kenri_bi
 
 
-def calculate_month_interest(month: int, base_date: date | None = None) -> dict:
+def get_kenri_date_for_day(year: int, month: int, day: int) -> date:
+    """月中権利日の権利付日を取得（指定日の2営業日前）
+
+    Args:
+        year: 年
+        month: 月
+        day: 権利確定日
+
+    Returns:
+        権利付日
+    """
+    # 権利確定日
+    kenri_kakutei = date(year, month, day)
+
+    # 2営業日前を計算
+    kenri_bi = kenri_kakutei
+    business_days_back = 0
+    while business_days_back < 2:
+        kenri_bi -= timedelta(days=1)
+        if is_business_day(kenri_bi):
+            business_days_back += 1
+
+    return kenri_bi
+
+
+def calculate_month_interest(settlement_month: int, base_date: date | None = None) -> dict:
     """
     指定月の金利情報を計算
+
+    Args:
+        settlement_month: 1-12は月末権利、3桁以上は月中権利（例：220=2月20日）
 
     Returns:
         dict: {
@@ -89,13 +134,21 @@ def calculate_month_interest(month: int, base_date: date | None = None) -> dict:
     # 今日が休日なら翌営業日を起点とする
     start_date = get_next_business_day(base_date)
 
+    # settlement_monthを分解
+    month, day = parse_settlement_month(settlement_month)
+
     # 権利付日を計算（今年または来年）
     year = base_date.year
-    kenri_date = get_kenri_tsuki_bi(year, month)
-
-    # 権利付日が過去なら来年の権利付日を使用
-    if kenri_date < start_date:
-        kenri_date = get_kenri_tsuki_bi(year + 1, month)
+    if day is None:
+        # 月末権利
+        kenri_date = get_kenri_tsuki_bi(year, month)
+        if kenri_date < start_date:
+            kenri_date = get_kenri_tsuki_bi(year + 1, month)
+    else:
+        # 月中権利
+        kenri_date = get_kenri_date_for_day(year, month, day)
+        if kenri_date < start_date:
+            kenri_date = get_kenri_date_for_day(year + 1, month, day)
 
     # 日数計算（カレンダー日数）
     days = (kenri_date - start_date).days
@@ -148,13 +201,31 @@ def setup_jinja_env() -> Environment:
     return env
 
 
+def get_mid_month_pages() -> list[dict]:
+    """月中権利のページ情報を取得"""
+    all_months = get_all_settlement_months()
+    mid_months = []
+    for sm in all_months:
+        if sm > 12:  # 月中権利のみ
+            mid_months.append({
+                "settlement_month": sm,
+                "filename": get_settlement_month_filename(sm),
+                "display": get_settlement_month_display(sm),
+            })
+    return mid_months
+
+
 def generate_index(env: Environment, stocks: list[dict]) -> None:
     """トップページを生成"""
     template = env.get_template("index.html")
 
+    # 月中権利のページ情報を取得
+    mid_month_pages = get_mid_month_pages()
+
     html = template.render(
         stock_count=len(stocks),
         last_updated=datetime.now().strftime("%Y-%m-%d %H:%M"),
+        mid_month_pages=mid_month_pages,
         base_path="./",
     )
 
@@ -195,15 +266,52 @@ def compute_monthly_expected_yields(capital: float) -> dict[int, float]:
     return expected
 
 
+def get_all_settlement_months() -> list[int]:
+    """kachi.csvからユニークなsettlement_monthを取得"""
+    stocks = load_stocks()
+    months = set()
+    for stock in stocks:
+        try:
+            sm = int(stock.get("settlement_month", 0))
+            if sm > 0:
+                months.add(sm)
+        except (ValueError, TypeError):
+            continue
+    # 月末権利（1-12）を先に、月中権利（3桁以上）を後に
+    return sorted(months, key=lambda x: (x > 12, x))
+
+
+def get_settlement_month_filename(settlement_month: int) -> str:
+    """settlement_monthからファイル名を生成"""
+    if settlement_month <= 12:
+        return f"{settlement_month:02d}.html"
+    # 月中権利: 220 → 0220.html
+    return f"{settlement_month:04d}.html"
+
+
+def get_settlement_month_display(settlement_month: int) -> str:
+    """settlement_monthから表示用文字列を生成"""
+    month, day = parse_settlement_month(settlement_month)
+    if day is None:
+        return f"{month}月"
+    return f"{month}月{day}日"
+
+
 def generate_month_pages(env: Environment) -> None:
     """月別ページを生成（パフォーマンス降順）"""
     template = env.get_template("month.html")
     expected_yields = compute_monthly_expected_yields(PORTFOLIO_CAPITAL)
 
-    # 各月のページを生成
-    for month in range(1, 13):
+    # kachi.csvから全てのsettlement_monthを取得
+    all_settlement_months = get_all_settlement_months()
+
+    # 各settlement_monthのページを生成
+    for settlement_month in all_settlement_months:
         # パフォーマンス計算済みデータを取得（既に降順ソート済み）
-        month_stocks = get_stocks_with_performance(month)
+        month_stocks = get_stocks_with_performance(settlement_month)
+
+        # 月を取得（在庫データ取得用）
+        month, day = parse_settlement_month(settlement_month)
 
         # 在庫データを読み込んでマージ
         zaiko_data = load_latest_zaiko(month)
@@ -228,13 +336,17 @@ def generate_month_pages(env: Environment) -> None:
                 stock["max_gyaku_rate"] = None
 
         # 金利情報を計算
-        interest_info = calculate_month_interest(month)
+        interest_info = calculate_month_interest(settlement_month)
 
         # 現在の月を取得（月利回り計算用）
         current_month = date.today().month
 
+        # 表示用の月
+        month_display = get_settlement_month_display(settlement_month)
+
         html = template.render(
-            month=month,
+            month=settlement_month,
+            month_display=month_display,
             stocks=month_stocks,
             interest_info=interest_info,
             current_month=current_month,
@@ -244,7 +356,7 @@ def generate_month_pages(env: Environment) -> None:
             base_path="../",
         )
 
-        output_file = MONTHS_DIR / f"{month:02d}.html"
+        output_file = MONTHS_DIR / get_settlement_month_filename(settlement_month)
         output_file.write_text(html, encoding="utf-8")
         print(f"Generated: {output_file} ({len(month_stocks)}銘柄)")
 

@@ -52,6 +52,26 @@
     </a>
     {% endfor %}
 </div>
+
+{% if mid_month_pages %}
+<h2 class="section-title" style="margin-top: 50px;">月中権利日</h2>
+
+<div class="month-grid mid-month-grid">
+    {% for page in mid_month_pages %}
+    <a href="{{ base_path }}months/{{ page.filename }}" class="month-card mid-month-card">
+        <div class="month-card-inner">
+            <span class="month-display">{{ page.display }}</span>
+        </div>
+        <div class="month-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_css %}
@@ -241,6 +261,22 @@
     .month-card:hover .month-arrow {
         color: var(--accent-cyan);
         transform: translateX(4px);
+    }
+
+    /* Mid-month cards */
+    .mid-month-grid {
+        max-width: 600px;
+    }
+
+    .mid-month-card {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+    }
+
+    .month-display {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-primary);
     }
 
     /* Mobile */

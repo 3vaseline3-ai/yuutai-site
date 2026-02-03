@@ -11,20 +11,26 @@ from datetime import datetime
 from config import IPPAN_ZAIKO_DIR
 
 
-API_URL = "https://gokigen-life.tokyo/api/00ForWeb/ForZaiko2.php"
+# アプリ用API（正確な在庫データ）
+API_URL = "https://gokigen-life.tokyo/api/00ForWeb/ForIonicZaikoPon.php"
 HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",
-    "Referer": "https://gokigen-life.tokyo/",
+    "Origin": "ionic://localhost",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
 }
 
 
-def fetch_zaiko(month: int) -> list[dict]:
-    """指定月の在庫データを取得"""
+def fetch_zaiko(month: int = None) -> list[dict]:
+    """在庫データを取得（アプリAPIはパラメータなしで全データ返却）
+
+    Args:
+        month: 互換性のため残すが、このAPIでは使用しない
+    """
     try:
         response = requests.post(
             API_URL,
             headers=HEADERS,
-            data={"month": month},
+            data="",  # 空ボディでPOST
             timeout=30,
             impersonate="chrome"
         )

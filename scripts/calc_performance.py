@@ -20,14 +20,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import csv
 import json
+import time
 from dataclasses import dataclass
+from curl_cffi import requests
 from config import (
-    DATA_DIR,
     KACHI_CSV,
     GYAKU_HIBOKU_DIR,
     STOCK_PRICE_DIR,
-    IPPAN_ZAIKO_DIR,
-    INVEST_JP_HTML_DIR,
 )
 from fetch_zaiko import load_latest_zaiko
 
@@ -41,21 +40,21 @@ DEFAULT_REALIZATION_FACTOR = 0.8
 # 実現利益係数の計算に使う年数
 REALIZATION_FACTOR_YEARS = 3
 
-# invest-jp HTMLフォルダ名（権利月）
-INVEST_JP_MONTH_DIRS = {
-    1: "01_january",
-    2: "02_february",
-    3: "03_march",
-    4: "04_april",
-    5: "05_may",
-    6: "06_june",
-    7: "07_july",
-    8: "08_august",
-    9: "09_september",
-    10: "10_october",
-    11: "11_november",
-    12: "12_december",
+# invest-jp URL
+INVEST_JP_DETAIL_URL = "https://www.invest-jp.net/yuutai/detail/{code}"
+
+# HTTPヘッダー
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
 }
+
+# アクセス間隔（秒）
+ACCESS_INTERVAL = 1
+
+# HTMLキャッシュ（セッション中のみ有効）
+_html_cache: dict[str, str] = {}
 
 
 @dataclass
@@ -135,31 +134,49 @@ class StockPerformance:
         }
 
 
-def get_invest_jp_html_path(code: str, settlement_month: int | None) -> Path | None:
-    """invest-jpの保存HTMLパスを取得"""
-    if not settlement_month:
+def fetch_invest_jp_html(code: str) -> str | None:
+    """invest-jpからHTMLを取得（キャッシュ付き）"""
+    global _html_cache
+
+    if code in _html_cache:
+        return _html_cache[code]
+
+    url = INVEST_JP_DETAIL_URL.format(code=code)
+    try:
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=30,
+            impersonate="chrome120"
+        )
+        response.raise_for_status()
+        html = response.text
+        _html_cache[code] = html
+        time.sleep(ACCESS_INTERVAL)  # サーバー負荷軽減
+        return html
+    except Exception as e:
+        print(f"  [WARN] {code} HTML取得失敗: {e}")
         return None
-    month_dir = INVEST_JP_MONTH_DIRS.get(settlement_month)
-    if not month_dir:
-        return None
-    html_path = INVEST_JP_HTML_DIR / month_dir / f"{code}.html"
-    return html_path if html_path.exists() else None
 
 
 def load_invest_jp_history(code: str, settlement_month: int | None) -> list[dict]:
-    """invest-jp保存HTMLから逆日歩履歴を読み込み"""
-    html_path = get_invest_jp_html_path(code, settlement_month)
-    if not html_path:
-        return []
-    try:
-        from scripts.parse_invest_jp import parse_stock_html
-    except Exception:
+    """invest-jpからHTMLを取得して逆日歩履歴を読み込み"""
+    html = fetch_invest_jp_html(code)
+    if not html:
         return []
 
-    data = parse_stock_html(html_path)
-    if not data:
+    try:
+        from scripts.parse_invest_jp import parse_gyaku_hiboku_table
+        from bs4 import BeautifulSoup
+        # lxmlがなければhtml.parserを使用
+        try:
+            soup = BeautifulSoup(html, "lxml")
+        except Exception:
+            soup = BeautifulSoup(html, "html.parser")
+        return parse_gyaku_hiboku_table(soup)
+    except Exception as e:
+        print(f"  [WARN] {code} パース失敗: {e}")
         return []
-    return data.get("gyaku_hiboku", [])
 
 
 def load_gyaku_history(code: str, settlement_month: int | None = None) -> list[dict]:
@@ -293,8 +310,19 @@ def load_zaiko_for_month(month: int) -> dict:
     return _zaiko_cache[month]
 
 
-def get_stock_from_zaiko(code: str, month: int) -> dict | None:
+def parse_settlement_month(settlement_month: int) -> tuple[int, int | None]:
+    """settlement_monthを月と日に分解"""
+    if settlement_month <= 12:
+        return (settlement_month, None)
+    month = settlement_month // 100
+    day = settlement_month % 100
+    return (month, day)
+
+
+def get_stock_from_zaiko(code: str, settlement_month: int) -> dict | None:
     """在庫データから銘柄情報を取得"""
+    # settlement_monthから月を抽出（220 → 2）
+    month, _ = parse_settlement_month(settlement_month)
     zaiko = load_zaiko_for_month(month)
     return zaiko.get(code)
 

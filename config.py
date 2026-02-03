@@ -13,8 +13,6 @@ STOCK_PRICE_DIR = DATA_DIR / "stock_price"
 DIVIDEND_DIR = DATA_DIR / "dividend"
 IPPAN_ZAIKO_DIR = DATA_DIR / "ippan_zaiko"
 KACHI_CSV = DATA_DIR / "kachi.csv"
-# invest-jp保存HTML（yuutai-siteと同階層にある想定）
-INVEST_JP_HTML_DIR = BASE_DIR.parent / "invest-jp"
 
 # 出力ディレクトリ
 HTML_DIR = BASE_DIR / "html"
