@@ -610,6 +610,22 @@
         transform: translateX(4px);
     }
 
+    /* Mid-month cards */
+    .mid-month-grid {
+        max-width: 600px;
+    }
+
+    .mid-month-card {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+    }
+
+    .month-display {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
     /* Mobile */
     @media (max-width: 768px) {
         .hero-section {
@@ -729,7 +745,7 @@
             </svg>
         </div>
         <div class="stat-content">
-            <span class="stat-value">183</span>
+            <span class="stat-value">194</span>
             <span class="stat-label">登録銘柄</span>
         </div>
     </div>
@@ -741,7 +757,7 @@
             </svg>
         </div>
         <div class="stat-content">
-            <span class="stat-value stat-date">2026-02-03 10:28</span>
+            <span class="stat-value stat-date">2026-02-03 11:26</span>
             <span class="stat-label">最終更新</span>
         </div>
     </div>
@@ -908,6 +924,26 @@
     </a>
     
 </div>
+
+
+<h2 class="section-title" style="margin-top: 50px;">月中権利日</h2>
+
+<div class="month-grid mid-month-grid">
+    
+    <a href="./months/0220.html" class="month-card mid-month-card">
+        <div class="month-card-inner">
+            <span class="month-display">2月20日</span>
+        </div>
+        <div class="month-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+        </div>
+    </a>
+    
+</div>
+
 
     </div>
 
