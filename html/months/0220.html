@@ -1020,7 +1020,7 @@ tr:has(.stock-checkbox:checked) td {
             <span class="filter-dot nikko"></span>
             日興在庫あり
         </button>
-        <button class="filter-btn active" data-filter="karauri">
+        <button class="filter-btn" data-filter="karauri">
             <span class="filter-dot karauri"></span>
             空売可能
         </button>
@@ -1028,7 +1028,7 @@ tr:has(.stock-checkbox:checked) td {
             <span class="filter-dot no-karauri"></span>
             空売不可
         </button>
-        <button class="filter-btn" data-filter="all">全て表示</button>
+        <button class="filter-btn active" data-filter="all">全て表示</button>
     </div>
     <div class="filter-stats">
         空売可能: <strong id="karauri-count">-</strong> / 全体: <strong>5</strong>銘柄
@@ -1082,9 +1082,9 @@ tr:has(.stock-checkbox:checked) td {
                     data-yuutai="2000.0"
                     data-performance="1.5595"
                      class="non-taishaku"
-                     style="display:none;">
+                     >
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="6279_100"></td>
-                    <td><a href="https://gokigen-life.tokyo/6279yutai/" target="_blank">6279</a></td>
+                    <td><a href="../stocks/6279.html">6279</a></td>
                     <td class="number zaiko-cell">
                         
                         <span class="zaiko-none">—</span>
@@ -1133,9 +1133,9 @@ tr:has(.stock-checkbox:checked) td {
                     data-yuutai="3000.0"
                     data-performance="0.2694"
                      class="non-taishaku"
-                     style="display:none;">
+                     >
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8217_1000"></td>
-                    <td><a href="https://gokigen-life.tokyo/8217yutai/" target="_blank">8217</a></td>
+                    <td><a href="../stocks/8217.html">8217</a></td>
                     <td class="number zaiko-cell">
                         
                         <span class="zaiko-none">—</span>
@@ -1186,7 +1186,7 @@ tr:has(.stock-checkbox:checked) td {
                     
                     >
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="7545_1000"></td>
-                    <td><a href="https://gokigen-life.tokyo/7545yutai/" target="_blank">7545</a></td>
+                    <td><a href="../stocks/7545.html">7545</a></td>
                     <td class="number zaiko-cell">
                         
                         <span class="zaiko-none">—</span>
@@ -1237,7 +1237,7 @@ tr:has(.stock-checkbox:checked) td {
                     
                     >
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8227_100"></td>
-                    <td><a href="https://gokigen-life.tokyo/8227yutai/" target="_blank">8227</a></td>
+                    <td><a href="../stocks/8227.html">8227</a></td>
                     <td class="number zaiko-cell">
                         
                         <span class="zaiko-value">18,900</span>
@@ -1288,7 +1288,7 @@ tr:has(.stock-checkbox:checked) td {
                     
                     >
                     <td class="checkbox-col"><input type="checkbox" class="stock-checkbox" data-key="8276_500"></td>
-                    <td><a href="https://gokigen-life.tokyo/8276yutai/" target="_blank">8276</a></td>
+                    <td><a href="../stocks/8276.html">8276</a></td>
                     <td class="number zaiko-cell">
                         
                         <span class="zaiko-value">77,600</span>
@@ -1571,7 +1571,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 // Initialize
 loadSelection();
 updateKarauriCount();
-applyFilter('karauri');
+applyFilter('all');
 calculatePortfolio();
 </script>
 
