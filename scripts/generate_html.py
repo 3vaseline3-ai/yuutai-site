@@ -301,6 +301,7 @@ def generate_month_pages(env: Environment) -> None:
     """月別ページを生成（パフォーマンス降順）"""
     template = env.get_template("month.html")
     expected_yields = compute_monthly_expected_yields(PORTFOLIO_CAPITAL)
+    mid_month_pages = get_mid_month_pages()
 
     # kachi.csvから全てのsettlement_monthを取得
     all_settlement_months = get_all_settlement_months()
@@ -354,6 +355,7 @@ def generate_month_pages(env: Environment) -> None:
                 expected_yields.get(m, 0) for m in range(1, month + 1)
             ),
             base_path="../",
+            mid_month_pages=mid_month_pages,
         )
 
         output_file = MONTHS_DIR / get_settlement_month_filename(settlement_month)
@@ -364,6 +366,7 @@ def generate_month_pages(env: Environment) -> None:
 def generate_stock_pages(env: Environment) -> None:
     """銘柄別ページを生成（パフォーマンス計算済みデータを使用）"""
     template = env.get_template("stock.html")
+    mid_month_pages = get_mid_month_pages()
 
     # 全月のパフォーマンスデータを取得（基本株数のみ、+xxxは除外）
     all_stocks = get_stocks_with_performance()
@@ -391,6 +394,13 @@ def generate_stock_pages(env: Environment) -> None:
         simple_yield = stock.get("simple_yield", 0)
         stock["yield"] = round(simple_yield, 2) if simple_yield else None
 
+        # 表示用の権利確定月（例: 220 -> 2月20日）
+        try:
+            settlement_month = int(stock.get("settlement_month", 0))
+            stock["settlement_month_display"] = get_settlement_month_display(settlement_month)
+        except (ValueError, TypeError):
+            stock["settlement_month_display"] = "—"
+
         # 必要資金計算
         price = stock.get("price", 0)
         required_shares = stock.get("required_shares", 0)
@@ -400,6 +410,7 @@ def generate_stock_pages(env: Environment) -> None:
             stock=stock,
             gyaku_hiboku_history=gyaku_history,
             base_path="../",
+            mid_month_pages=mid_month_pages,
         )
 
         output_file = STOCKS_DIR / f"{code}.html"
