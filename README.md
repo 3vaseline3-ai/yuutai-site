@@ -26,6 +26,12 @@ yuutai-site/
 
 ## API情報
 
+### Vercelデプロイ時の依存関係
+
+- `api/zaiko.py` の依存は `api/requirements.txt` に記載する
+- ルート `requirements.txt` はデータ生成スクリプト向け（`pandas`, `yfinance` など重い依存を含む）
+- API関数に重い依存を含めると、VercelのServerless Functionサイズ制限（250MB）を超えてデプロイ失敗する
+
 ### gokigen-life 在庫API
 
 **アプリ用API（正確なデータ）**
