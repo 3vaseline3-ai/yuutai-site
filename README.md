@@ -29,6 +29,7 @@ yuutai-site/
 ### Vercelデプロイ時の依存関係
 
 - `api/zaiko.py` の依存は `api/requirements.txt` に記載する
+- `api/pyproject.toml` はVercel Pythonビルド用に保持する（削除しない）
 - ルート `requirements.txt` はデータ生成スクリプト向け（`pandas`, `yfinance` など重い依存を含む）
 - API関数に重い依存を含めると、VercelのServerless Functionサイズ制限（250MB）を超えてデプロイ失敗する
 

@@ -1,2 +1,3 @@
 # Vercel serverless function dependencies.
 # Keep this file minimal to stay under the 250MB unzipped function size limit.
+requests>=2.31.0
